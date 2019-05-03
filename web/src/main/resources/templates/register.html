@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width,
+                                     initial-scale=1.0,
+                                     maximum-scale=1.0,
+                                     user-scalable=no">
+    <title>Title</title>
+    <style type="text/css">
+        body{
+            background-color: #F7F8FA
+        }
+    </style>
+    <link type="text/css" rel="stylesheet" href="../static/bootstrap-3.3.7-dist/css/bootstrap.css"></link>
+    <script type="text/javascript" src="../static/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+    <script type="text/javascript" src="../static/jquery-1.7.2.js"></script>
+    <script type="text/javascript">
+        $(function(){
+            //切换成邮箱注册
+            $("#byMail").click(function(){
+                if($("#type").val()=="phone")
+                {
+                    $("input[type!='button']").parent().next().text("");
+                    $("#account").attr("placeholder", "请输入邮箱");
+                    $("#accountName").text("邮箱");
+                    $("#codeNode").remove();
+                    $("#codeButtonNode").remove();
+                    $("#type").val("email");
+                    $("form").attr("action", "/usr/register/email")
+                }
+            })
+
+            //切换成电话号码注册
+            $("#byPhone").click(function(){
+                if($("#type").val()=="email")
+                {
+                    $("input[type!='button']").parent().next().text("");
+                    $("#accountName").text("电话号码");
+                    $("#account").attr("placeholder", "请输入电话号码");
+                    $("#submit").parent().parent().before("<tr id='codeNode'><td>验证码</td><td><input type='text' class='form-control' name='validateCode' placeholder='请输入验证码' id='validateCode'></td><td></td></tr>");
+                    $("#submit").parent().parent().before("<tr id='codeButtonNode'><td><input id='codeButton' type='button' value='发送验证码' class='btn-default'></td></tr>");
+                    $("#type").val("phone");
+                    $("form").attr("action", "/usr/register/phone")
+                    $("#validateCode").blur(function(){
+                        checkValidateCode();
+                    })
+                    $("#codeButton").click(function(){
+                        codeButtonClickFunction();
+                    })
+                }
+            })
+
+            $("#account").blur(function(){
+                checkAccount();
+            })
+
+
+            function codeButtonClickFunction(){
+                var flag = isPhoneNo($("#account").val().trim());
+                if(!flag){
+                    alert("电话号码格式不正确");
+                    return false;
+                }
+                if($("#account").val().trim()!=""){
+                    $.ajax({
+                        url: '/validateCode',
+                        type: 'post',
+                        data:{
+                            account: $("#account").val(),
+                        },
+                        datatype: 'json',
+                        success: function(data){
+                            console.log(data)
+                            if(data.code!=0){
+                                alert(data.hint)
+                            }else{
+                                alert("验证码已发送到手机,十分钟内有效,请注意查收");
+                            }
+                        }
+                    })
+                }
+            }
+
+            $.check=function(node, mess){
+                if(node.val().trim().length==0)
+                {
+                    node.parent().next().text(mess + "不能为空");
+                    return false
+                }
+                return true
+            }
+
+            $("#password").blur(function(){
+                checkPassword();
+            })
+
+            // $(":input[type!=button]").focus(function(){
+            //     $(this).parent().next().text("")
+            // })
+            $("#password2").blur(function(){
+                checkPassword2();
+            })
+
+            //todo 提交的时候的检查
+            $("#submit").click(function(){
+                var accountFlag = checkAccount();
+                var passwordFlag = checkPassword();
+                var password2Flag = checkPassword2();
+                var codeFlag = true;
+                if($("#type").val()=="phone"){
+                    codeFlag = checkValidateCode();
+                }
+                if(accountFlag && passwordFlag && password2Flag && codeFlag){
+                    if($("#type").val()=="email") {
+                        $.ajax({
+                            url: "/user/register/email",
+                            type: 'post',
+                            data:{
+                                email: $("#account").val(),
+                                password: $("#password").val()
+                            },
+                            datatype: 'json',
+                            success: function(data){
+                                console.log(data)
+                                if(data.code>0){
+                                    alert(data.hint)
+                                }else{
+                                    alert("注册成功,验证邮件已发送到邮箱,请及时查看并完成帐号的验证");
+                                    location.href="toLogin";
+                                }
+                            }
+                        })
+                    }
+                    else if($("#type").val()=="phone") {
+                        $.ajax({
+                            url: "/user/register/phone",
+                            type: 'post',
+                            data:{
+                                phone: $("#account").val(),
+                                password: $("#password").val(),
+                                code: $("#validateCode").val()
+                            },
+                            datatype: 'json',
+                            success: function(data){
+                                console.log(data)
+                                if(data.code!=0){
+                                    alert(data.hint)
+                                }else{
+                                    alert("注册成功");
+                                    location.href="toLogin";
+                                }
+                            }
+                        })
+                    }
+
+                }
+                return false;
+            })
+
+            function checkPassword2(){
+                var passwd = $("#password").val().trim();
+                var passwd2 = $("#password2").val().trim();
+                if(passwd2.length==0){
+                    $("#password2").parent().next().text("密码不能为空")
+                    return false;
+                } else if(passwd!=passwd2){
+                    $("#password2").parent().next().text("前后密码不一致")
+                    return false;
+                }
+                $("#password2").parent().next().text("")
+                return true;
+            }
+            function checkPassword(){
+                if($("#password").val().trim().length==0){
+                    $("#password").parent().next().text("密码不能为空")
+                    return false;
+                }else{
+                    $("#password").parent().next().text("")
+                }
+                return true;
+            }
+
+            function checkAccount(){
+                var account = $("#account").val().trim();
+                $("#account").val(account);
+                var type= "";
+                if($("#type").val()=="phone")
+                    type="电话号码";
+                else if($("#type").val()=="email")
+                    type="邮箱";
+
+                if(account==""){
+                    $("#account").parent().next().text(type + "不能为空")
+                    return false;
+                }else{
+                    if(type=="电话号码") {
+                        if (!isPhoneNo($("#account").val())) {
+                            $("#account").parent().next().text("电话号码不正确")
+                            return false;
+                        }
+                    }else if(type=="邮箱"){
+                        if(!isEmail($("#account").val())){
+                            $("#account").parent().next().text("邮箱格式不正确")
+                            return false;
+                        }
+                    }
+                }
+                $("#account").parent().next().text("")
+                return true;
+            }
+
+            function checkValidateCode(){
+                var code = $("#validateCode").val().trim();
+                $("#validateCode").val(code);
+                if(code==""){
+                    $("#validateCode").parent().next().text("验证码不能为空");
+                    return false;
+                }else{
+                    $("#validateCode").parent().next().text("");
+                }
+                return true;
+            }
+
+            //检验电话号码格式
+            function isPhoneNo(phone) {
+                var pattern = /^1[34578]\d{9}$/;
+                return pattern.test(phone);
+            }
+
+            //检验邮箱格式
+            function isEmail(email){
+                var pattern = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
+                return pattern.test(email);
+            }
+
+        })
+    </script>
+</head>
+<body style="background-color: #F7F8FA">
+<div class="row">
+    <div class="col-sm-4">
+    </div>
+    <div class="col-sm-4">
+        <div>
+            <h3 class="text-center" align="center" style="color: #2e6da4; font-weight:bold;">注册</h3>
+        </div>
+        <div align="center">
+            <span>
+                <button id="byMail" class="btn btn-default" style="width: 30%;">邮箱</button>
+                <button id="byPhone" class="btn btn-default" style="width: 30%;">电话</button>
+            </span>
+            <br/>
+            <br/>
+        </div>
+        <div align="center">
+            <form action="/user/register/email" method="post">
+                <table>
+
+                    <!--<tr>-->
+                        <!--<td id="byMail" class="btn btn-default" style="width: 100%">邮箱</td>-->
+                        <!--<td id="byPhone" class="btn btn-default" class="btn btn-default">电话</td>-->
+                    <!--</tr>-->
+                    <tr>
+                        <td id="accountName">邮箱</td>
+                        <td><input name="account" class="form-control" type="text" id="account" placeholder="请输入邮箱"></td>
+                        <td ></td>
+                    </tr>
+                    <tr>
+                        <td>密码:</td>
+                        <td><input id="password" class="form-control" name="password" type="password" placeholder="请输入密码"></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>确认密码:</td>
+                        <td><input id="password2" class="form-control" name="password2" type="password" placeholder="请输入再次密码"></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td colspan="3"><input id="submit" type="submit" class="btn btn-primary" value="提交"></td>
+                    </tr>
+                    <tr>
+
+                        <td colspan="2" style="text-align: center; background-color: #F6F6F6">已有帐号?<a href="/toLogin">登录</a></td>
+                    </tr>
+                </table>
+                <input type="hidden" value="email" id="type"/>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

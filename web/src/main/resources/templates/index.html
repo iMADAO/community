@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta name="viewport" content="width=device-width,
+                                     initial-scale=1.0,
+                                     maximum-scale=1.0,
+                                     user-scalable=no">
+    <title>Title</title>
+    <link type="text/css" rel="stylesheet" href="../static/bootstrap-3.3.7-dist/css/bootstrap.css"></link>
+    <script type="text/javascript" src="../static/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+    <script type="text/javascript" src="../static/jquery-1.7.2.js"></script>
+    <script type="text/javascript"></script>
+</head>
+<body>
+<!--<p>欢迎来到社区<p>-->
+<!--<a th:if="${session.user!=null}" th:text="${session.user.userName}" th:else(th:text="hh" href="/toHomePage")></a>-->
+    <!--<a th:if="${session.user!=null}"  th:text="退出登录"  href="/user/logout")></a>-->
+<div class="container">
+    <div class="row">
+        <div class="col-sm-2">
+        </div>
+        <div class="col-sm-8">
+            <nav class="navbar navbar-default" role="navigation">
+                <div class="container-fluid">
+                    <div class="navbar-header">
+                        <a class="navbar-brand" href="#" style="text-align: center; color: #2e6da4; font-weight:bold;">网络社区</a>
+                    </div>
+                    <div>
+                        <ul class="nav navbar-nav">
+                            <li class="dropdown"><a href="#">首页</a></li>
+                            <li><a href="#">文章</a></li>
+                            <li><a href="#">问答</a></li>
+                        </ul>
+                    </div>
+                    <form class="navbar-form navbar-left" role="search">
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Search">
+                        </div>
+                        <button type="submit" class="btn btn-default">进入社区</button>
+                    </form>
+                    <div>
+                        <ul class="nav navbar-nav navbar-right">
+                            <li th:if="${session.user}"><a  href="toHomePage">个人中心</a></li>
+                            <li th:if="${session.user==null}"><a href="/toRegister"><span class="glyphicon glyphicon-user"></span> 注册</a></li>
+                            <li th:if="${session.user==null}"><a href="/toLogin"><span class="glyphicon glyphicon-log-in"></span> 登录</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+            </nav>
+
+            <div class="panel panel-default" style="height: 250px">
+                <table style="height: 20%; width: 100%;">
+                    <tr>
+                        <td width="10%"></td>
+                        <td width="80%"><a href="">I5和i7同配置下要高1000这么真实的吗？这就让人纠结了</a></td>
+                        <td width="10%" align="center">作者 <br/><br/>20:00</td>
+                    </tr>
+                </table>
+                <table width="100%" style="height: 50%;">
+                    <tr>
+                        <td width="20%"><img src="aaa" alt="aaa"></td>
+                        <td width="20%"><img src="bbb" alt="ccc"></td>
+                        <td width="20%"><img src="bbb" alt="ccc"></td>
+                        <td width="40%"></td>
+                    </tr>
+                </table>
+                <span style="width: 60%;"></span>
+            </div>
+            <ul class="pagination">
+                <li><a href="#">&laquo;</a></li>
+                <li><a href="#">1</a></li>
+                <li><a href="#">2</a></li>
+                <li><a href="#">3</a></li>
+                <li><a href="#">4</a></li>
+                <li><a href="#">5</a></li>
+                <li><a href="#">&raquo;</a></li>
+            </ul>
+        </div>
+        <div class="col-sm-2">
+
+        </div>
+    </div>
+
+</div>
+
+
+</body>
+</html>

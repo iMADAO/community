@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width,
+                                     initial-scale=1.0,
+                                     maximum-scale=1.0,
+                                     user-scalable=no">
+    <title>Title</title>
+    <link type="text/css" rel="stylesheet" href="../static/bootstrap-3.3.7-dist/css/bootstrap.css"></link>
+    <script type="text/javascript" src="../static/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+    <script type="text/javascript" src="../static/jquery-1.7.2.js"></script>
+    <script type="text/javascript">
+        $(function(){
+            $("#btn1").click(function(){
+                $.ajax({
+                    url: 'test',
+                    type: 'get',
+                    datatype: 'json',
+                    success: function(data){
+                        console.log(data)
+                        var str= data.userName + "  " + data.email;
+                        alert(str)
+                        $("#t").html(str)
+                    }
+                })
+                // $.get("test", function(data, status){
+                //     alert("数据:" + data + "\n状态：" + status)
+                // })
+                // alert("bbb");
+            })
+        })
+        // $(function(){
+           // $("#btn1").click(function(){
+           //     h = $.ajax({url:"test", async:false});
+           //     alert(h.responseText);
+           //     $("#t").html(h.responseText)
+           //     // alert("ss")
+           // })
+
+
+            // $("button").click(function(){
+            //     $.get("demo_test.php",function(data,status){
+            //         alert("数据: " + data + "\n状态: " + status);
+            //     });
+            // });
+
+
+        // })
+
+
+    </script>
+</head>
+<body>
+<button id="btn1">按钮</button>
+<div id="t"></div>
+</body>
+</html>

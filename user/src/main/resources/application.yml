@@ -1,0 +1,78 @@
+server:
+  port: 8001
+spring:
+  datasource:
+#   数据源基本配置
+    username: root
+    password: mysqlorcl
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/community
+    type: com.alibaba.druid.pool.DruidDataSource
+#   数据源其他配置
+    initialSize: 5
+    minIdle: 5
+    maxActive: 20
+    maxWait: 60000
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: SELECT 1 FROM DUAL
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+#   配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+    filters: stat,wall,log4j
+    maxPoolPreparedStatementPerConnectionSize: 20
+    useGlobalDataSourceStat: true
+    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=500
+  application:
+    name: user
+  mail:
+       username: 13420110105@163.com
+       password: madaoorcl123
+       host: smtp.163.com
+       properties:
+        mail.smtp.ssl.enable: true;
+  redis:
+    host: 127.0.0.1
+    port: 6379
+mybatis:
+  config-location: classpath:mybatis/mybatis-config.xml
+  mapper-locations: classpath:mybatis/mapper/*.xml
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:7001/eureka/
+  instance:
+    instance-id: user
+    prefer-ip-address: true
+
+hystrix:
+  shareSecurityContext: true
+  command:
+    default:
+      circuitBreaker:
+        sleepWindowInMilliseconds: 100000
+        forceClosed: true
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 600000
+feign:
+  hystrix:
+    enabled: true
+#mybatis:
+#  # 指定全局配置文件位置
+#  config-location: classpath:mybatis/mybatis-config.xml
+#  # 指定sql映射文件位置
+#  mapper-locations: classpath:mybatis/mapper/*.xml
+
+#    schema:
+#      - classpath:sql/department.sql
+#      - classpath:sql/employee.sql
+#自定义，用于邮箱验证链接的
+link: http://localhost:8088/validate
+code_effective_time: 600
+code-send-interval: 60
+redis-code-prefix: CODE
+redis-send-interval-prefix: INTERVAL

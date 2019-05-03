@@ -1,0 +1,49 @@
+server:
+  port: 8088
+eureka:
+  instance:
+    prefer-ip-address: true
+    instance-id: web
+  client:
+    service-url:
+      defaultZone: http://localhost:7001/eureka/
+feign:
+  hystrix:
+    enabled: true
+spring:
+  mvc:
+    view:
+      prefix: /templates/
+      suffix: .html
+    static-path-pattern: /static/**
+  redis:
+    host: localhost
+
+
+hystrix:
+  shareSecurityContext: true
+  command:
+    default:
+      circuitBreaker:
+        sleepWindowInMilliseconds: 100000
+        forceClosed: true
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 600000
+#hystrix:
+#  threadpool:
+#    default:
+#      coreSize: 200 #并发执行的最大线程数，默认10
+#      maxQueueSize: 200 #BlockingQueue的最大队列数
+#      queueSizeRejectionThreshold: 50 #即使maxQueueSize没有达到，达到queueSizeRejectionThreshold该值后，请求也会被拒绝
+#    default:
+#      execution:
+#        timeout:
+#          enabled: true
+#        isolation:
+#          strategy: THREAD
+#          semaphore:
+#            maxConcurrentRequests: 1000
+#          thread:
+#            timeoutInMilliseconds: 30000
