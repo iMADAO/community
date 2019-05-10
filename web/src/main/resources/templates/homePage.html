@@ -6,21 +6,96 @@
                                      maximum-scale=1.0,
                                      user-scalable=no">
     <title>Title</title>
+    <script type="text/javascript" src="../static/jquery-1.12.4.min.js"></script>
     <link type="text/css" rel="stylesheet" href="../static/bootstrap-3.3.7-dist/css/bootstrap.css"></link>
     <script type="text/javascript" src="../static/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
-    <script type="text/javascript" src="../static/jquery-1.7.2.js"></script>
     <script type="text/javascript"></script>
 </head>
 <body>
 <div class="container">
 
     <div class="row">
-        <div class="col-sm-4">
+        <div class="col-sm-1 col-md-1">
         </div>
-        <div class="col-sm-4">
-            <div style="height:500px; border: #2aabd2"><img th:src="@{${session.user.userPic}}" alt="Pic" width="400" border="1"/><span th:text="${session.user.userName}"></span></div>
+        <div class="col-sm-10 col-md-10">
+            <nav class="navbar navbar-default" role="navigation">
+                <div class="container-fluid">
+                    <div class="navbar-header">
+                        <a class="navbar-brand" href="#" style="text-align: center; color: #2e6da4; font-weight:bold;">个人中心</a>
+                    </div>
+                    <div>
+                        <ul class="nav navbar-nav">
+                            <li class="dropdown"><a href="#">社区首页</a></li>
+                            <li><a href="#">文章</a></li>
+                            <li><a href="#">问答</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <ul class="nav navbar-nav navbar-right">
+                            <li th:if="${session.user}">
+                                <div>
+                                    <div class="dropdown" align="left">
+                                        <span class="dropdown-toggle" id="menu1" data-toggle="dropdown" >
+                                             <img width="45px" src="../static/img/da8e974dc_xs.jpg" class="img-thumbnail"/>
+                                        </span>
+                                        <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
+                                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">个人中心</a></li>
+                                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">退出登录</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </li>
+                            <li th:if="${session.user==null}"><a href="/toRegister"><span class="glyphicon glyphicon-user"></span> 注册</a></li>
+                            <li th:if="${session.user==null}"><a href="/toLogin"><span class="glyphicon glyphicon-log-in"></span> 登录</a></li>
+                        </ul>
+                    </div>
+
+                </div>
+            </nav>
+            <div class="col-sm-2">
+                <ul class="nav nav-pills nav-stacked" role="tablist">
+                    <li><a href="#">我的帐号</a></li>
+                    <li><a href="#">我的发表</a></li>
+                    <li><a href="#">我的收藏</a></li>
+                    <li><a href="#">问题关注</a></li>
+                </ul>
+            </div>
+
+            <!--我的帐号部分-->
+            <div id="target" class="col-sm-8">
+                <table class="table">
+                    <tr>
+                        <td>帐号名</td>
+                        <td>Madao</td>
+                        <td><a href="#">修改</a></td>
+                    </tr>
+                    <tr>
+                        <td>密码</td>
+                        <td>已设置</td>
+                        <td><a href="#">修改</a></td>
+                    </tr>
+                    <tr>
+                        <td>绑定手机</td>
+                        <td>13420110105</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>绑定邮箱</td>
+                        <td>未绑定</td>
+                        <td><a href="#">绑定</a></td>
+                    </tr>
+                </table>
+            </div>
+
+            <!--我的收藏部分-->
+	、<!--
+            <ul style="width: 100%">
+                <li style="display: inline; width: 30%">aa</li>
+                <li style="display: inline; width: 30%">bb</li>
+                <li style="display: inline; width: 30%;">cc</li>
+            </ul>
+	-->
         </div>
-        <div class="col-sm-4">
         </div>
     </div>
 </body>

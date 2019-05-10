@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 @FeignClient(value = "user", fallbackFactory = UserServiceFallbackFactory.class)
 public interface UserService {

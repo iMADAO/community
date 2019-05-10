@@ -1,6 +1,7 @@
 package com.madao.user.service;
 
 import com.madao.api.Exception.ResultException;
+import com.madao.api.entity.User;
 import com.madao.api.enums.ErrorEnum;
 import com.madao.api.enums.UserStateEnum;
 import com.madao.api.form.UserLoginForm;
@@ -8,7 +9,6 @@ import com.madao.api.form.UserRegisterForm;
 import com.madao.api.form.UserRegisterForm2;
 import com.madao.api.utils.KeyUtil;
 import com.madao.api.utils.MD5Encoder;
-import com.madao.user.bean.User;
 import com.madao.user.bean.UserExample;
 import com.madao.user.mapper.UserMapper;
 import org.springframework.beans.BeanUtils;
@@ -19,6 +19,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
@@ -218,4 +219,5 @@ public class UserService {
         stringRedisTemplate.opsForValue().set(account + "-" + intervalPrefix, code, Integer.parseInt(interval), TimeUnit.SECONDS);
 
     }
+
 }

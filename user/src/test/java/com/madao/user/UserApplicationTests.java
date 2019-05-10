@@ -1,7 +1,7 @@
 package com.madao.user;
 
+import com.madao.api.entity.User;
 import com.madao.api.utils.KeyUtil;
-import com.madao.user.bean.User;
 import com.madao.user.bean.UserExample;
 import com.madao.user.mapper.UserMapper;
 import org.junit.Test;
@@ -63,7 +63,9 @@ public class UserApplicationTests {
 //		System.out.println(expire);
 //		Long expire = stringRedisTemplate.getExpire("abcde");
 //		System.out.println(expire);
-		System.out.println(3 * 60 * 60 * 24);
+//		System.out.println(3 * 60 * 60 * 24);
+		com.madao.api.entity.User user = (com.madao.api.entity.User) redisTemplate.opsForValue().get("user");
+		System.out.println(user);
 	}
 
 }

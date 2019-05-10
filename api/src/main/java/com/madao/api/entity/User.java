@@ -20,5 +20,5 @@ public class User implements Serializable{
 
     private String phone;
 
-    private Byte isActive;
+    private Byte state;
 }

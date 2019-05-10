@@ -1,6 +1,6 @@
 package com.madao.user.mapper;
 
-import com.madao.user.bean.User;
+import com.madao.api.entity.User;
 import com.madao.user.bean.UserExample;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;

@@ -1,6 +1,6 @@
 package com.madao.user.controller;
 
-import com.madao.user.bean.User;
+import com.madao.api.entity.User;
 import com.madao.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

@@ -9,18 +9,286 @@
     <style>
         a:link {color:#000000;}
     </style>
+    <script type="text/javascript" src="../static/jquery-1.12.4.min.js"></script>
     <link type="text/css" rel="stylesheet" href="../static/bootstrap-3.3.7-dist/css/bootstrap.css"></link>
     <script type="text/javascript" src="../static/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
-    <script type="text/javascript" src="../static/jquery-1.7.2.js"></script>
-    <script type="text/javascript"></script>
+    <script type="text/javascript">
+        $(function(){
+            var agree=$(".agree");
+            var disagree=$(".disagree")
+            var answerIdList = new Array();
+            $.each(agree, function(index, obj){
+                var answerId = $(obj).parent().parent().find($(".answerId")).text();
+                answerIdList[index] = answerId;
+            })
+            $.ajax({
+                url: '/answer/agreeType?answerIdList=' + answerIdList,
+                type: 'get',
+                success: function(data){
+                    console.log(data);
+                    $.each(agree, function(index, obj){
+                        if(data.data[index]==0){
+                            $(obj).attr("class", "btn btn-primary agree");
+                            $(obj).next().attr("class", "btn btn-default disagree")
+                        }else if(data.data[index]==1){
+                            $(obj).attr("class", "btn btn-default agree")
+                            $(obj).attr("class", "btn btn-primary disagree")
+                        }else if(data.data[index]==-1){
+                            $(obj).attr("class", "btn btn-default agree")
+                            $(obj).attr("class", "btn btn-default disagree")
+                        }
+                    })
+                }
+            })
+
+            $("#logout").click(function () {
+                $.ajax({
+                    url: '/user/logout',
+                    type: 'get',
+                    success: function(data){
+                        if(data.code==0){
+                            alert("退出登录成功");
+                            $("#userCenter").remove();
+                            $("#userInfo").append('<li  id="register"><a href="/toRegister"><span class="glyphicon glyphicon-user"></span> 注册</a></li>\n' +
+                                '                            <li id="login"><a href="/toLogin"><span class="glyphicon glyphicon-log-in"></span> 登录</a></li>');
+                        }else{
+                            alert("操作失败，请稍后重试");
+                        }
+                        return false;
+                    }
+                })
+            })
+            $("#addQuestionButton").click(function(){
+                var title = $("#title").val();
+                var content = $("#content").val();
+                if(title.trim().length==0 || content.trim().length==0){
+                    alert("内容不能为空");
+                    return false;
+                }
+                // alert(title);
+                // alert(content)
+                $.ajax({
+                    url: '/question',
+                    type: 'post',
+                    // contentType: 'application/json',
+                    data:{
+                        questionTitle: title,
+                        questionContent: content
+                    },
+                    datatype: 'json',
+                    success: function(data){
+                        console.log(data);
+                        if(data.code!=0){
+                            var aa = alert(data.hint);
+                            console.log("aa............ " + aa)
+                            if(data.data){
+                                if(data.data.length!=0){}
+                                // location.href=data.data;
+                            }
+                            return false;
+                        }else{
+                            alert("添加成功");
+                            window.open("/toQuestionInfo?questionId=" + data.data.questionId, "_blank");
+                            // location.href="index";
+                        }
+                    }
+                })
+                return true;
+            })
+
+            $(".readAll").click(function(){
+                var answerId = $(this).parent().parent().find(".answerId").text();
+                var divParent = $(this).parent().parent();
+                var removeNode = $(this).parent();
+                removeNode.remove();
+                $.ajax({
+                    url: '/getEntileAnswer/' + answerId,
+                    type: 'get',
+                    success: function(data){
+                        console.log(data);
+
+                        $.each(data.data, function(index,obj){
+                            // console.log(obj)
+                            // alert(obj.content);
+                            if(obj.type==0){
+                                divParent.append("<div>" + obj.content +"</div>");
+                            }else{
+                                divParent.append("<div><img src='" + obj.content +"'/></div>");
+                            }
+
+                        })
+                    }
+                })
+            })
+
+
+
+            //点赞
+            $(".agree").click(function() {
+                var answerId = $(this).parent().parent().find(".answerId").text();
+                var agree = $(this)
+                var agreeClass = agree.attr("class")
+                var pattPrimary = new RegExp("primary")
+                var pattDefault = new RegExp("default")
+                if (pattDefault.test(agreeClass)) {
+                    var disagree = $(this).parent().find(".disagree");
+                    if (pattPrimary.test(disagree.attr("class"))) {
+                        alert("你已不赞同该回答,请取消后再操作");
+                        return;
+                    }
+                    $.ajax({
+                        url: '/answer/agree/0',
+                        type: 'get',
+                        data: {
+                            answerId: answerId
+                        },
+                        datatype: 'json',
+                        success: function (data) {
+                            console.log(data)
+                            //code==0表示成功
+                            if (data.code == 0) {
+                                if (data.data) {
+                                    agree.text('赞同' + data.data);
+                                    agree.attr("class", "btn btn-primary agree")
+                                }
+                                //code==1表示失败
+                            } else if (data.code == 1) {
+                                agree.attr("class", "btn btn-primary agree")
+                                if (data.hint) {
+                                    alert(data.hint);
+                                }
+                                //code==2表示错误
+                            } else if (data.code == 2) {
+                                if (data.hint) {
+                                    alert(data.hint)
+                                }
+                            }
+                        }
+                    })
+                } else if (pattPrimary.test(agreeClass)) {
+                    $.ajax({
+                        url: '/answer/agree/-1',
+                        type: 'get',
+                        data: {
+                            answerId: answerId
+                        },
+                        datatype: 'json',
+                        success: function (data) {
+                            console.log(data)
+                            //code==0表示成功
+                            if (data.code == 0) {
+                                if (data.data) {
+                                    agree.text('赞同' + data.data);
+                                    agree.attr("class", "btn btn-default agree")
+                                }
+                                //code==1表示失败
+                            } else if (data.code == 1) {
+                                // agree.attr("class", "btn btn-default agree")
+                                if (data.hint) {
+                                    alert(data.hint);
+                                }
+                                //code==2表示错误
+                            } else if (data.code == 2) {
+                                if (data.hint) {
+                                    alert(data.hint)
+                                }
+                            }
+                        }
+                    })
+                }
+
+
+                $(".disagree").click(function () {
+                    var answerId = $(this).parent().parent().find(".answerId").text();
+                    var disagree = $(this)
+                    var disagreeClass = disagree.attr("class")
+                    var pattPrimary = new RegExp("primary")
+                    var pattDefault = new RegExp("default")
+                    if (pattDefault.test(disagreeClass)) {
+                        var agree = $(this).parent().find(".agree");
+                        if (pattPrimary.test(agree.attr("class"))) {
+                            alert("你已赞同该回答,请取消后再操作");
+                            return;
+                        }
+                        $.ajax({
+                            url: '/answer/agree/0',
+                            type: 'get',
+                            data: {
+                                answerId: answerId
+                            },
+                            datatype: 'json',
+                            success: function (data) {
+                                console.log(data)
+                                //code==0表示成功
+                                if (data.code == 0) {
+                                    if (data.data) {
+                                        disagree.text('不赞同' + data.data);
+                                        disagree.attr("class", "btn btn-primary disagree")
+                                    }
+                                    //code==1表示失败
+                                } else if (data.code == 1) {
+                                    // disagree.attr("class", "btn btn-primary disagree")
+                                    if (data.hint) {
+                                        alert(data.hint);
+                                    }
+                                    //code==2表示错误
+                                } else if (data.code == 2) {
+                                    if (data.hint) {
+                                        alert(data.hint)
+                                    }
+                                }
+                            }
+                        })
+                    } else if (pattPrimary.test(agreeClass)) {
+                        $.ajax({
+                            url: '/answer/agree/-1',
+                            type: 'get',
+                            data: {
+                                answerId: answerId
+                            },
+                            datatype: 'json',
+                            success: function (data) {
+                                console.log(data)
+                                //code==0表示成功
+                                if (data.code == 0) {
+                                    if (data.data) {
+                                        disagree.text('不赞同' + data.data);
+                                        disagree.attr("class", "btn btn-default disagree")
+                                    }
+                                    //code==1表示失败
+                                } else if (data.code == 1) {
+                                    // disagree.attr("class", "btn btn-default disagree")
+                                    if (data.hint) {
+                                        alert(data.hint);
+                                    }
+                                    //code==2表示错误
+                                } else if (data.code == 2) {
+                                    if (data.hint) {
+                                        alert(data.hint)
+                                    }
+                                }
+                            }
+                        })
+                    }
+
+
+                })
+
+            })
+
+            $(".comment").click(function(){
+                alert("aaaa");
+            })
+        })
+    </script>
 
 </head>
 <body>
 <div class="container">
     <div class="row">
-        <div class="col-sm-2">
+        <div class="col-sm-1">
         </div>
-        <div class="col-sm-8">
+        <div class="col-sm-9">
             <nav class="navbar navbar-default" role="navigation">
                 <div class="container-fluid">
                     <div class="navbar-header">
@@ -28,41 +296,95 @@
                     </div>
                     <div>
                         <ul class="nav navbar-nav">
-                            <li class="dropdown"><a href="#">首页</a></li>
-                            <li><a href="#">文章</a></li>
-                            <li><a href="#">问答</a></li>
+                            <li class="dropdown"><a href="/toIndex">社区首页</a></li>
+                            <li><a href="/toArticle">文章</a></li>
+                            <li><a href="/toQuestion" style="color: #2e6da4">问答</a></li>
                         </ul>
                     </div>
                     <form class="navbar-form navbar-left" role="search">
                         <div class="form-group">
                             <input type="text" class="form-control" placeholder="Search">
                         </div>
-                        <button type="submit" class="btn btn-default">进入社区</button>
+                        <button type="submit" class="btn btn-default">搜问题</button>
+                        <!--<button class="btn btn-default" data-toggle="modal" data-target="#myModal">我要提问</button>-->
+
                     </form>
+
                     <div>
-                        <ul class="nav navbar-nav navbar-right">
-                            <li th:if="${session.user}"><a  href="toHomePage">个人中心</a></li>
-                            <li th:if="${session.user==null}"><a href="/toRegister"><span class="glyphicon glyphicon-user"></span> 注册</a></li>
-                            <li th:if="${session.user==null}"><a href="/toLogin"><span class="glyphicon glyphicon-log-in"></span> 登录</a></li>
+                        <ul class="nav navbar-nav navbar-right" id="userInfo">
+                            <li th:if="${session.user}" id="userCenter">
+                                <div>
+                                    <div class="dropdown">
+                                        <span class="dropdown-toggle" id="menu1" data-toggle="dropdown" >
+                                             <img width="45px" src="../static/img/da8e974dc_xs.jpg" class="img-thumbnail"/>
+                                        </span>
+                                        <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
+                                            <li role="presentation"><a role="menuitem" tabindex="-1" href="/toHomePage">个人中心</a></li>
+                                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#" id="logout">退出登录</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </li>
+
+                            <li th:if="${session.user==null}" id="register"><a href="/toRegister"><span class="glyphicon glyphicon-user"></span> 注册</a></li>
+                            <li th:if="${session.user==null}" id="login"><a href="/toLogin"><span class="glyphicon glyphicon-log-in"></span> 登录</a></li>
                         </ul>
                     </div>
                 </div>
-            </nav>
 
-            <div class="panel panel-default" style="word-wrap:break-word;word-break:break-all;">
-                <div style="position: relative; left: 30px; height: 100%; " class="panel-body">
-                    <div><a href="#" style="color: black">复联4后，钢铁侠还会有新的故事吗？</a></div>
-                    <div><a href="#" style="color: black">把尸体放浩克蚁人第一次测试的那个仪器里面 Duang一下 一个活生生的屎大颗就出来了 雷神:我懒得减</a> <a>阅读全文</a></div>
+            </nav>
+            <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">我要提问</button>
+            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title" id="myModalLabel">我的提问</h4>
+                        </div>
+                        <div class="modal-body">
+                            <textarea id="title" placeholder="问题标题" style="width: 100%;"></textarea>
+                            <textarea id="content" placeholder="问题内容" style="width: 100%" rows="10"></textarea>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                            <button type="button" class="btn btn-primary" id="addQuestionButton" data-dismiss="modal">提交更改</button>
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal -->
+            </div>
+
+            <div th:each="answerDTO:${answerDTOList}" class="panel panel-default" style="word-wrap:break-word;word-break:break-all; padding: 10px">
+                <div style="height: 100%; " class="panel-body">
+                    <span class="answerId" style="visibility: hidden" th:text="${answerDTO.answerId}"></span>
+                    <div><a th:text="${answerDTO.questionTitle}" href="#" style="color: black; font-size: larger;">火影忍者最后初代火影都复活了，自来也为什么不给复活？</a> <span th:text="${answerDTO.answerCount}" style="color: darkgray">142个回答</span></div>
+                    <br/>
+                    <div><a class="readAll" th:text="${#strings.length(answerDTO.content)<20 ? answerDTO.content : #strings.substring(answerDTO.content, 0, 20) + '...'}" href="#" style="color: black">衣服又痩了： 按照漫画里的说法，自来也是沉入了海底，没法找到尸体。 那我就有点疑问。 小迪炸成灰还可以用血液复活。 按照这样来说。 自来也大战佩恩六道的时候…</a><a class="readAll">阅读全文</a></div>
                 </div>
+                <br/>
                 <div style="position:relative; left: 30px;">
-                    <span class="btn btn-primary">赞同</span>
-                    <span class="btn btn-primary">不赞同</span>
-                    <span>200条评论</span>
+                    <span th:text=" '赞同' + ${answerDTO.agreeCount}" class="btn btn-default agree">赞同1.1k</span>
+                    <span th:text="'不赞同' + ${answerDTO.disagreeCount}" class="btn btn-default disagree">不赞同0.2k</span>
+                    <span ><a th:text="${answerDTO.answerCount} + '条评论'" class="comment" href="#">120条评论</a></span>
                     <span class="btn btn-default">收藏</span>
                 </div>
+                <div style="padding: 10px;">100条评论</div>
+                <div style="padding: 10px">
+                    <img width="20px" src="../static/img/a.jpeg"/>
+                    <span>风口: </span><br/>
+                    <div style="padding: 10px">
+                    <span>abcdefghijklmn</span> <span>123赞</span>
+                    </div>
+                </div>
             </div>
+
+
+
         </div>
     </div>
 </div>
 </body>
 </html>
+
+
+
+<!--灭霸是一个纯粹的人他能放下宝石，真的回到“花园”种田，没有手下，没有权力，此时的灭霸，只有那一地的南瓜属于他。看到他在花园里步履蹒跚的样子，我甚至有些惊讶，这还是复联3那个杀伐征战的灭霸吗？原来灭霸也要吃东西？也会做菜？还会放盐？<img src="https://pic1.zhimg.com/v2-d7c3c0dd9d89bf23591af79393a086d4_b.jpg" data-caption="" data-size="normal" data-rawwidth="2048" data-rawheight="1080" data-default-watermark-src="https://pic3.zhimg.com/v2-03372ca1ed18f256f1152f915750a31e_b.jpg" class="origin_image zh-lightbox-thumb" width="2048" data-original="https://pic1.zhimg.com/v2-d7c3c0dd9d89bf23591af79393a086d4_r.jpg">当雷神砍掉他一条胳膊，逼问他宝石下落时，他没有丝毫的恐惧，也没想过求饶，更不会撒谎。可能他早已想到自己会有这一天，自己一生的目标已经实现，死亡又算什么呢？当星云说，父亲从不会撒谎，灭霸居然会心的笑了，说“可能我之前对你太苛刻了”，我相信此时灭霸的这句话是真心的。<img src="https://pic4.zhimg.com/v2-c44d476933fc116f64edd29527aca4cf_b.jpg" data-caption="" data-size="normal" data-rawwidth="2048" data-rawheight="1080" data-default-watermark-src="https://pic4.zhimg.com/v2-b3d4ea7ad099282edcdca7bd24b6afff_b.jpg" class="origin_image zh-lightbox-thumb" width="2048" data-original="https://pic4.zhimg.com/v2-c44d476933fc116f64edd29527aca4cf_r.jpg">14年的灭霸看到星云脑中的影像，当看到未来的自己真的实现了目标，他再次露出了笑容，而看到自己被砍头时，他的表情没有任何变化，原来他早已看透：这是他的宿命。影片结尾，他带上空的手套，说“我就是天命”，随后托尼打了响指看着自己的手下一个个化为灰烬，他再次坐了下来，这和复联3结尾大功告成后，坐下自己小屋前的灭霸何其相似！<img src="https://pic3.zhimg.com/v2-7192223b005f904d173595066317edea_b.jpg" data-caption="" data-size="normal" data-rawwidth="1920" data-rawheight="806" data-default-watermark-src="https://pic2.zhimg.com/v2-d5dd32df4421b6d3e8cdfecd2debe565_b.jpg" class="origin_image zh-lightbox-thumb" width="1920" data-original="https://pic3.zhimg.com/v2-7192223b005f904d173595066317edea_r.jpg">当时我以为他坐下来还要说些什么，可是他什么也没说，静静等待自己的“宿命”。我们都说复联4是对“钢铁侠”“美队”等初代复联人物最好的交代但是这又何尝不是对灭霸的交待呢？钢铁侠见到了当年的父亲，美队见到了曾经的卡特灭霸也看到了未来成功的自己……铁马金戈，功败垂成。灭霸释怀了，我们也不再那么恨他了。-->

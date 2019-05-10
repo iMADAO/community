@@ -14,9 +14,9 @@
 <body>
 <div class="container">
     <div class="row">
-        <div class="col-sm-2">
+        <div class="col-sm-1">
         </div>
-        <div class="col-sm-8">
+        <div class="col-sm-9">
             <nav class="navbar navbar-default" role="navigation">
                 <div class="container-fluid">
                     <div class="navbar-header">
@@ -24,7 +24,7 @@
                     </div>
                     <div>
                         <ul class="nav navbar-nav">
-                            <li class="dropdown"><a href="#">首页</a></li>
+                            <li class="dropdown"><a href="#">社区首页</a></li>
                             <li><a href="#">文章</a></li>
                             <li><a href="#">问答</a></li>
                         </ul>
@@ -34,12 +34,27 @@
                             <input type="text" class="form-control" placeholder="Search">
                         </div>
                         <button type="submit" class="btn btn-default">进入社区</button>
+			<button class="btn btn-default">我要发帖</button>
                     </form>
                     <div>
                         <ul class="nav navbar-nav navbar-right">
-                            <li th:if="${session.user}"><a  href="toHomePage">个人中心</a></li>
-                            <li th:if="${session.user==null}"><a href="/toRegister"><span class="glyphicon glyphicon-user"></span> 注册</a></li>
-                            <li th:if="${session.user==null}"><a href="/toLogin"><span class="glyphicon glyphicon-log-in"></span> 登录</a></li>
+                            <li th:if="${session.user}">
+                                <div>
+                                    <div class="dropdown" align="left">
+                                        <span class="dropdown-toggle" id="menu1" data-toggle="dropdown" >
+                                             <img width="45px" src="../static/img/da8e974dc_xs.jpg" class="img-thumbnail"/>
+                                        </span>
+                                        <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
+                                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">个人中心</a></li>
+                                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">退出登录</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </li>
+
+                            <!--<li th:if="${session.user}"><a  href="toHomePage">个人中心</a></li>-->
+                            <!--<li th:if="${session.user==null}"><a href="/toRegister"><span class="glyphicon glyphicon-user"></span> 注册</a></li>-->
+                            <!--<li th:if="${session.user==null}"><a href="/toLogin"><span class="glyphicon glyphicon-log-in"></span> 登录</a></li>-->
                         </ul>
                     </div>
                 </div>
@@ -47,20 +62,20 @@
 
             <div class="panel panel-default">
 
-                <div style="width: 20%; height:100%; float: left">
-                    <img width="100%" src="aaa" alt="图片" /><br/>
-                    <span style="text-align: center">帐号1</span>
+                <div style="width: 100px; height:100%; float: left">
+                    <img width="100%" src="../static/img/a.jpeg" alt="图片" /><br/>
+                    <span style="text-align: center">Blue</span>
                 </div>
-                <div style="width: 80%; height:100%; float: left;">
-                    <p>不太懂，这款笔记本新显卡怎么这么便宜啊。缺点主要在哪里</p>
-                    <img src="aaa" width="100%" />
-
+                <div style="width: 80%; height:100%; float: left; padding: 5px">
+                    <p> 大家好，我月球鸽子皇时隔一年又来咕咕咕测试了，GS75皇帝版到手用了也有两周多了，中间换了下内存和硅脂，当初3月底换机器曾想了一晚上，本来已经下单国行GX701，因为开始GS75只有80W的2080VBIOS，性能表现比GX701弱10%，老莱同志的吹水视频理论性测试更是能差15%，但是在我下单后，PY人士告诉我GS75的90W VBIOS已经UPUP，果断退订GX701上GS75皇帝版，省下五千多，可以买一条2T蓝盘+2T EX950还有多，拓展性万岁</p>
+                    <img src="../static/img/1.jpg" width="100%" />
+                    <p>想了想，还是在写别的之前随便放个伪开箱图顺便对比一下小老弟GS65吧，200元手机画质*差别吐槽了，可以看到GS75在基本没加机身宽度的情况下，塞进了17寸屏幕，主要功臣为缩小了超多的下巴和变成了半下沉式的转轴部分。</p>
                 </div>
                 <div style="width: 80%; height:100%; float: right; background-color: #F7F8FA">
                     <table  width="100%">
                         <tr>
-                            <td width="15%"><img src="aaa" width="100%"/></td>
-                            <td>帐号1:aaaaaaaaaaaa</td>
+                            <td width="15%"><img src="../static/img/b.jpeg" width="30px"/></td>
+                            <td>sky:楼主 gs75和thinkpad的键盘 革命的机械键盘比 哪个手感会好点啊</td>
 
                         </tr>
                         <tr>

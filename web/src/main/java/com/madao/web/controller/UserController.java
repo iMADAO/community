@@ -33,12 +33,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/test")
-    @ResponseBody
-    public User getUser(){
-        System.out.println("调用.............");
-        return userService.getUserById(1L);
-    }
+
 
     @GetMapping("/checkUserName/{userName}")
     @ResponseBody
@@ -164,15 +159,23 @@ public class UserController {
 
     @ResponseBody
     @GetMapping(value = "/user/logout")
-    public ResultView logout(){
-        return userService.logout();
-    }
-
-    @ResponseBody
-    @GetMapping(value="/user/logout2")
-    public ResultView logout2(HttpServletRequest request){
+    public ResultView logout(HttpServletRequest request){
         request.getSession().removeAttribute("user");
         return ResultUtil.returnSuccess();
     }
+
+//    @ResponseBody
+//    @GetMapping(value="/user/logout2")
+//    public ResultView logout2(HttpServletRequest request){
+//        request.getSession().removeAttribute("user");
+//        return ResultUtil.returnSuccess();
+//    }
+
+//    @GetMapping("/test")
+//    @ResponseBody
+//    public User getUser(){
+//        System.out.println("调用.............");
+//        return userService.getUserById(1L);
+//    }
 
 }

@@ -21,7 +21,7 @@ import java.io.PrintWriter;
  * Author: Richard
  */
 
-@Component
+//@Component
 public class ResultExceptionHandler implements HandlerExceptionResolver {
 
     @Override

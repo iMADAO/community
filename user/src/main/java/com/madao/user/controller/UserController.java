@@ -1,29 +1,23 @@
 package com.madao.user.controller;
 
 import com.madao.api.Exception.ResultException;
-import com.madao.api.enums.ErrorEnum;
+import com.madao.api.entity.User;
 import com.madao.api.form.UserLoginForm;
 import com.madao.api.form.UserRegisterForm;
 import com.madao.api.form.UserRegisterForm2;
-import com.madao.api.utils.FormErrorUtil;
 import com.madao.api.utils.KeyUtil;
 import com.madao.api.utils.ResultUtil;
 import com.madao.api.utils.ResultView;
-import com.madao.user.bean.User;
 import com.madao.user.service.UserService;
-import com.netflix.client.http.HttpResponse;
-import com.netflix.ribbon.proxy.annotation.Http;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.util.List;
 
 @Controller
 public class UserController {

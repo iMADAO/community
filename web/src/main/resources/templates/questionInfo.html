@@ -10,17 +10,17 @@
         a:link {color:#000000;}
     </style>
     <link type="text/css" rel="stylesheet" href="../static/bootstrap-3.3.7-dist/css/bootstrap.css"></link>
+    <script type="text/javascript" src="../static/jquery-1.12.4.min.js"></script>
     <script type="text/javascript" src="../static/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
-    <script type="text/javascript" src="../static/jquery-1.7.2.js"></script>
     <script type="text/javascript"></script>
 
 </head>
 <body>
 <div class="container">
     <div class="row">
-        <div class="col-sm-2">
+        <div class="col-sm-1">
         </div>
-        <div class="col-sm-8">
+        <div class="col-sm-9">
             <nav class="navbar navbar-default" role="navigation">
                 <div class="container-fluid">
                     <div class="navbar-header">
@@ -28,27 +28,70 @@
                     </div>
                     <div>
                         <ul class="nav navbar-nav">
-                            <li class="dropdown"><a href="#">首页</a></li>
+                            <li class="dropdown"><a href="#">社区首页</a></li>
                             <li><a href="#">文章</a></li>
-                            <li><a href="#">问答</a></li>
+                            <li><a href="#" style="color: #2e6da4">问答</a></li>
                         </ul>
                     </div>
                     <form class="navbar-form navbar-left" role="search">
                         <div class="form-group">
                             <input type="text" class="form-control" placeholder="Search">
                         </div>
-                        <button type="submit" class="btn btn-default">进入社区</button>
+                        <button type="button" class="btn btn-default">搜问题</button>
+                        <button type="button" class="btn btn-default">我要提问</button>
                     </form>
                     <div>
                         <ul class="nav navbar-nav navbar-right">
-                            <li th:if="${session.user}"><a  href="toHomePage">个人中心</a></li>
-                            <li th:if="${session.user==null}"><a href="/toRegister"><span class="glyphicon glyphicon-user"></span> 注册</a></li>
-                            <li th:if="${session.user==null}"><a href="/toLogin"><span class="glyphicon glyphicon-log-in"></span> 登录</a></li>
+                            <li th:if="${session.user}">
+                                <div>
+                                    <div class="dropdown">
+                                        <span class="dropdown-toggle" id="menu1" data-toggle="dropdown" >
+                                             <img width="45px" src="../static/img/da8e974dc_xs.jpg" class="img-thumbnail"/>
+                                        </span>
+                                        <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
+                                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">个人中心</a></li>
+                                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">退出登录</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </li>
+                            <!--<li th:if="${session.user==null}"><a href="/toRegister"><span class="glyphicon glyphicon-user"></span> 注册</a></li>-->
+                            <!--<li th:if="${session.user==null}"><a href="/toLogin"><span class="glyphicon glyphicon-log-in"></span> 登录</a></li>-->
                         </ul>
                     </div>
                 </div>
             </nav>
+
+            <div style="background-color: #F6F6F6;">
+                题目: 复联4有人同情灭霸吗?
+                <br/><br/>
+                <button class="btn-primary">关注问题</button>
+                <button class="btn-default">写回答</button>
+                <button class="btn-default">举报</button>
+            </div>
+            <br/>
+            <div class="panel panel-default" style="word-wrap:break-word;word-break:break-all; padding: 50px; width: 90%">
+                <div style="margin: 20px">
+                    <img width="30px" src="../static/img/da8e974dc_xs.jpg" alt="图片" />
+                    <span style="text-align: center">许我半世繁华</span><br/>
+                    <span style="color: darkgray">340个人赞同该回答</span>
+                </div>
+                <div style="margin: 30px">
+                    灭霸是一个纯粹的人他能放下宝石，真的回到“花园”种田，没有手下，没有权力，此时的灭霸，只有那一地的南瓜属于他。看到他在花园里步履蹒跚的样子，我甚至有些惊讶，这还是复联3那个杀伐征战的灭霸吗？原来灭霸也要吃东西？也会做菜？还会放盐？<br/><br/><img src="https://pic1.zhimg.com/50/v2-d7c3c0dd9d89bf23591af79393a086d4_hd.jpg" width="100%"/><br/>当雷神砍掉他一条胳膊，逼问他宝石下落时，他没有丝毫的恐惧，也没想过求饶，更不会撒谎。可能他早已想到自己会有这一天，自己一生的目标已经实现，死亡又算什么呢？当星云说，父亲从不会撒谎，灭霸居然会心的笑了，说“可能我之前对你太苛刻了”，我相信此时灭霸的这句话是真心的。<br/><img src="https://pic3.zhimg.com/50/v2-c44d476933fc116f64edd29527aca4cf_hd.jpg" width="100%"/><br/>14年的灭霸看到星云脑中的影像，当看到未来的自己真的实现了目标，他再次露出了笑容，而看到自己被砍头时，他的表情没有任何变化，原来他早已看透：这是他的宿命。影片结尾，他带上空的手套，说“我就是天命”，随后托尼打了响指看着自己的手下一个个化为灰烬，他再次坐了下来，这和复联3结尾大功告成后，坐下自己小屋前的灭霸何其相似！<br/><img src="https://pic1.zhimg.com/50/v2-7192223b005f904d173595066317edea_hd.jpg" width="100%"/><br/>当时我以为他坐下来还要说些什么，可是他什么也没说，静静等待自己的“宿命”。我们都说复联4是对“钢铁侠”“美队”等初代复联人物最好的交代但是这又何尝不是对灭霸的交待呢？钢铁侠见到了当年的父亲，美队见到了曾经的卡特灭霸也看到了未来成功的自己……铁马金戈，功败垂成。灭霸释怀了，我们也不再那么恨他了。
+                    <br/>
+                    <br/>
+                    <span style="color: darkgray; float: right;" >2019-04-29</span>
+                </div>
+                <br/>
+                <div style="position:relative; left: 30px;">
+                    <span class="btn btn-primary">赞同1.5k</span>
+                    <span class="btn btn-primary">不赞同0.5k</span>
+                    <span>200条评论</span>
+                    <span class="btn btn-default">收藏</span>
+                </div>
+            </div>
         </div>
+        <div class="col-sm-1"></div>
     </div>
 </div>
 </body>
