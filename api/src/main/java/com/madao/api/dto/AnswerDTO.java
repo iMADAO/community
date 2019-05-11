@@ -29,6 +29,8 @@ public class AnswerDTO {
 
     private Byte agreeType = AgreeEnum.DEFAULT.getCode();
 
+    private Integer commentCount;
+
     private Date createTime;
 
     private Date updateTime;

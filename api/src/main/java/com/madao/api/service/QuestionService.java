@@ -42,4 +42,10 @@ public interface QuestionService {
 
     @RequestMapping("/answer/comment")
     public ResultView getAnswerComment(@RequestParam("answerId") Long answerId, @RequestParam("pageNum") Integer pageNum, @RequestParam("pageSize") Integer pageSize);
+
+    @RequestMapping("/answer/collect")
+    public ResultView collectionAnswer(@RequestParam("answerId") Long answerId, @RequestParam("userId") Long userId, @RequestParam("operate") Byte operate);
+
+    @RequestMapping("/answer/collect/getList")
+    ResultView getCollectFlagInList(@RequestParam("answerIdList") List<Long> answerIdList, @RequestParam("userId") Long userId);
 }

@@ -17,6 +17,7 @@
             var agree=$(".agree");
             var disagree=$(".disagree")
             var answerIdList = new Array();
+            var pageSize=1
             $.each(agree, function(index, obj){
                 var answerId = $(obj).parent().parent().find($(".answerId")).text();
                 answerIdList[index] = answerId;
@@ -26,18 +27,45 @@
                 type: 'get',
                 success: function(data){
                     console.log(data);
-                    $.each(agree, function(index, obj){
-                        if(data.data[index]==0){
-                            $(obj).attr("class", "btn btn-primary agree");
-                            $(obj).next().attr("class", "btn btn-default disagree")
-                        }else if(data.data[index]==1){
-                            $(obj).attr("class", "btn btn-default agree")
-                            $(obj).attr("class", "btn btn-primary disagree")
-                        }else if(data.data[index]==-1){
-                            $(obj).attr("class", "btn btn-default agree")
-                            $(obj).attr("class", "btn btn-default disagree")
+                    if(data.data) {
+                        $.each(agree, function (index, obj) {
+                            if (data.data[index] == 0) {
+                                $(obj).attr("class", "btn btn-primary agree");
+                                $(obj).next().attr("class", "btn btn-default disagree")
+                            } else if (data.data[index] == 1) {
+                                $(obj).attr("class", "btn btn-default agree")
+                                $(obj).attr("class", "btn btn-primary disagree")
+                            } else if (data.data[index] == -1) {
+                                $(obj).attr("class", "btn btn-default agree")
+                                $(obj).attr("class", "btn btn-default disagree")
+                            }
+                        })
+                    }
+                }
+            })
+
+            var collect = $(".collect");
+            $.ajax({
+                url: '/answer/collect/getList?answerIdList=' + answerIdList,
+                type: 'get',
+                datatype: 'get',
+                success: function(data){
+                    console.log(data);
+                    if(data.code==0){
+                        if(data.data){
+                            $.each(collect, function(index, obj){
+                                if(data.data[index]==1){
+                                    $(obj).attr("class", "btn btn-primary collect");
+                                    $(obj).attr("collect", "1");
+                                    $(obj).text("已收藏")
+                                }else if(data.data[index]==0){
+                                    $(obj).attr("class", "btn btn-default collect");
+                                    $(obj).attr("collect", "0");
+                                    $(obj).text("收藏")
+                                }
+                            })
                         }
-                    })
+                    }
                 }
             })
 
@@ -277,7 +305,114 @@
             })
 
             $(".comment").click(function(){
-                alert("aaaa");
+                var answerId = $(this).parent().parent().find(".answerId").text();
+                var parent = $(this).parent().parent();
+                var aNode = $(this).find("a");
+                var aClass = aNode.attr("class");
+                console.log(aClass)
+                if(aClass=="hideComment"){
+                    $(this).parent().parent().find(".commentNode").remove();
+                    $(this).parent().parent().find(".commentCountFlag").remove();
+                    aNode.attr("class", "getComment")
+                    var commentCount = parent.find(".commentCount");
+                    console.log(commentCount[0].innerHTML)
+                    aNode.text(commentCount.val() + "条评论")
+                    return;
+                }
+
+                var thisNode = this;
+                parent.append('<br/><div class="commentCountFlag" style="position:relative; left: 30px;" >'+ aNode.text()+'</div><hr style=""/>');
+                $.ajax({
+                    url: "/answer/comment/" + answerId + "/1/" + pageSize,
+                    type: "get",
+                    success: function(data){
+                        console.log(data);
+                        if(data.code==0){
+                            $.each(data.data.list, function(index, obj){
+                                parent.append('   <div class="commentNode" style="width: 70%; position:relative; left: 30px;">\n' +
+                                    '                    <img width="20px" src="'+ obj.userPic+'"/>\n' +
+                                    '                    <span>'+ obj.userName +': </span><span style="float: right; color: darkgray;"> '+obj.createTime+'</span>\n' +
+                                    '                    <br/>\n' +
+                                    '                    <div style="padding: 10px">\n' +
+                                    '                    <span>'+ obj.commentContent +'</span><br/>\n' +
+                                    '                        <span class="commentReport"><a>举报</a></span>\n' +
+                                    '                    </div>\n' +
+                                    '                </div>');
+
+                            })
+                            $(commentCount).val(data.data.total);
+                            thisNode.innerHTML="<a class='hideComment' href='#'>收起评论</a>"
+
+                            if(data.data.navigatepageNums.length>1){
+                                var navNode = '<ur class="pagination" style="position: relative; left: 50px;">'
+                                for(var i=1; i<= data.data.navigatepageNums.length; i++){
+                                    navNode+=' <li><a href="/answer/comment/'+answerId + '/' + i+'/'+ pageSize +'">'+i+'</a></li>';
+                                }
+                                navNode+='</ul>';
+                                // alert(navNode)
+                                parent.append(navNode);
+                            }
+                        }else{
+                            alert("请稍后重试");
+                        }
+                    }
+                })
+
+            })
+
+            // $(".toCollect").click(function(){
+            //     var answerId = $(this).parent().parent().find(".answerId").text();
+            //     var thisNode = $(this);
+            //     $.ajax({
+            //         url: '/answer/collect/' + answerId + '/1',
+            //         type: 'get',
+            //         success: function(data){
+            //             console.log(data);
+            //             if(data.code==0 || data.code==1){
+            //                 thisNode.attr("class", "btn btn-primary collected");
+            //                 thisNode.text('已收藏')
+            //             }
+            //             if(data.code!=0 && data.hint){
+            //                 alert(data.hint)
+            //             }
+            //         }
+            //     })
+            // })
+
+            $(".collect").click(function(){
+                var collect = $(this).attr("collect");
+                console.log("collect:" + collect);
+                var answerId = $(this).parent().parent().find(".answerId").text();
+                var thisNode = $(this)
+                var pathFlag = collect==0 ? 1 : 0;
+                $.ajax({
+                    url: '/answer/collect/'+ answerId +'/' + pathFlag,
+                    type: 'get',
+                    success: function(data){
+                        console.log(data);
+                        if(data.code==0){
+                            if(collect==0) {
+                                thisNode.attr("class", "btn btn-primary collect");
+                                thisNode.attr("collect", "1");
+                                thisNode.text("已收藏")
+                            }else if(collect==1){
+                                thisNode.attr("class", "btn btn-default collect");
+                                thisNode.attr("collect", "0");
+                                thisNode.text("收藏")
+                            }
+                        }else{
+                            if(data.hint){
+                                alert(data.hint)
+                            }
+                        }
+                    }
+                })
+
+
+            })
+
+            $(".commentNav").click(function(){
+                alert("Nav")
             })
         })
     </script>
@@ -356,7 +491,7 @@
             <div th:each="answerDTO:${answerDTOList}" class="panel panel-default" style="word-wrap:break-word;word-break:break-all; padding: 10px">
                 <div style="height: 100%; " class="panel-body">
                     <span class="answerId" style="visibility: hidden" th:text="${answerDTO.answerId}"></span>
-                    <div><a th:text="${answerDTO.questionTitle}" href="#" style="color: black; font-size: larger;">火影忍者最后初代火影都复活了，自来也为什么不给复活？</a> <span th:text="${answerDTO.answerCount}" style="color: darkgray">142个回答</span></div>
+                    <div><a th:text="${answerDTO.questionTitle}" th:href="@{'/toQuestionInfo?questionId=' + ${answerDTO.questionId}}" style="color: black; font-size: larger;">火影忍者最后初代火影都复活了，自来也为什么不给复活？</a> <span th:text="${answerDTO.answerCount} + '个回答'" style="color: darkgray">142个回答</span></div>
                     <br/>
                     <div><a class="readAll" th:text="${#strings.length(answerDTO.content)<20 ? answerDTO.content : #strings.substring(answerDTO.content, 0, 20) + '...'}" href="#" style="color: black">衣服又痩了： 按照漫画里的说法，自来也是沉入了海底，没法找到尸体。 那我就有点疑问。 小迪炸成灰还可以用血液复活。 按照这样来说。 自来也大战佩恩六道的时候…</a><a class="readAll">阅读全文</a></div>
                 </div>
@@ -364,17 +499,20 @@
                 <div style="position:relative; left: 30px;">
                     <span th:text=" '赞同' + ${answerDTO.agreeCount}" class="btn btn-default agree">赞同1.1k</span>
                     <span th:text="'不赞同' + ${answerDTO.disagreeCount}" class="btn btn-default disagree">不赞同0.2k</span>
-                    <span ><a th:text="${answerDTO.answerCount} + '条评论'" class="comment" href="#">120条评论</a></span>
-                    <span class="btn btn-default">收藏</span>
+                    <span class="comment"><a class="getComment" th:text="${answerDTO.commentCount} + '条评论'"  href="#">120条评论</a></span>
+                    <span class="btn btn-default collect" collect="0">收藏</span>
+                    <span><input type="hidden" class="commentCount" th:attr="value=${answerDTO.commentCount}"></span></span>
                 </div>
-                <div style="padding: 10px;">100条评论</div>
-                <div style="padding: 10px">
-                    <img width="20px" src="../static/img/a.jpeg"/>
-                    <span>风口: </span><br/>
-                    <div style="padding: 10px">
-                    <span>abcdefghijklmn</span> <span>123赞</span>
-                    </div>
-                </div>
+
+                <!--<div style="width: 70%; position:relative; left: 30px;">-->
+                    <!--<img width="20px" src="../static/img/a.jpeg"/>-->
+                    <!--<span>风口: </span><span style="float: right">2019-06-07</span>-->
+                    <!--<br/>-->
+                    <!--<div style="padding: 10px">-->
+                    <!--<span>abcdefghijklmn</span><br/><span><a class="commentAgree">23赞</a></span>-->
+                        <!--<span class="commentReport"><a>举报</a></span>-->
+                    <!--</div>-->
+                <!--</div>-->
             </div>
 
 

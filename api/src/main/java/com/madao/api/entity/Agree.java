@@ -1,6 +1,16 @@
 package com.madao.api.entity;
 
 public class Agree {
+    public Agree() {
+    }
+
+    public Agree(Long userId, Long answerId, Byte type) {
+
+        this.userId = userId;
+        this.answerId = answerId;
+        this.type = type;
+    }
+
     private Long userId;
 
     private Long answerId;

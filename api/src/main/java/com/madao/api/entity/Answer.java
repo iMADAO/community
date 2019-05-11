@@ -17,6 +17,8 @@ public class Answer {
 
     private Date updateTime;
 
+    private Integer commentCount;
+
     public Long getAnswerId() {
         return answerId;
     }
@@ -71,5 +73,13 @@ public class Answer {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public Integer getCommentCount() {
+        return commentCount;
+    }
+
+    public void setCommentCount(Integer commentCount) {
+        this.commentCount = commentCount;
     }
 }

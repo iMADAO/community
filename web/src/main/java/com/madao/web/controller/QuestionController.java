@@ -56,6 +56,8 @@ public class QuestionController {
     @GetMapping("/toQuestion")
     public String toQuestion(HttpServletRequest request){
         List<AnswerDTO> answerDTOList = questionService.getQuestion();
+        for(AnswerDTO answerDTO: answerDTOList)
+            System.out.println(answerDTO);
         request.setAttribute("answerDTOList", answerDTOList);
         return "question";
     }
@@ -125,6 +127,29 @@ public class QuestionController {
     @RequestMapping("/answer/comment/{answerId}/{pageNum}/{pageSize}")
     public ResultView getAnswerComment(@PathVariable Long answerId, @PathVariable Integer pageNum, @PathVariable Integer pageSize){
         return questionService.getAnswerComment(answerId, pageNum, pageSize);
+    }
+
+    @ResponseBody
+    @RequestMapping("/answer/collect/{answerId}/{operate}")
+    public ResultView collectionAnswer(@PathVariable("answerId") Long answerId, @PathVariable("operate") Byte operate, HttpServletRequest request){
+        Object userObj = request.getSession().getAttribute("user");
+        LinkedHashMap<String, Object> map = (LinkedHashMap<String, Object>) userObj;
+        if(userObj==null){
+            return ResultUtil.returnFail("用户未登录,请登录后操作");
+        }
+        Long userId = Long.parseLong(map.get("userId").toString());
+        return questionService.collectionAnswer(answerId, userId, operate);
+    }
+
+    @ResponseBody
+    @RequestMapping("/answer/collect/getList")
+    public ResultView getCollectFlagByAnswerIdList(@RequestParam("answerIdList") List<Long> answerIdList, HttpServletRequest request){
+        Object userObject = request.getSession().getAttribute("user");
+        if(userObject==null)
+            return ResultUtil.returnSuccess();
+        LinkedHashMap<String, Object> map = (LinkedHashMap<String, Object>) userObject;
+        Long userId = Long.parseLong(map.get("userId").toString());
+        return questionService.getCollectFlagInList(answerIdList, userId);
     }
 
 }

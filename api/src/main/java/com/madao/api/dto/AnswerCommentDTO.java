@@ -17,5 +17,7 @@ public class AnswerCommentDTO {
 
     private String userPic;
 
+    private String commentContent;
+
     private Date createTime;
 }

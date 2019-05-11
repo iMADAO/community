@@ -27,9 +27,4 @@ public interface AnswerMapper {
     int updateByPrimaryKeySelective(Answer record);
 
     int updateByPrimaryKey(Answer record);
-
-    Integer getCountInAgree(Long userId, Long answerId);
-    int getCountInDisagree(Long userId, Long answerId);
-
-    void insertUserAgree(Long userId, Long answerId, byte type);
 }

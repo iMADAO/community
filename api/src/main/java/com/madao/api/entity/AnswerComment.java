@@ -13,6 +13,8 @@ public class AnswerComment {
 
     private Byte isVisible;
 
+    private String commentContent;
+
     public Long getCommentId() {
         return commentId;
     }
@@ -51,5 +53,13 @@ public class AnswerComment {
 
     public void setIsVisible(Byte isVisible) {
         this.isVisible = isVisible;
+    }
+
+    public String getCommentContent() {
+        return commentContent;
+    }
+
+    public void setCommentContent(String commentContent) {
+        this.commentContent = commentContent == null ? null : commentContent.trim();
     }
 }

@@ -1,5 +1,7 @@
 package com.madao.question.service;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.madao.api.Exception.ResultException;
 import com.madao.api.dto.AnswerCommentDTO;
 import com.madao.api.dto.AnswerDTO;
@@ -57,7 +59,11 @@ public class AnswerService {
 
     public int addAgreeOnAnswer(Long userId, Long answerId) {
         System.out.println(userId+"---" + answerId);
-        int count = answerMapper.getCountInAgree(userId, answerId);
+        AgreeExample agreeExample = new AgreeExample();
+        AgreeExample.Criteria criteria = agreeExample.createCriteria();
+        criteria.andAnswerIdEqualTo(answerId);
+        criteria.andUserIdEqualTo(userId);
+        int count = agreeMapper.countByExample(agreeExample);
         int result = 0;
         //如果已经点赞或者不赞同
         if(count>0){
@@ -75,7 +81,9 @@ public class AnswerService {
             answerMapper.updateByPrimaryKeySelective(answer);
 
             //添加用户点赞的记录
-            answerMapper.insertUserAgree(userId, answerId, AgreeEnum.AGREE.getCode());
+            Agree agree = new Agree(userId, answerId, AgreeEnum.AGREE.getCode());
+            System.out.println("agree:---" + agree);
+            agreeMapper.insertSelective(agree);
         }
         return result;
     }
@@ -116,7 +124,13 @@ public class AnswerService {
 
     public int addDisagreeOnAnswer(Long userId, Long answerId) {
         System.out.println(userId+"---" + answerId);
-        int count = answerMapper.getCountInAgree(userId, answerId);
+
+        AgreeExample example = new AgreeExample();
+        AgreeExample.Criteria criteria = example.createCriteria();
+        criteria.andUserIdEqualTo(userId);
+        criteria.andAnswerIdEqualTo(answerId);
+
+        int count = agreeMapper.countByExample(example);
         int result = 0;
         //如果已经点赞或者不赞同
         if(count>0){
@@ -132,7 +146,9 @@ public class AnswerService {
             result = answer.getDisagreeCount();
             answerMapper.updateByPrimaryKeySelective(answer);
 
-            answerMapper.insertUserAgree(userId, answerId, AgreeEnum.DISAGREE.getCode());
+            Agree agree = new Agree(userId, answerId, AgreeEnum.DISAGREE.getCode());
+            System.out.println("Disagree:---" + agree);
+            agreeMapper.insert(agree);
         }
         return result;
     }
@@ -154,12 +170,15 @@ public class AnswerService {
         return result;
     }
 
-    public List<AnswerCommentDTO> getCommentByAnswerid(Long answrId){
+    public PageInfo<AnswerCommentDTO> getCommentByAnswerid(Long answerId, Integer pageNum, Integer pageSize){
+        PageHelper.startPage(pageNum, pageSize);
         AnswerCommentExample example = new AnswerCommentExample();
         AnswerCommentExample.Criteria criteria = example.createCriteria();
-        criteria.andAnswerIdEqualTo(answrId);
+        criteria.andAnswerIdEqualTo(answerId);
         criteria.andIsVisibleEqualTo(CommentEnum.VISIBLE.getCode());
         List<AnswerComment> answerCommentList = answerCommentMapper.selectByExample(example);
+        PageInfo<AnswerComment> pageInfo = new PageInfo<>(answerCommentList);
+
         List<AnswerCommentDTO> answerCommentDTOList = new ArrayList<>(answerCommentList.size());
         for(AnswerComment answerComment: answerCommentList){
             User user = (User) redisTemplate.opsForValue().get(USER_PREFIX + answerComment.getUserId());
@@ -175,9 +194,29 @@ public class AnswerService {
             answerCommentDTO.setUserPic(user.getUserPic());
             answerCommentDTOList.add(answerCommentDTO);
         }
-        return answerCommentDTOList;
+        PageInfo<AnswerCommentDTO> pageInfoDTO = new PageInfo<>();
+        System.out.println(pageInfo);
+        System.out.println(pageInfoDTO);
+        BeanUtils.copyProperties(pageInfo, pageInfoDTO);
+        pageInfoDTO.setList(answerCommentDTOList);
+        return pageInfoDTO;
     }
 
 
-
+    public PageInfo<AnswerCommentDTO> getCommentByAnswerid2(Long answerId, Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        AnswerCommentExample example = new AnswerCommentExample();
+        AnswerCommentExample.Criteria criteria = example.createCriteria();
+        criteria.andAnswerIdEqualTo(answerId);
+        criteria.andIsVisibleEqualTo(CommentEnum.VISIBLE.getCode());
+        List<AnswerComment> answerCommentList = answerCommentMapper.selectByExample(example);
+        List<AnswerCommentDTO> answerCommentDTOList = new ArrayList<>(answerCommentList.size());
+        for(AnswerComment answerComment: answerCommentList){
+            AnswerCommentDTO answerCommentDTO = new AnswerCommentDTO();
+            BeanUtils.copyProperties(answerComment, answerCommentDTO);
+            answerCommentDTOList.add(answerCommentDTO);
+        }
+        PageInfo<AnswerCommentDTO> pageInfo = new PageInfo<>(answerCommentDTOList);
+        return pageInfo;
+    }
 }

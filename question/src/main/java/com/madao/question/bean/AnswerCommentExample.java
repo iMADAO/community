@@ -404,6 +404,76 @@ public class AnswerCommentExample {
             addCriterion("is_visible not between", value1, value2, "isVisible");
             return (Criteria) this;
         }
+
+        public Criteria andCommentContentIsNull() {
+            addCriterion("comment_content is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andCommentContentIsNotNull() {
+            addCriterion("comment_content is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andCommentContentEqualTo(String value) {
+            addCriterion("comment_content =", value, "commentContent");
+            return (Criteria) this;
+        }
+
+        public Criteria andCommentContentNotEqualTo(String value) {
+            addCriterion("comment_content <>", value, "commentContent");
+            return (Criteria) this;
+        }
+
+        public Criteria andCommentContentGreaterThan(String value) {
+            addCriterion("comment_content >", value, "commentContent");
+            return (Criteria) this;
+        }
+
+        public Criteria andCommentContentGreaterThanOrEqualTo(String value) {
+            addCriterion("comment_content >=", value, "commentContent");
+            return (Criteria) this;
+        }
+
+        public Criteria andCommentContentLessThan(String value) {
+            addCriterion("comment_content <", value, "commentContent");
+            return (Criteria) this;
+        }
+
+        public Criteria andCommentContentLessThanOrEqualTo(String value) {
+            addCriterion("comment_content <=", value, "commentContent");
+            return (Criteria) this;
+        }
+
+        public Criteria andCommentContentLike(String value) {
+            addCriterion("comment_content like", value, "commentContent");
+            return (Criteria) this;
+        }
+
+        public Criteria andCommentContentNotLike(String value) {
+            addCriterion("comment_content not like", value, "commentContent");
+            return (Criteria) this;
+        }
+
+        public Criteria andCommentContentIn(List<String> values) {
+            addCriterion("comment_content in", values, "commentContent");
+            return (Criteria) this;
+        }
+
+        public Criteria andCommentContentNotIn(List<String> values) {
+            addCriterion("comment_content not in", values, "commentContent");
+            return (Criteria) this;
+        }
+
+        public Criteria andCommentContentBetween(String value1, String value2) {
+            addCriterion("comment_content between", value1, value2, "commentContent");
+            return (Criteria) this;
+        }
+
+        public Criteria andCommentContentNotBetween(String value1, String value2) {
+            addCriterion("comment_content not between", value1, value2, "commentContent");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {

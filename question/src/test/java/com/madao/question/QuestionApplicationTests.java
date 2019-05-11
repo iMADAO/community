@@ -37,17 +37,17 @@ public class QuestionApplicationTests {
 		System.out.println(user);
 	}
 
-	@Test
-	public void test(){
-		int count = answerMapper.getCountInAgree(1L, 1L);
-		System.out.println(count);
-	}
+//	@Test
+//	public void test(){
+//		int count = answerMapper.getCountInAgree(1L, 1L);
+//		System.out.println(count);
+//	}
 
 
-	@Test
-	public void test2(){
-		answerMapper.insertUserAgree(1L, 4L, AgreeEnum.AGREE.getCode());
-	}
+//	@Test
+//	public void test2(){
+//		answerMapper.insertUserAgree(1L, 4L, AgreeEnum.AGREE.getCode());
+//	}
 
 
 
