@@ -1,14 +1,14 @@
 package com.madao.api.service;
 
 import com.madao.api.dto.AnswerDTO;
-import com.madao.api.entity.Question;
 import com.madao.api.entity.User;
+import com.madao.api.form.AnswerContentForm;
+import com.madao.api.form.AnswerForm;
 import com.madao.api.form.QuestionForm;
 import com.madao.api.utils.ResultView;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @FeignClient(value = "question", fallbackFactory = QuestionServiceFallbackFactory.class)
@@ -48,4 +48,16 @@ public interface QuestionService {
 
     @RequestMapping("/answer/collect/getList")
     ResultView getCollectFlagInList(@RequestParam("answerIdList") List<Long> answerIdList, @RequestParam("userId") Long userId);
+
+    @PostMapping("/answer/comment")
+    ResultView addAnswerComment(@RequestParam("answerId") Long answerId, @RequestParam("userId") Long userId, @RequestParam("commentContent") String commentContent);
+
+    @RequestMapping("/question/info")
+    ResultView getQuestionDTOById(@RequestParam("questionId") Long questionId, @RequestParam("answerId") Long answerId);
+
+    @RequestMapping("/question/collect")
+    ResultView collectQuestion(@RequestParam("questionId") Long questionId, @RequestParam("userId") Long userId, @RequestParam("collectType") Byte collectType);
+
+    @PostMapping("/answer/add")
+    public ResultView addAnswer(@RequestBody AnswerForm form);
 }

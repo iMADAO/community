@@ -30,4 +30,6 @@ public interface QuestionMapper {
     int updateByPrimaryKey(Question record);
 
     List<AnswerDTO> getAnswer();
+
+    AnswerDTO getAnswerDTOById(Long answerId);
 }

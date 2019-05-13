@@ -6,8 +6,50 @@
     <style>
         a:link {color:#FF0000;}
     </style>
+    <script src="../static/jquery-1.12.4.min.js"></script>
+    <script src="../static/jquery.form.js"></script>
+    <script type="text/javascript">
+        $(function(){
+            // $(".uploadForm").submit(function (e) {
+            //     console.log("e: " + e);
+            //     return false;
+            // })
+
+               // var form = $(this).parent();
+               // console(form)
+               // form.ajaxForm(function(data){
+               //     console(data);
+               //  })
+
+            $(".uploadForm").ajaxForm(function(data){
+                console.log(data)
+                // if(data=="1"){
+                //     alert("提交成功！");
+                // }
+            });
+
+
+            // $(".uploadForm").ajaxForm(function(data){
+            //     console.log(data);
+            //     // if(data=="1"){
+            //     //     alert("提交成功！");
+            //     // }
+            //
+            // });
+        })
+    </script>
 </head>
 <body>
 <a href="#">aaaaaaaaaaaa</a>
+
+
+<form class="uploadForm" name="Form2" action="/pic/upload/2" method="post"  enctype="multipart/form-data">
+    <h1>采用multipart提供的file.transfer方法上传文件</h1>
+    <input type="file" name="file" placeholder="hh">
+    <input type="submit" value="upload" id="submit"/>
+</form>
+<div style="border-bottom:2px solid lightgray">
+aaaaa
+</div>
 </body>
 </html>

@@ -9,11 +9,723 @@
     <style>
         a:link {color:#000000;}
     </style>
-    <link type="text/css" rel="stylesheet" href="../static/bootstrap-3.3.7-dist/css/bootstrap.css"></link>
-    <script type="text/javascript" src="../static/jquery-1.12.4.min.js"></script>
-    <script type="text/javascript" src="../static/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
-    <script type="text/javascript"></script>
+    <script type="text/javascript" th:src="@{~/static/jquery-1.12.4.min.js}" src="../static/jquery-1.12.4.min.js"></script>
+    <script th:src="@{~/static/jquery.form.js}"></script>
 
+    <link type="text/css" rel="stylesheet" th:href="@{~/static/bootstrap-3.3.7-dist/css/bootstrap.css}" href="../static/bootstrap-3.3.7-dist/css/bootstrap.css"></link>
+    <script type="text/javascript" th:src="@{~/static/bootstrap-3.3.7-dist/js/bootstrap.js}" src="../static/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+    <script>
+        $(function(){
+            var agree=$(".agree");
+            var disagree=$(".disagree")
+            var answerIdList = new Array();
+            var pageSize=1
+            //获取页面上的所有回答
+            $.each(agree, function(index, obj){
+                var answerId = $(obj).parent().parent().find($(".answerId")).text();
+                answerIdList[index] = answerId;
+            })
+            //获取当前用户在每个回答中是同意、不同意或者默认，并且更新按钮的状态
+            $.ajax({
+                url: '/answer/agreeType?answerIdList=' + answerIdList,
+                type: 'get',
+                success: function(data){
+                    console.log(data);
+                    if(data.data) {
+                        $.each(agree, function (index, obj) {
+                            if (data.data[index] == 0) {
+                                $(obj).attr("class", "btn btn-primary agree");
+                                $(obj).next().attr("class", "btn btn-default disagree")
+                            } else if (data.data[index] == 1) {
+                                $(obj).attr("class", "btn btn-default agree")
+                                $(obj).attr("class", "btn btn-primary disagree")
+                            } else if (data.data[index] == -1) {
+                                $(obj).attr("class", "btn btn-default agree")
+                                $(obj).attr("class", "btn btn-default disagree")
+                            }
+                        })
+                    }
+                }
+            })
+
+            //获取当前用户是否收藏了该回答，并且更新收藏按钮
+            var collect = $(".collect");
+            console.log("length:" + collect.length)
+            $.ajax({
+                url: '/answer/collect/getList?answerIdList=' + answerIdList,
+                type: 'get',
+                // dataType: 'json',
+                success: function(data){
+                    console.log(data);
+                    if(data.code==0){
+                        if(data.data){
+                            $.each(collect, function(index, obj){
+                                if(data.data[index]==1){
+                                    $(obj).attr("class", "btn btn-primary collect");
+                                    //自定义collect属性，表示是否已收藏，用于点击收藏按钮时判断是收藏还是取消动作
+                                    $(obj).attr("collect", "1");
+                                    $(obj).text("已收藏")
+                                }else if(data.data[index]==0){
+                                    $(obj).attr("class", "btn btn-default collect");
+                                    $(obj).attr("collect", "0");
+                                    $(obj).text("收藏")
+                                }
+                            })
+                        }
+                    }
+                }
+            })
+
+            //退出登录
+            $("#logout").click(function () {
+                $.ajax({
+                    url: '/user/logout',
+                    type: 'get',
+                    success: function(data){
+                        if(data.code==0){
+                            alert("退出登录成功");
+                            $("#userCenter").remove();
+                            $("#userInfo").append('<li  id="register"><a href="/toRegister" target="_blank"><span class="glyphicon glyphicon-user">注册</span> </a></li>\n' +
+                                '                            <li id="login"><a href="/toLogin" target="_blank"><span class="glyphicon glyphicon-log-in">登录</span> </a></li>');
+                        }else{
+                            alert("操作失败，请稍后重试");
+                        }
+                        return false;
+                    }
+                })
+            })
+
+            //添加问题
+            $("#addQuestionButton").click(function(){
+                var title = $("#title").val();
+                var content = $("#content").val();
+                if(title.trim().length==0 || content.trim().length==0){
+                    alert("内容不能为空");
+                    return false;
+                }
+                // alert(title);
+                // alert(content)
+                $.ajax({
+                    url: '/question',
+                    type: 'post',
+                    // contentType: 'application/json',
+                    data:{
+                        questionTitle: title,
+                        questionContent: content
+                    },
+                    datatype: 'json',
+                    success: function(data){
+                        console.log(data);
+                        if(data.code!=0){
+                            var aa = alert(data.hint);
+                            console.log("aa............ " + aa)
+                            if(data.data){
+                                if(data.data.length!=0){}
+                                // location.href=data.data;
+                            }
+                            return false;
+                        }else{
+                            alert("添加成功");
+                            window.open("/toQuestionInfo?questionId=" + data.data.questionId, "_blank");
+                            // location.href="index";
+                        }
+                    }
+                })
+                return true;
+            })
+
+            //点赞
+            $(".agree").click(function() {
+                var answerId = $(this).parent().parent().find(".answerId").text();
+                var agree = $(this)
+                var agreeClass = agree.attr("class")
+                var pattPrimary = new RegExp("primary")
+                var pattDefault = new RegExp("default")
+                if (pattDefault.test(agreeClass)) {
+                    var disagree = $(this).parent().find(".disagree");
+                    if (pattPrimary.test(disagree.attr("class"))) {
+                        alert("你已不赞同该回答,请取消后再操作");
+                        return;
+                    }
+                    $.ajax({
+                        url: '/answer/agree/0',
+                        type: 'get',
+                        data: {
+                            answerId: answerId
+                        },
+                        datatype: 'json',
+                        success: function (data) {
+                            console.log(data)
+                            //code==0表示成功
+                            if (data.code == 0) {
+                                if (data.data) {
+                                    agree.text('赞同' + data.data);
+                                    agree.attr("class", "btn btn-primary agree")
+                                }
+                                //code==1表示失败
+                            } else if (data.code == 1) {
+                                if (data.hint) {
+                                    alert(data.hint);
+                                }
+                                //code==2表示错误
+                            } else if (data.code == 2) {
+                                if (data.hint) {
+                                    alert(data.hint)
+                                }
+                            }
+                        }
+                    })
+                } else if (pattPrimary.test(agreeClass)) {
+                    $.ajax({
+                        url: '/answer/agree/-1',
+                        type: 'get',
+                        data: {
+                            answerId: answerId
+                        },
+                        datatype: 'json',
+                        success: function (data) {
+                            console.log(data)
+                            //code==0表示成功
+                            if (data.code == 0) {
+                                if (data.data) {
+                                    agree.text('赞同' + data.data);
+                                    agree.attr("class", "btn btn-default agree")
+                                }
+                                //code==1表示失败
+                            } else if (data.code == 1) {
+                                if (data.hint) {
+                                    alert(data.hint);
+                                }
+                                //code==2表示错误
+                            } else if (data.code == 2) {
+                                if (data.hint) {
+                                    alert(data.hint)
+                                }
+                            }
+                        }
+                    })
+                }
+
+
+                $(".disagree").click(function () {
+                    var answerId = $(this).parent().parent().find(".answerId").text();
+                    var disagree = $(this)
+                    var disagreeClass = disagree.attr("class")
+                    var pattPrimary = new RegExp("primary")
+                    var pattDefault = new RegExp("default")
+                    if (pattDefault.test(disagreeClass)) {
+                        var agree = $(this).parent().find(".agree");
+                        if (pattPrimary.test(agree.attr("class"))) {
+                            alert("你已赞同该回答,请取消后再操作");
+                            return;
+                        }
+                        $.ajax({
+                            url: '/answer/agree/0',
+                            type: 'get',
+                            data: {
+                                answerId: answerId
+                            },
+                            datatype: 'json',
+                            success: function (data) {
+                                console.log(data)
+                                //code==0表示成功
+                                if (data.code == 0) {
+                                    if (data.data) {
+                                        disagree.text('不赞同' + data.data);
+                                        disagree.attr("class", "btn btn-primary disagree")
+                                    }
+                                    //code==1表示失败
+                                } else if (data.code == 1) {
+                                    // disagree.attr("class", "btn btn-primary disagree")
+                                    if (data.hint) {
+                                        alert(data.hint);
+                                    }
+                                    //code==2表示错误
+                                } else if (data.code == 2) {
+                                    if (data.hint) {
+                                        alert(data.hint)
+                                    }
+                                }
+                            }
+                        })
+                    } else if (pattPrimary.test(agreeClass)) {
+                        $.ajax({
+                            url: '/answer/agree/-1',
+                            type: 'get',
+                            data: {
+                                answerId: answerId
+                            },
+                            datatype: 'json',
+                            success: function (data) {
+                                console.log(data)
+                                //code==0表示成功
+                                if (data.code == 0) {
+                                    if (data.data) {
+                                        disagree.text('不赞同' + data.data);
+                                        disagree.attr("class", "btn btn-default disagree")
+                                    }
+                                    //code==1表示失败
+                                } else if (data.code == 1) {
+                                    // disagree.attr("class", "btn btn-default disagree")
+                                    if (data.hint) {
+                                        alert(data.hint);
+                                    }
+                                    //code==2表示错误
+                                } else if (data.code == 2) {
+                                    if (data.hint) {
+                                        alert(data.hint)
+                                    }
+                                }
+                            }
+                        })
+                    }
+
+
+                })
+
+            })
+
+            $(".disagree").click(function () {
+                var answerId = $(this).parent().parent().find(".answerId").text();
+                var disagree = $(this)
+                var disagreeClass = disagree.attr("class")
+                var pattPrimary = new RegExp("primary")
+                var pattDefault = new RegExp("default")
+                if (pattDefault.test(disagreeClass)) {
+                    var agree = $(this).parent().find(".agree");
+                    if (pattPrimary.test(agree.attr("class"))) {
+                        alert("你已赞同该回答,请取消后再操作");
+                        return;
+                    }
+                    $.ajax({
+                        url: '/answer/agree/0',
+                        type: 'get',
+                        data: {
+                            answerId: answerId
+                        },
+                        datatype: 'json',
+                        success: function (data) {
+                            console.log(data)
+                            //code==0表示成功
+                            if (data.code == 0) {
+                                if (data.data) {
+                                    disagree.text('不赞同' + data.data);
+                                    disagree.attr("class", "btn btn-primary disagree")
+                                }
+                                //code==1表示失败
+                            } else if (data.code == 1) {
+                                // disagree.attr("class", "btn btn-primary disagree")
+                                if (data.hint) {
+                                    alert(data.hint);
+                                }
+                                //code==2表示错误
+                            } else if (data.code == 2) {
+                                if (data.hint) {
+                                    alert(data.hint)
+                                }
+                            }
+                        }
+                    })
+                } else if (pattPrimary.test(disagreeClass)) {
+                    $.ajax({
+                        url: '/answer/agree/-1',
+                        type: 'get',
+                        data: {
+                            answerId: answerId
+                        },
+                        datatype: 'json',
+                        success: function (data) {
+                            console.log(data)
+                            //code==0表示成功
+                            if (data.code == 0) {
+                                if (data.data) {
+                                    disagree.text('不赞同' + data.data);
+                                    disagree.attr("class", "btn btn-default disagree")
+                                }
+                                //code==1表示失败
+                            } else if (data.code == 1) {
+                                // disagree.attr("class", "btn btn-default disagree")
+                                if (data.hint) {
+                                    alert(data.hint);
+                                }
+                                //code==2表示错误
+                            } else if (data.code == 2) {
+                                if (data.hint) {
+                                    alert(data.hint)
+                                }
+                            }
+                        }
+                    })
+                }
+            })
+
+            //展开评论,显示评论第一页
+            $(".toComment").click(function(){
+                var answerId = $(this).parent().parent().find(".answerId").text();
+                console.log(answerId)
+                var answerNode = $(this).parent().parent();
+                var commentNode = answerNode.find(".commentNode");
+                var toAddComment = answerNode.find(".toAddComment");
+                var commentNavNode = answerNode.find(".commentNavNode");
+                var aNode = $(this).find("a");
+                var aClass = aNode.attr("class");
+                var commentCount = answerNode.find(".commentCount");
+                console.log(aClass)
+                //收起评论的操作
+                if(aClass=="hideComment"){
+                    // $(this).parent().parent().find(".commentNode").remove();
+                    // $(this).parent().parent().find(".commentCountFlag").remove();
+                    commentNode.empty();
+                    toAddComment.empty();
+                    commentNavNode.empty();
+
+                    aNode.attr("class", "getComment")
+
+                    console.log(commentCount[0].innerHTML)
+                    aNode.text(commentCount.val() + "条评论")
+                    return;
+                }
+
+                //展开评论的操作
+                var thisNode = this;
+                console.log(commentCount.val())
+                commentNode.append('<div class="commentCountFlag" style="position:relative; left: 30px;" ><br/>'+ commentCount.val()+'条评论</div><hr style=""/>');
+                $.ajax({
+                    url: "/answer/comment/" + answerId + "/1/" + pageSize,
+                    type: "get",
+                    success: function(data){
+                        console.log(data);
+                        if(data.code==0){
+                            $.each(data.data.list, function(index, obj){
+                                var commentDetailNode = '   <div class="commentDetail" style="width: 70%; position:relative; left: 30px;">\n' +
+                                    '                    <img width="20px" src="'+ obj.userPic+'"/>\n' +
+                                    '                    <span>'+ obj.userName +': </span><span style="float: right; color: darkgray;"> '+obj.createTime+'</span>\n' +
+                                    '                    <br/>\n' +
+                                    '                    <div style="padding: 10px">\n' +
+                                    '                    <span>'+ obj.commentContent +'</span><br/>\n' +
+                                    '                        <span class="commentReport"><a>举报</a></span>\n' +
+                                    '                    </div>\n' +
+                                    '                </div>';
+                                commentNode.append(commentDetailNode)
+
+                            })
+                            // commentNode.append("<p>哈哈</p>")
+                            //更新评论数量
+                            $(commentCount).val(data.data.total);
+                            thisNode.innerHTML="<a class='hideComment' href='#'>收起评论</a>"
+
+                            if(data.data.navigatepageNums.length>1){
+                                var navNode = '<ul class="pagination" style="position: relative; left: 50px;">'
+                                for(var i=1; i<= data.data.navigatepageNums.length; i++){
+                                    if(i==1){
+                                        navNode += ' <li class="active"><a pageNum='+i+' type="navlink" href="/answer/comment/' + answerId + '/' + i + '/' + pageSize + '">' + i + '</a></li>';
+                                    }else {
+                                        navNode += ' <li><a pageNum='+i+' type="navlink" href="/answer/comment/' + answerId + '/' + i + '/' + pageSize + '">' + i + '</a></li>';
+                                    }
+                                }
+                                navNode+= '<li><a pageNum=2 type="navlink" href="/answer/comment/' + answerId + '/' + 2 + '/' + pageSize + '">下一页</a></li>';
+                                navNode+= '<li><a pageNum='+data.data.navigatepageNums.length+' type="navlink" href="/answer/comment/' + answerId + '/' + data.data.navigatepageNums.length + '/' + pageSize + '">末页</a></li>';
+                                navNode+='</ul>';
+                                console.log(navNode)
+                                // alert(navNode)
+                                commentNavNode.append(navNode);
+                            }
+
+                            toAddComment.append('<div style="width: 100%; position: relative; left: 20px" class="myComment"><textarea style="width: 70%" class="inputComment" placeholder="我的评论"/><button style="position: relative; bottom: 10px; left: 10px" class="btn btn-primary submitComment">提交</button></div>')
+                        }else{
+                            alert("请稍后重试");
+                        }
+                    }
+                })
+
+            })
+
+
+            //点击收藏按钮,收藏或者取消收藏的操作
+            $(".collect").click(function(){
+                var collect = $(this).attr("collect");
+                console.log("collect:" + collect);
+                var answerId = $(this).parent().parent().find(".answerId").text();
+                var thisNode = $(this)
+                var pathFlag = collect==0 ? 1 : 0;
+                $.ajax({
+                    url: '/answer/collect/'+ answerId +'/' + pathFlag,
+                    type: 'get',
+                    success: function(data){
+                        console.log(data);
+                        if(data.code==0){
+                            if(collect==0) {
+                                thisNode.attr("class", "btn btn-primary collect");
+                                thisNode.attr("collect", "1");
+                                thisNode.text("已收藏")
+                            }else if(collect==1){
+                                thisNode.attr("class", "btn btn-default collect");
+                                thisNode.attr("collect", "0");
+                                thisNode.text("收藏")
+                            }
+                        }else{
+                            if(data.hint){
+                                alert(data.hint)
+                            }
+                        }
+                    }
+                })
+
+
+            })
+
+
+            //评论翻页
+            $(".answerNode").on('click', '[type=navlink]', function(e){
+                if($(this).attr("class")=="disable")
+                    return;
+                var pageNum = $(this).attr("pageNum")
+                var href = $(this).attr("href")
+                console.log(pageNum + "---" + href)
+                var answerNode =  $(this).parent().parent().parent().parent();
+                console.log(answerNode)
+                var commentNode = answerNode.find(".commentNode");
+                var commentNavNode = answerNode.find(".commentNavNode");
+                var answerId = answerNode.find(".answerId").text();
+                var aNode = $(this)
+                var commentCount = answerNode.find(".commentCount");
+                $.ajax({
+                    url: href,
+                    type: 'get',
+                    success: function(data){
+                        console.log(data)
+                        if(data.code==0){
+                            if(data.data){
+                                commentNode.empty();
+                                commentNavNode.empty();
+                                commentNode.append('<div class="commentCountFlag" style="position:relative; left: 30px;" ><br/>'+ $(commentCount).val()+'条评论</div><hr style=""/>');
+                                $.each(data.data.list, function(index, obj){
+                                    commentNode.append('   <div class="commentDetail" style="width: 70%; position:relative; left: 30px;">\n' +
+                                        '                    <img width="20px" src="'+ obj.userPic+'"/>\n' +
+                                        '                    <span>'+ obj.userName +': </span><span style="float: right; color: darkgray;"> '+obj.createTime+'</span>\n' +
+                                        '                    <br/>\n' +
+                                        '                    <div style="padding: 10px">\n' +
+                                        '                    <span>'+ obj.commentContent +'</span><br/>\n' +
+                                        '                        <span class="commentReport"><a>举报</a></span>\n' +
+                                        '                    </div>\n' +
+                                        '                </div>');
+
+                                })
+                                $(commentCount).val(data.data.total);
+                                // thisNode.innerHTML="<a class='hideComment' href='#'>收起评论</a>"
+
+                                if(data.data.navigatepageNums.length>1){
+                                    var navNode = '<ul class="pagination" style="position: relative; left: 50px;">'
+                                    var lastPageNum = parseInt(pageNum) -1;
+                                    if(lastPageNum<1)
+                                        lastPageNum = 1;
+                                    console.log(lastPageNum)
+                                    if(pageNum>1) {
+                                        navNode += ' <li><a pageNum=1 type="navlink" href="/answer/comment/' + answerId + '/1/' + pageSize + '">首页</a></li>';
+                                        navNode += ' <li><a pageNum='+lastPageNum+' type="navlink" href="/answer/comment/' + answerId + '/'+ lastPageNum+'/' + pageSize + '">上一页</a></li>';
+                                    }else{
+                                        navNode += ' <li class="disabled"><a pageNum=1 type="navlink" href="/answer/comment/' + answerId + '/1/' + pageSize + '">首页</a></li>';
+                                        navNode += ' <li class="disabled"><a pageNum='+lastPageNum+' type="navlink" href="/answer/comment/' + answerId + '/'+ lastPageNum+'/' + pageSize + '">上一页</a></li>';
+                                    }
+                                    for(var i=1; i<= data.data.navigatepageNums.length; i++){
+                                        if(i==pageNum){
+                                            navNode += ' <li class="active"><a pageNum='+i+' type="navlink" href="/answer/comment/' + answerId + '/' + i + '/' + pageSize + '">' + i + '</a></li>';
+                                        }else {
+                                            navNode += ' <li><a pageNum='+i+' type="navlink" href="/answer/comment/' + answerId + '/' + i + '/' + pageSize + '">' + i + '</a></li>';
+                                        }
+                                    }
+                                    console.log(pageNum<data.data.navigatepageNums.length)
+                                    var nextPage = parseInt(pageNum)+1
+                                    if(nextPage > data.data.navigatepageNums.length)
+                                        nextPage = data.data.navigatepageNums.length;
+                                    if(pageNum<data.data.navigatepageNums.length){
+                                        navNode += ' <li><a pageNum='+nextPage+' type="navlink" href="/answer/comment/' + answerId + '/' + nextPage + '/' + pageSize + '">下一页</a></li>';
+                                        navNode += ' <li><a pageNum='+data.data.navigatepageNums.length+' type="navlink" href="/answer/comment/' + answerId + '/' + data.data.navigatepageNums.length + '/' + pageSize + '">末页</a></li>';
+
+                                    }else{
+                                        navNode += ' <li class="disabled"><a pageNum='+nextPage+' type="navlink" href="/answer/comment/' + answerId + '/' + nextPage + '/' + pageSize + '">下一页</a></li>';
+                                        navNode += ' <li class="disabled"><a pageNum='+data.data.navigatepageNums.length+' type="navlink" href="/answer/comment/' + answerId + '/' + data.data.navigatepageNums.length + '/' + pageSize + '">末页</a></li>';
+
+                                    }
+                                    navNode+='</ul>';
+                                    // alert(navNode)
+                                    commentNavNode.append(navNode);
+                                }
+                            }
+                        }
+                    }
+                })
+
+                return false;
+            })
+
+            //提交发表评论
+            $(".answerNode").on('click', '.submitComment', function(e){
+                var answerNode =  $(this).parent().parent().parent();
+                var answerId = answerNode.find(".answerId").text();
+                var commentContent = $(this).parent().find(".inputComment").val();
+                if(commentContent.trim()==""){
+                    alert("提交内容不能为空")
+                    return
+                }
+                console.log("answerId:" + answerId + " commentContent:" + commentContent)
+                var json = {
+                    "commentContent": commentContent,
+                    "answerId": answerId,
+                };
+                $.ajax({
+                    url: '/answer/comment',
+                    type: 'post',
+                    dataType: 'json',
+                    contentType: "application/json; charset=utf-8",
+                    data:JSON.stringify(json),
+                    success: function(data){
+                        console.log(data);
+                        if(data.code==0){
+                            alert("添加成功")
+                        }else{
+                            if(data.hint){
+                                alert(data.hint)
+                            }
+                        }
+                    }
+                })
+            })
+
+            //关注问题/取消关注
+            $(".collectQuestion").click(function(){
+                var collectState = $(this).attr("collect")
+                console.log("collectState---" + collectState)
+                var thisNode = $(this)
+                var questionId = $("#questionId").text()
+                console.log(collectState)
+                $.ajax({
+                    url: '/question/collect/' + + questionId + "/" + collectState,
+                    type: 'get',
+                    success: function(data){
+                        console.log(data)
+                        if(data.code==0){
+                            if(collectState==0){
+                                thisNode.attr("class", "btn-primary collectQuestion")
+                                thisNode.attr("collect", "1")
+                                thisNode.text("已关注")
+                            }else if(collectState==1){
+                                thisNode.attr("class", "btn-default collectQuestion")
+                                thisNode.text("关注问题")
+                                thisNode.attr("collect", "0")
+                            }
+                        }else{
+                            if(data.hint){
+                                alert(data.hint)
+                            }
+                        }
+                    }
+                })
+
+            })
+
+            //写回答
+            $("#addAnswerText").click(function(){
+                var contentNumNode = $(this).parent().find("#contentNum");
+                var nextNum = parseInt(contentNumNode.text()) + 1;
+                $("#addAnswerArea").append('<div class="answerContent" num="'+ nextNum +'"><br/>' +
+                                            '<button class="btn btn-default contentNumBtn">'+ nextNum +'</button>' +
+                                            '<button class="btn btn-default deleteContent">删除</button>' +
+                                            '<div class="content" style="padding 10px" type="text">' +
+                                                '<textarea style="width: 100%; height: 100px" placeholder="请输入内容"></textarea></div>' +
+                                            '</div>')
+                contentNumNode.text(nextNum)
+            })
+
+            $("#addAnswerImg").click(function(){
+                var contentNumNode = $(this).parent().find("#contentNum");
+                var nextNum = parseInt(contentNumNode.text()) + 1;
+                $("#addAnswerArea").append('<div style="border-bottom:2px solid lightgray" class="answerContent" num="'+ nextNum +'">' +
+                                            '<br/><button class="btn btn-default contentNumBtn">'+ nextNum +'</button><button class="btn btn-default deleteContent">删除</button>' +
+                                            '<div class="content" style="padding 10px" type="img">' +
+                                                '<div class="imgPlace" style="width: 100%; height: 200px" >请选择图片</div>' +
+                                                '<form class="uploadForm" action="/pic/upload/2" method="post"  enctype="multipart/form-data"><input name="file" type="file" value="选择图片" /><input name="num" type=hidden value="'+ nextNum +'" /><button class="btn btn-primary commitImg">提交</button></form>' +
+                                            '</div>' +
+                                           '</div>')
+                contentNumNode.text(nextNum);
+
+                //为上传文件的表单添加处理方法
+                $(".uploadForm").ajaxForm(function(data){
+                    console.log(data)
+                    var num = data.data.num;
+                    var imgPath = data.data.imgPath
+                    var condition = "[num=" + num + "]";
+                    console.log("condition:--" + condition)
+                    var targetDiv = $("#addAnswerArea").find(condition).find(".imgPlace");
+                    console.log(targetDiv)
+                    // alert(targetDiv[0].innerHTML)
+                    targetDiv.empty();
+                    targetDiv.append('<img src="'+ imgPath+'" style="height:100%"/>');
+
+                    // if(data=="1"){
+                    //     alert("提交成功！");
+                    // }
+                });
+            })
+
+
+            //模块删除按钮
+            $("#addAnswerArea").on("click", ".deleteContent", function(e){
+                $(this).parent().remove();
+                var answerContentList = $("#addAnswerArea").find(".answerContent");
+                console.log(answerContentList.length)
+                var i = 1;
+                $.each(answerContentList, function(index, obj){
+                    console.log(obj.innerHTML);
+                    $(obj).attr("num", i);
+                    $(obj).find(".contentNumBtn").text(i);
+                    i++;
+                })
+                $("#contentNum").text(i-1);
+            })
+
+            //提交回答
+            $("#submitAnswer").click(function(){
+                var questionId = $("#questionId").text()
+                var contentNodeList = $(".content")
+                var json = "{'data':["
+                $.each(contentNodeList, function(index, contentNode){
+                    var nodeType = contentNode.attr("type")
+                    var value
+                    var type
+                    if(nodeType=="text"){
+                        value = contentNode.find("textarea").val()
+                        type=0
+                    }else if(nodeType=="img"){
+                        value = contentNode.find("img").attr("src")
+                        type=1
+                    }
+                    json += "{'content':'" + value + "', 'type:'" + type + "},";
+                })
+                json+="]}"
+                console.log(json)
+                $.ajax({
+                    url: '/answer/' + questionId,
+                    type: 'post',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(json),
+                    success: function(data){
+                        if(data.code==0){
+                            alert("添加成功")
+                        }else{
+                            if(data.hint){
+                                alert(data.hint)
+                            }
+                        }
+                    }
+                })
+            })
+
+
+
+
+        })
+    </script>
 </head>
 <body>
 <div class="container">
@@ -28,66 +740,114 @@
                     </div>
                     <div>
                         <ul class="nav navbar-nav">
-                            <li class="dropdown"><a href="#">社区首页</a></li>
-                            <li><a href="#">文章</a></li>
-                            <li><a href="#" style="color: #2e6da4">问答</a></li>
+                            <li class="dropdown"><a href="/toIndex">社区首页</a></li>
+                            <li><a href="/toArticle">文章</a></li>
+                            <li><a href="/toQuestion" style="color: #2e6da4">问答</a></li>
                         </ul>
                     </div>
                     <form class="navbar-form navbar-left" role="search">
                         <div class="form-group">
                             <input type="text" class="form-control" placeholder="Search">
                         </div>
-                        <button type="button" class="btn btn-default">搜问题</button>
-                        <button type="button" class="btn btn-default">我要提问</button>
+                        <button type="submit" class="btn btn-default">搜问题</button>
+                        <!--<button class="btn btn-default" data-toggle="modal" data-target="#myModal">我要提问</button>-->
+
                     </form>
+
                     <div>
-                        <ul class="nav navbar-nav navbar-right">
-                            <li th:if="${session.user}">
+                        <ul class="nav navbar-nav navbar-right" id="userInfo">
+                            <li th:if="${session.user}" id="userCenter">
                                 <div>
                                     <div class="dropdown">
                                         <span class="dropdown-toggle" id="menu1" data-toggle="dropdown" >
                                              <img width="45px" src="../static/img/da8e974dc_xs.jpg" class="img-thumbnail"/>
                                         </span>
                                         <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
-                                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">个人中心</a></li>
-                                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">退出登录</a></li>
+                                            <li role="presentation"><a role="menuitem" tabindex="-1" href="/toHomePage" target="_blank">个人中心</a></li>
+                                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#" id="logout">退出登录</a></li>
                                         </ul>
                                     </div>
                                 </div>
                             </li>
-                            <!--<li th:if="${session.user==null}"><a href="/toRegister"><span class="glyphicon glyphicon-user"></span> 注册</a></li>-->
-                            <!--<li th:if="${session.user==null}"><a href="/toLogin"><span class="glyphicon glyphicon-log-in"></span> 登录</a></li>-->
+
+                            <li th:if="${session.user==null}" id="register"><a href="/toRegister"><span class="glyphicon glyphicon-user"></span> 注册</a></li>
+                            <li th:if="${session.user==null}" id="login"><a href="/toLogin"><span class="glyphicon glyphicon-log-in"></span> 登录</a></li>
                         </ul>
                     </div>
                 </div>
+
             </nav>
 
             <div style="background-color: #F6F6F6;">
-                题目: 复联4有人同情灭霸吗?
+                <span style="visibility: hidden" id="questionId" th:text="${resultView.data.questionId}"></span>
+                <div class="questionTitle" th:text="${resultView.data.questionTitle}">题目: 复联4有人同情灭霸吗?</div>
+                <div class="questionContent" th:text="${resultView.data.questionContent}"></div>
                 <br/><br/>
-                <button class="btn-primary">关注问题</button>
-                <button class="btn-default">写回答</button>
-                <button class="btn-default">举报</button>
+                <button class="btn-default collectQuestion" collect="0">关注问题</button>
+                <button class="btn-default" id="addAnswer" data-toggle="modal" data-target="#addAnswerModal">写回答</button>
+                <button class="btn-default report">举报</button>
             </div>
+
+            <div class="modal fade" id="addAnswerModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title" id="myModalLabel">我的回答</h4>
+                        </div>
+                        <span style="visibility: hidden" id="contentNum">0</span>
+                        <div id="addAnswerArea"></div>
+                        <br/><br/>
+                        <button class="btn btn-default" id="addAnswerText">添加文本</button>
+                        <button class="btn btn-default" id="addAnswerImg">添加图片</button>
+                        <div class="modal-footer">
+                            <br/>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                            <button type="button" class="btn btn-primary submitAnswer">提交</button>
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal -->
+            </div>
+
             <br/>
-            <div class="panel panel-default" style="word-wrap:break-word;word-break:break-all; padding: 50px; width: 90%">
-                <div style="margin: 20px">
-                    <img width="30px" src="../static/img/da8e974dc_xs.jpg" alt="图片" />
-                    <span style="text-align: center">许我半世繁华</span><br/>
-                    <span style="color: darkgray">340个人赞同该回答</span>
+            <div class="panel panel-default answerNode" style="word-wrap:break-word;word-break:break-all; padding: 50px; width: 90%">
+                <div style="margin: 20px" class="answerUserInfo">
+                    <img width="30px" th:src="@{${resultView.data.answerDTO.userPic}}" alt="图片" />
+                    <span style="text-align: center" th:text="${resultView.data.answerDTO.userName}">许我半世繁华</span><br/>
+                    <span style="color: darkgray" th:text="${resultView.data.answerDTO.agreeCount}+'个人赞同该回答'">340个人赞同该回答</span>
+                    <span class="answerId" th:text="${resultView.data.answerDTO.answerId}" style="visibility: hidden"></span>
                 </div>
-                <div style="margin: 30px">
-                    灭霸是一个纯粹的人他能放下宝石，真的回到“花园”种田，没有手下，没有权力，此时的灭霸，只有那一地的南瓜属于他。看到他在花园里步履蹒跚的样子，我甚至有些惊讶，这还是复联3那个杀伐征战的灭霸吗？原来灭霸也要吃东西？也会做菜？还会放盐？<br/><br/><img src="https://pic1.zhimg.com/50/v2-d7c3c0dd9d89bf23591af79393a086d4_hd.jpg" width="100%"/><br/>当雷神砍掉他一条胳膊，逼问他宝石下落时，他没有丝毫的恐惧，也没想过求饶，更不会撒谎。可能他早已想到自己会有这一天，自己一生的目标已经实现，死亡又算什么呢？当星云说，父亲从不会撒谎，灭霸居然会心的笑了，说“可能我之前对你太苛刻了”，我相信此时灭霸的这句话是真心的。<br/><img src="https://pic3.zhimg.com/50/v2-c44d476933fc116f64edd29527aca4cf_hd.jpg" width="100%"/><br/>14年的灭霸看到星云脑中的影像，当看到未来的自己真的实现了目标，他再次露出了笑容，而看到自己被砍头时，他的表情没有任何变化，原来他早已看透：这是他的宿命。影片结尾，他带上空的手套，说“我就是天命”，随后托尼打了响指看着自己的手下一个个化为灰烬，他再次坐了下来，这和复联3结尾大功告成后，坐下自己小屋前的灭霸何其相似！<br/><img src="https://pic1.zhimg.com/50/v2-7192223b005f904d173595066317edea_hd.jpg" width="100%"/><br/>当时我以为他坐下来还要说些什么，可是他什么也没说，静静等待自己的“宿命”。我们都说复联4是对“钢铁侠”“美队”等初代复联人物最好的交代但是这又何尝不是对灭霸的交待呢？钢铁侠见到了当年的父亲，美队见到了曾经的卡特灭霸也看到了未来成功的自己……铁马金戈，功败垂成。灭霸释怀了，我们也不再那么恨他了。
+                <div style="margin: 30px" class="answerNode">
+                    <div th:each="answerContent:${resultView.data.answerDTO.answerContentList}">
+                        <div th:if="${answerContent.type==1}">
+                            <img th:src="@{${answerContent.content}}">
+                        </div>
+                        <div th:if="${answerContent.type==0}" th:text="${answerContent.content}">
+                        </div>
+                    </div>
+
                     <br/>
                     <br/>
-                    <span style="color: darkgray; float: right;" >2019-04-29</span>
+                    <span style="color: darkgray; float: right;" th:text="${resultView.data.answerDTO.createTime}">2019-04-29</span>
                 </div>
                 <br/>
                 <div style="position:relative; left: 30px;">
-                    <span class="btn btn-primary">赞同1.5k</span>
-                    <span class="btn btn-primary">不赞同0.5k</span>
-                    <span>200条评论</span>
-                    <span class="btn btn-default">收藏</span>
+                    <span th:text=" '赞同' + ${resultView.data.answerDTO.agreeCount}" class="btn btn-default agree">赞同1.1k</span>
+                    <span th:text="'不赞同' + ${resultView.data.answerDTO.disagreeCount}" class="btn btn-default disagree">不赞同0.2k</span>
+                    <span class="toComment"><a class="getComment" th:text="${resultView.data.answerDTO.commentCount} + '条评论'"  href="#">120条评论</a></span>
+                    <span class="btn btn-default collect" collect="0">收藏</span>
+                    <span><input type="hidden" class="commentCount" th:attr="value=${resultView.data.answerDTO.commentCount}"></span></span>
+                </div>
+
+                <div class="commentNode">
+
+                </div>
+                <div class="commentNavNode">
+
+                </div>
+                <div style="width: 100%; position: relative; left: 20px" class="toAddComment">
+                    <!--<textarea style="width: 70%" class="inputComment" placeholder="我的评论"/>-->
+                    <!--<button style="position: relative; left:10px" class="btn btn-primary submitComment">提交</button>-->
                 </div>
             </div>
         </div>

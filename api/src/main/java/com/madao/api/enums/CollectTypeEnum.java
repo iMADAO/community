@@ -6,7 +6,8 @@ import lombok.Getter;
 public enum CollectTypeEnum {
     POST((byte)0, "贴吧"),
     ANSWER((byte)1, "问答"),
-    ARTICLE((byte)2, "文章")
+    QUESTION((byte)2, "问题"),
+    ARTICLE((byte)3, "文章")
     ;
     byte code;
     String message;

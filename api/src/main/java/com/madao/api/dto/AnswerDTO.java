@@ -1,9 +1,11 @@
 package com.madao.api.dto;
 
+import com.madao.api.entity.AnswerContent;
 import com.madao.api.enums.AgreeEnum;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 public class AnswerDTO {
@@ -30,6 +32,8 @@ public class AnswerDTO {
     private Byte agreeType = AgreeEnum.DEFAULT.getCode();
 
     private Integer commentCount;
+
+    private List<AnswerContent> answerContentList;
 
     private Date createTime;
 

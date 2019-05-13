@@ -1,15 +1,12 @@
 package com.madao.question.controller;
 
-import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.madao.api.Exception.ResultException;
 import com.madao.api.dto.AnswerCommentDTO;
-import com.madao.api.dto.AnswerDTO;
-import com.madao.api.entity.Answer;
 import com.madao.api.entity.AnswerComment;
 import com.madao.api.entity.AnswerContent;
-import com.madao.api.entity.User;
-import com.madao.api.enums.AgreeEnum;
+import com.madao.api.form.AnswerContentForm;
+import com.madao.api.form.AnswerForm;
 import com.madao.api.service.UserService;
 import com.madao.api.utils.ResultUtil;
 import com.madao.api.utils.ResultView;
@@ -18,7 +15,6 @@ import com.madao.question.service.CollectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -154,8 +150,30 @@ public class AnswerController {
 
     //对一组回答判断用户是否已收藏
     @RequestMapping("/answer/collect/getList")
-    ResultView getCollectFlagInList(@RequestBody @RequestParam("answerIdList") List<Long> answerIdList, @RequestParam("userId") Long userId){
+    public ResultView getCollectFlagInList(@RequestBody @RequestParam("answerIdList") List<Long> answerIdList, @RequestParam("userId") Long userId){
         List<Byte> resultList =  collectService.checkCollectInList(userId, answerIdList);
         return ResultUtil.returnSuccess(resultList);
+    }
+
+    @PostMapping("/answer/comment")
+    public ResultView addAnswerComment(@RequestParam("answerId") Long answerId, @RequestParam("userId") Long userId, @RequestParam("commentContent") String commentContent){
+        try{
+            AnswerComment comment = answerService.addAnswerComment(answerId, userId, commentContent);
+            return ResultUtil.returnSuccess(comment);
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.returnFail("请稍后重试");
+        }
+    }
+
+    @PostMapping("/answer/add")
+    public ResultView addAnswer(@RequestBody AnswerForm form){
+        try {
+            answerService.addAnswer(form);
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.returnFail("请稍后重试");
+        }
+        return ResultUtil.returnSuccess();
     }
 }

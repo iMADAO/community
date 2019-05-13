@@ -4,11 +4,13 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.madao.api.Exception.ResultException;
 import com.madao.api.dto.AnswerCommentDTO;
-import com.madao.api.dto.AnswerDTO;
 import com.madao.api.entity.*;
 import com.madao.api.enums.AgreeEnum;
 import com.madao.api.enums.CommentEnum;
+import com.madao.api.form.AnswerContentForm;
+import com.madao.api.form.AnswerForm;
 import com.madao.api.service.UserService;
+import com.madao.api.utils.KeyUtil;
 import com.madao.question.bean.AgreeExample;
 import com.madao.question.bean.AnswerCommentExample;
 import com.madao.question.bean.AnswerContentExample;
@@ -23,6 +25,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -218,5 +221,37 @@ public class AnswerService {
         }
         PageInfo<AnswerCommentDTO> pageInfo = new PageInfo<>(answerCommentDTOList);
         return pageInfo;
+    }
+
+    public AnswerComment addAnswerComment(Long answerId, Long userId, String commentContent) {
+        AnswerComment comment = new AnswerComment();
+        comment.setCommentId(KeyUtil.genUniquKeyOnLong());
+        comment.setCommentContent(commentContent);
+        comment.setUserId(userId);
+        comment.setIsVisible(CommentEnum.VISIBLE.getCode());
+        comment.setAnswerId(answerId);
+        comment.setCreateTime(new Date());
+        answerCommentMapper.insertSelective(comment);
+        return comment;
+    }
+
+    public void addAnswer(AnswerForm form) {
+        Answer answer = new Answer();
+        answer.setAnswerId(KeyUtil.genUniquKeyOnLong());
+        answer.setQuestionId(form.getQuestionId());
+        answer.setUserId(form.getUserId());
+        answerMapper.insertSelective(answer);
+
+        int i = 1;
+        for(AnswerContentForm answerContentForm: form.getAnswerContentFormList()){
+            AnswerContent answerContent = new AnswerContent();
+            BeanUtils.copyProperties(answerContentForm, answerContent);
+            answerContent.setAnswerId(answer.getAnswerId());
+            answerContent.setContentId(KeyUtil.genUniquKeyOnLong());
+            answerContent.setContentOrder(i);
+            i++;
+
+            answerContentMapper.insertSelective(answerContent);
+        }
     }
 }

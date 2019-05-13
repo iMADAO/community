@@ -13,6 +13,10 @@
   <select id="getAnswer" resultType="com.madao.api.dto.AnswerDTO">
     select q.question_id questionId, q.answer_count answerCount, q.question_title questionTitle, a.answer_id answerId, a.user_id userId, a.agree_count agreeCount, a.disagree_count disagreeCount, a.comment_count commentCount, a.create_time createTime, a.update_time updateTime from question q, answer a where a.question_id=q.question_id
   </select>
+
+  <select id="getAnswerDTOById" resultType="com.madao.api.dto.AnswerDTO" parameterType="java.lang.Long">
+        select q.question_id questionId, q.answer_count answerCount, q.question_title questionTitle, a.answer_id answerId, a.user_id userId, a.agree_count agreeCount, a.disagree_count disagreeCount, a.comment_count commentCount, a.create_time createTime, a.update_time updateTime from question q, answer a where a.question_id=q.question_id and a.answer_id=#{param1}
+  </select>
   <sql id="Example_Where_Clause" >
     <where >
       <foreach collection="oredCriteria" item="criteria" separator="or" >

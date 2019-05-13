@@ -1,6 +1,7 @@
 package com.madao.question.controller;
 
 import com.madao.api.dto.AnswerDTO;
+import com.madao.api.dto.QuestionDTO;
 import com.madao.api.entity.Answer;
 import com.madao.api.entity.Question;
 import com.madao.api.entity.User;
@@ -48,11 +49,32 @@ public class QuestionController {
 
     }
 
-    @ResponseBody
     @GetMapping("/getAnswer")
     public List<AnswerDTO> getQuestion(){
         List<AnswerDTO> answerDTO =  questionService.getQuestion();
         return answerDTO;
     }
 
+
+    @RequestMapping("/question/info")
+    public ResultView getQuestionDTOById(@RequestParam("questionId") Long questionId, @RequestParam("answerId") Long answerId){
+        try {
+            QuestionDTO questionDTO = questionService.getQuestionDTO(questionId, answerId);
+            return ResultUtil.returnSuccess(questionDTO);
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.returnFail(e.getMessage());
+        }
+    }
+
+    @RequestMapping("/question/collect")
+    public ResultView collectQuestion(@RequestParam("questionId") Long questionId, @RequestParam("userId") Long userId, @RequestParam("collectType") Byte collectType){
+        try {
+            questionService.collectQuestion(questionId, userId, collectType);
+            return ResultUtil.returnSuccess();
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.returnFail(e.getMessage());
+        }
+    }
 }

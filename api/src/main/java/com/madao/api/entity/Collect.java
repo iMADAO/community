@@ -3,6 +3,14 @@ package com.madao.api.entity;
 public class Collect {
     private Long collectId;
 
+    public Collect(Long collectId, Long userId, Long targetId, Byte type) {
+        this.collectId = collectId;
+        this.userId = userId;
+        this.targetId = targetId;
+        this.type = type;
+    }
+
+
     private Long userId;
 
     private Long targetId;
