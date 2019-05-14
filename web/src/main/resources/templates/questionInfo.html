@@ -160,8 +160,8 @@
                             if (data.code == 0) {
                                 if (data.data) {
                                     agree.text('赞同' + data.data);
-                                    agree.attr("class", "btn btn-primary agree")
                                 }
+                                agree.attr("class", "btn btn-primary agree")
                                 //code==1表示失败
                             } else if (data.code == 1) {
                                 if (data.hint) {
@@ -189,8 +189,8 @@
                             if (data.code == 0) {
                                 if (data.data) {
                                     agree.text('赞同' + data.data);
-                                    agree.attr("class", "btn btn-default agree")
                                 }
+                                agree.attr("class", "btn btn-default agree")
                                 //code==1表示失败
                             } else if (data.code == 1) {
                                 if (data.hint) {
@@ -310,8 +310,8 @@
                             if (data.code == 0) {
                                 if (data.data) {
                                     disagree.text('不赞同' + data.data);
-                                    disagree.attr("class", "btn btn-primary disagree")
                                 }
+                                disagree.attr("class", "btn btn-primary disagree")
                                 //code==1表示失败
                             } else if (data.code == 1) {
                                 // disagree.attr("class", "btn btn-primary disagree")
@@ -340,8 +340,9 @@
                             if (data.code == 0) {
                                 if (data.data) {
                                     disagree.text('不赞同' + data.data);
-                                    disagree.attr("class", "btn btn-default disagree")
+
                                 }
+                                disagree.attr("class", "btn btn-default disagree")
                                 //code==1表示失败
                             } else if (data.code == 1) {
                                 // disagree.attr("class", "btn btn-default disagree")
@@ -644,7 +645,7 @@
                                             '<br/><button class="btn btn-default contentNumBtn">'+ nextNum +'</button><button class="btn btn-default deleteContent">删除</button>' +
                                             '<div class="content" style="padding 10px" type="img">' +
                                                 '<div class="imgPlace" style="width: 100%; height: 200px" >请选择图片</div>' +
-                                                '<form class="uploadForm" action="/pic/upload/2" method="post"  enctype="multipart/form-data"><input name="file" type="file" value="选择图片" /><input name="num" type=hidden value="'+ nextNum +'" /><button class="btn btn-primary commitImg">提交</button></form>' +
+                                                '<form class="uploadForm" action="/pic/upload" method="post"  enctype="multipart/form-data"><input name="file" type="file" value="选择图片" /><input name="num" type=hidden value="'+ nextNum +'" /><button class="btn btn-primary commitImg">提交</button></form>' +
                                             '</div>' +
                                            '</div>')
                 contentNumNode.text(nextNum);
@@ -660,7 +661,7 @@
                     console.log(targetDiv)
                     // alert(targetDiv[0].innerHTML)
                     targetDiv.empty();
-                    targetDiv.append('<img src="'+ imgPath+'" style="height:100%"/>');
+                    targetDiv.append('<img src="'+ imgPath+'" style="height:100%" picName="'+ data.data.imgName+'"/>');
 
                     // if(data=="1"){
                     //     alert("提交成功！");
@@ -685,30 +686,31 @@
             })
 
             //提交回答
-            $("#submitAnswer").click(function(){
+            $("#submitBtn").click(function(){
                 var questionId = $("#questionId").text()
                 var contentNodeList = $(".content")
-                var json = "{'data':["
+                var dataArray=[];
                 $.each(contentNodeList, function(index, contentNode){
-                    var nodeType = contentNode.attr("type")
+                    var nodeType = $(contentNode).attr("type")
                     var value
                     var type
                     if(nodeType=="text"){
-                        value = contentNode.find("textarea").val()
+                        value = $(contentNode).find("textarea").val()
                         type=0
                     }else if(nodeType=="img"){
-                        value = contentNode.find("img").attr("src")
+                        value = $(contentNode).find("img").attr("src")
                         type=1
                     }
-                    json += "{'content':'" + value + "', 'type:'" + type + "},";
+                    var data = {"content":value, "type":type};
+                    dataArray.push(data);
                 })
-                json+="]}"
-                console.log(json)
+                console.log(JSON.stringify(dataArray))
+
                 $.ajax({
                     url: '/answer/' + questionId,
                     type: 'post',
                     contentType: "application/json; charset=utf-8",
-                    data: JSON.stringify(json),
+                    data: JSON.stringify(dataArray),
                     success: function(data){
                         if(data.code==0){
                             alert("添加成功")
@@ -740,9 +742,10 @@
                     </div>
                     <div>
                         <ul class="nav navbar-nav">
-                            <li class="dropdown"><a href="/toIndex">社区首页</a></li>
-                            <li><a href="/toArticle">文章</a></li>
-                            <li><a href="/toQuestion" style="color: #2e6da4">问答</a></li>
+                            <li class="dropdown"><a href="/toIndex" target="_blank">社区首页</a></li>
+                            <li><a href="/toArticle" target="_blank">文章</a></li>
+                            <li><a href="/toQuestion" style="color: #2e6da4" target="_blank">问答</a></li>
+                            <li><a href="http://www.baidu.com" target="_blank" style="color: #2e6da4">百度</a></li>
                         </ul>
                     </div>
                     <form class="navbar-form navbar-left" role="search">
@@ -803,7 +806,7 @@
                         <div class="modal-footer">
                             <br/>
                             <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                            <button type="button" class="btn btn-primary submitAnswer">提交</button>
+                            <button type="button" class="btn btn-primary" id="submitBtn">提交</button>
                         </div>
                     </div><!-- /.modal-content -->
                 </div><!-- /.modal -->
@@ -820,7 +823,7 @@
                 <div style="margin: 30px" class="answerNode">
                     <div th:each="answerContent:${resultView.data.answerDTO.answerContentList}">
                         <div th:if="${answerContent.type==1}">
-                            <img th:src="@{${answerContent.content}}">
+                            <img class="img-responsive"  th:src="@{${answerContent.content}}">
                         </div>
                         <div th:if="${answerContent.type==0}" th:text="${answerContent.content}">
                         </div>

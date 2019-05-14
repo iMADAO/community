@@ -17,6 +17,7 @@ import com.madao.api.utils.ResultUtil;
 import com.madao.api.utils.ResultView;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -29,6 +30,8 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -38,8 +41,11 @@ public class QuestionController {
     @Autowired
     QuestionService questionService;
 
-    public static final String PICPATH_PREFIX = "http://localhost:8080/pic";
-    public static final String PICLOCAL_PATH = "/usr/local/apache-tomcat-7.0.79/webapps/pic";
+    @Value("${PIC_PREFIX}")
+    private String PICPATH_PREFIX;
+
+    @Value("${PICLOCAL_PATH}")
+    private String PICLOCAL_PATH;
 
 
     @ResponseBody
@@ -191,28 +197,12 @@ public class QuestionController {
     }
 
 
-    @ResponseBody
-    @RequestMapping("/pic/upload")
-    public ResultView  fileUpload2(@RequestParam("file") CommonsMultipartFile file, HttpServletRequest request){
-        String fileName = KeyUtil.genStringCode(10)+file.getOriginalFilename();
-        File picFile = new File(PICLOCAL_PATH, fileName);
-        //通过CommonsMultipartFile的方法直接写文件（注意这个时候）
-        try {
-            file.transferTo(picFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return ResultUtil.returnFail("请稍后重试");
-        }
-        String picPath = Paths.get(PICPATH_PREFIX, fileName).toString();
-        return ResultUtil.returnSuccess(picPath);
-    }
 
     @ResponseBody
-    @RequestMapping("/pic/upload/2")
-    public static ResultView upload(@RequestParam("file") MultipartFile imageFile, @RequestParam("num") Integer num) {
-        System.out.println("Num....." +  num);
+    @RequestMapping("/pic/upload")
+    public ResultView upload(@RequestParam("file") MultipartFile imageFile, @RequestParam("num") Integer num) {
         if (imageFile.isEmpty()) {
-            return null;
+            return ResultUtil.returnFail("未选择图片");
         }
         String filename = imageFile.getOriginalFilename();
 
@@ -223,7 +213,17 @@ public class QuestionController {
             ext = "";
         }
 
-        String nfileName = KeyUtil.genStringCode(10) + ext;
+        String nfileName = KeyUtil.genUniquKeyOnLong() + ext;
+        Path picPath = Paths.get(PICLOCAL_PATH);
+        if(Files.notExists(picPath)){
+            try {
+                System.out.println("creating path........." + picPath);
+                Files.createDirectory(picPath);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return ResultUtil.returnFail("请稍后重试");
+            }
+        }
         File targetFile = Paths.get(PICLOCAL_PATH, nfileName).toFile();
         try {
             imageFile.transferTo(targetFile);
@@ -237,6 +237,7 @@ public class QuestionController {
         FileUploadResult result = new FileUploadResult();
         result.setImgPath(accessUrl);
         result.setNum(num);
+        result.setImgName(nfileName);
         return ResultUtil.returnSuccess(result);
     }
 

@@ -31,6 +31,9 @@ hystrix:
         isolation:
           thread:
             timeoutInMilliseconds: 600000
+
+PIC_PREFIX: http://localhost:8080/pic
+PICLOCAL_PATH: /pic
 #hystrix:
 #  threadpool:
 #    default:

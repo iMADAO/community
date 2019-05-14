@@ -57,8 +57,10 @@ public class UserService {
 
     public static final String REGEX_EMAIL = "^([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
 
-    public User getUserById(Long userId){
-        return userMapper.selectByPrimaryKey(userId);
+    public User getUserInfoById(Long userId){
+        User user =  userMapper.selectByPrimaryKey(userId);
+        user.setPassword("");
+        return user;
     }
 
     public User loginValidate(UserLoginForm form){

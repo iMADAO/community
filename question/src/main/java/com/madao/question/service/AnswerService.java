@@ -249,6 +249,7 @@ public class AnswerService {
             answerContent.setAnswerId(answer.getAnswerId());
             answerContent.setContentId(KeyUtil.genUniquKeyOnLong());
             answerContent.setContentOrder(i);
+            answerContent.setType(answerContentForm.getType().intValue());
             i++;
 
             answerContentMapper.insertSelective(answerContent);
