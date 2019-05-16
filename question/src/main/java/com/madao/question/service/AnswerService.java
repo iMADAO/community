@@ -7,7 +7,7 @@ import com.madao.api.dto.AnswerCommentDTO;
 import com.madao.api.entity.*;
 import com.madao.api.enums.AgreeEnum;
 import com.madao.api.enums.CommentEnum;
-import com.madao.api.form.AnswerContentForm;
+import com.madao.api.form.ContentForm;
 import com.madao.api.form.AnswerForm;
 import com.madao.api.service.UserService;
 import com.madao.api.utils.KeyUtil;
@@ -243,7 +243,7 @@ public class AnswerService {
         answerMapper.insertSelective(answer);
 
         int i = 1;
-        for(AnswerContentForm answerContentForm: form.getAnswerContentFormList()){
+        for(ContentForm answerContentForm: form.getAnswerContentFormList()){
             AnswerContent answerContent = new AnswerContent();
             BeanUtils.copyProperties(answerContentForm, answerContent);
             answerContent.setAnswerId(answer.getAnswerId());

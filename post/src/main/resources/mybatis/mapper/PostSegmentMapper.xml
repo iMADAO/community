@@ -10,7 +10,7 @@
     <result column="comment_count" property="commentCount" jdbcType="INTEGER" />
   </resultMap>
   <select id="getFirstSegmentId" resultType="java.lang.Long" parameterType="java.lang.Long">
-    select segment_id from segment where post_id=#{param1} and seg_order=1
+    select segment_id from post_segment where post_id=#{param1} and seg_order=1
   </select>
   <sql id="Example_Where_Clause" >
     <where >

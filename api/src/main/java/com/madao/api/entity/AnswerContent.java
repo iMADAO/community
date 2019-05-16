@@ -1,10 +1,15 @@
 package com.madao.api.entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+
 public class AnswerContent {
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long contentId;
 
     private String content;
 
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long answerId;
 
     private Integer type;

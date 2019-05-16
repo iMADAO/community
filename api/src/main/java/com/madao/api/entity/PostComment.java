@@ -5,19 +5,17 @@ import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 
 import java.util.Date;
 
-public class AnswerComment {
+public class PostComment {
     @JsonSerialize(using = ToStringSerializer.class)
     private Long commentId;
 
     @JsonSerialize(using = ToStringSerializer.class)
-    private Long answerId;
+    private Long segmentId;
 
     @JsonSerialize(using = ToStringSerializer.class)
     private Long userId;
 
     private Date createTime;
-
-    private Byte isVisible;
 
     private String commentContent;
 
@@ -29,12 +27,12 @@ public class AnswerComment {
         this.commentId = commentId;
     }
 
-    public Long getAnswerId() {
-        return answerId;
+    public Long getSegmentId() {
+        return segmentId;
     }
 
-    public void setAnswerId(Long answerId) {
-        this.answerId = answerId;
+    public void setSegmentId(Long segmentId) {
+        this.segmentId = segmentId;
     }
 
     public Long getUserId() {
@@ -51,14 +49,6 @@ public class AnswerComment {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
-    }
-
-    public Byte getIsVisible() {
-        return isVisible;
-    }
-
-    public void setIsVisible(Byte isVisible) {
-        this.isVisible = isVisible;
     }
 
     public String getCommentContent() {

@@ -1,16 +1,22 @@
 package com.madao.api.entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+
 import java.util.Date;
 
 public class Post {
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long postId;
 
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long userId;
 
     private Date createTime;
 
     private Date updateTime;
 
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long categoryId;
 
     private Integer segmentCount;

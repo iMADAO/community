@@ -1,6 +1,10 @@
 package com.madao.api.entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+
 public class PostCategory {
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long categoryId;
 
     @Override
@@ -15,6 +19,7 @@ public class PostCategory {
 
     private String categoryName;
 
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long parentNode;
 
     private Integer categoryOrder;

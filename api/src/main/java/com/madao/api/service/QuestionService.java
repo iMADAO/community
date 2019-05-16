@@ -2,7 +2,6 @@ package com.madao.api.service;
 
 import com.madao.api.dto.AnswerDTO;
 import com.madao.api.entity.User;
-import com.madao.api.form.AnswerContentForm;
 import com.madao.api.form.AnswerForm;
 import com.madao.api.form.QuestionForm;
 import com.madao.api.utils.ResultView;

@@ -7,16 +7,15 @@
     <result column="type" property="type" jdbcType="TINYINT" />
     <result column="content_order" property="contentOrder" jdbcType="INTEGER" />
   </resultMap>
+
   <resultMap id="ResultMapWithBLOBs" type="com.madao.api.entity.SegmentContent" extends="BaseResultMap" >
     <result column="content" property="content" jdbcType="LONGVARCHAR" />
   </resultMap>
-  
-  <select id="getFirstTextContentBySegmentId" resultMap="BaseResultMap" parameterType="java.lang.Long">
-    select content_id, segment_id, content, type, content_order from segment_content where type=0 order by content_order asc limit 1
+  <select id="getFirstTextContentBySegmentId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select content_id, segment_id, content, type, content_order from segment_content where segment_id=#{param1} and type=0 order by content_order limit 1
   </select>
-  
-  <select id="getPicContentBySegmentId" resultMap="BaseResultMap" parameterType="java.lang.Long">
-    select content_id contentId, segment_id segmentId, content, type, content_order contentOrder from segment_content where type=1 order by content_order asc limit 3
+  <select id="getPicContentBySegmentId" resultMap="BaseResultMap">
+    select content_id, segment_id, content, type, content_order from segment_content where segment_id=#{param1} and type=1 order by content_order limit 3
   </select>
   <sql id="Example_Where_Clause" >
     <where >

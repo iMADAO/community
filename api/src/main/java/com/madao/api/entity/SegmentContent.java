@@ -1,6 +1,20 @@
 package com.madao.api.entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+
 public class SegmentContent {
+    @JsonSerialize(using = ToStringSerializer.class)
+    private Long contentId;
+
+    @JsonSerialize(using = ToStringSerializer.class)
+    private Long segmentId;
+
+    private Byte type;
+
+    private Integer contentOrder;
+
+    private String content;
 
     @Override
     public String toString() {
@@ -12,15 +26,18 @@ public class SegmentContent {
                 ", content='" + content + '\'' +
                 '}';
     }
-    private Long contentId;
 
-    private Long segmentId;
+    public SegmentContent() {
+    }
 
-    private Byte type;
+    public SegmentContent(Long contentId, Long segmentId, Byte type, Integer contentOrder, String content) {
 
-    private Integer contentOrder;
-
-    private String content;
+        this.contentId = contentId;
+        this.segmentId = segmentId;
+        this.type = type;
+        this.contentOrder = contentOrder;
+        this.content = content;
+    }
 
     public Long getContentId() {
         return contentId;

@@ -7,7 +7,7 @@ import com.madao.api.entity.User;
 import com.madao.api.enums.AgreeEnum;
 import com.madao.api.enums.ErrorEnum;
 import com.madao.api.form.AnswerCommentAddForm;
-import com.madao.api.form.AnswerContentForm;
+import com.madao.api.form.ContentForm;
 import com.madao.api.form.AnswerForm;
 import com.madao.api.form.QuestionForm;
 import com.madao.api.service.QuestionService;
@@ -23,7 +23,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -244,7 +243,7 @@ public class QuestionController {
     //用户添加回答
     @ResponseBody
     @PostMapping("/answer/{questionId}")
-    public ResultView addAnswer(@RequestBody List<AnswerContentForm> form, @PathVariable("questionId") Long questionId, HttpServletRequest request){
+    public ResultView addAnswer(@RequestBody List<ContentForm> form, @PathVariable("questionId") Long questionId, HttpServletRequest request){
         Object userObject = request.getSession().getAttribute("user");
         if(userObject==null)
             return ResultUtil.returnFail("用户未登录");

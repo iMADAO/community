@@ -1,12 +1,18 @@
 package com.madao.api.entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+
 import java.util.Date;
 
 public class Answer {
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long answerId;
 
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long questionId;
 
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long userId;
 
     private Integer agreeCount;

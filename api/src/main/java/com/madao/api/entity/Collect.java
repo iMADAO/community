@@ -1,6 +1,10 @@
 package com.madao.api.entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+
 public class Collect {
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long collectId;
 
     public Collect(Long collectId, Long userId, Long targetId, Byte type) {
@@ -10,9 +14,10 @@ public class Collect {
         this.type = type;
     }
 
-
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long userId;
 
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long targetId;
 
     private Byte type;

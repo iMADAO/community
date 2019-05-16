@@ -1,5 +1,6 @@
 package com.madao.post.service;
 
+import com.madao.api.dto.ParentCategoryDTO;
 import com.madao.api.entity.PostCategory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,10 +21,13 @@ public class PostServiceTest {
 
     @Test
     public void test(){
-        List<PostCategory> postCategoryList = postService.getParentCategoryInOrder();
-        for(PostCategory postCategory: postCategoryList){
-            System.out.println(postCategory);
-        }
+        ParentCategoryDTO parentCategoryDTO = postService.getParentCategoryInOrder();
+    }
+
+    @Test
+    public void test2(){
+        List<PostCategory> postCategoryList = postService.getCategoryInOrderByParentId(1557831588293496894L);
+        System.out.println(postCategoryList.size());
     }
 
 }

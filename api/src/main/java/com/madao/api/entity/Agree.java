@@ -1,5 +1,8 @@
 package com.madao.api.entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+
 public class Agree {
     public Agree() {
     }
@@ -11,7 +14,10 @@ public class Agree {
         this.type = type;
     }
 
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long userId;
+
+    @JsonSerialize(using = ToStringSerializer.class)
 
     private Long answerId;
 

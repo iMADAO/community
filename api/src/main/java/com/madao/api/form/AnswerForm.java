@@ -6,7 +6,7 @@ import java.util.List;
 
 @Data
 public class AnswerForm {
-    public AnswerForm(Long questionId, Long userId, List<AnswerContentForm> answerContentFormList) {
+    public AnswerForm(Long questionId, Long userId, List<ContentForm> answerContentFormList) {
         this.questionId = questionId;
         this.userId = userId;
         this.answerContentFormList = answerContentFormList;
@@ -17,5 +17,5 @@ public class AnswerForm {
 
     private Long questionId;
     private Long userId;
-    private List<AnswerContentForm> answerContentFormList;
+    private List<ContentForm> answerContentFormList;
 }

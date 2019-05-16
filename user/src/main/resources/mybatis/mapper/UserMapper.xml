@@ -102,7 +102,7 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.madao.user.bean.User" >
+  <insert id="insert" parameterType="com.madao.api.entity.User" >
     insert into user (user_id, user_name, role_id, 
       password, user_pic, email, 
       phone, state)
@@ -110,7 +110,7 @@
       #{password,jdbcType=VARCHAR}, #{userPic,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, 
       #{phone,jdbcType=VARCHAR}, #{state,jdbcType=TINYINT})
   </insert>
-  <insert id="insertSelective" parameterType="com.madao.user.bean.User" >
+  <insert id="insertSelective" parameterType="com.madao.api.entity.User" >
     insert into user
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="userId != null" >
@@ -217,7 +217,7 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.madao.user.bean.User" >
+  <update id="updateByPrimaryKeySelective" parameterType="com.madao.api.entity.User" >
     update user
     <set >
       <if test="userName != null" >
@@ -244,7 +244,7 @@
     </set>
     where user_id = #{userId,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.madao.user.bean.User" >
+  <update id="updateByPrimaryKey" parameterType="com.madao.api.entity.User" >
     update user
     set user_name = #{userName,jdbcType=VARCHAR},
       role_id = #{roleId,jdbcType=BIGINT},
