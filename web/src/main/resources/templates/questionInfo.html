@@ -38,10 +38,10 @@
                                 $(obj).next().attr("class", "btn btn-default disagree")
                             } else if (data.data[index] == 1) {
                                 $(obj).attr("class", "btn btn-default agree")
-                                $(obj).attr("class", "btn btn-primary disagree")
+                                $(obj).next().attr("class", "btn btn-primary disagree")
                             } else if (data.data[index] == -1) {
                                 $(obj).attr("class", "btn btn-default agree")
-                                $(obj).attr("class", "btn btn-default disagree")
+                                $(obj).next().attr("class", "btn btn-default disagree")
                             }
                         })
                     }
@@ -74,6 +74,12 @@
                         }
                     }
                 }
+            })
+
+            //获取当前用户是否关注了该问题，并且更新按钮
+            $.ajax({
+                url: '',
+                type: 'get'
             })
 
             //退出登录
@@ -158,7 +164,7 @@
                             console.log(data)
                             //code==0表示成功
                             if (data.code == 0) {
-                                if (data.data) {
+                                if (data.data!=null) {
                                     agree.text('赞同' + data.data);
                                 }
                                 agree.attr("class", "btn btn-primary agree")
@@ -187,7 +193,7 @@
                             console.log(data)
                             //code==0表示成功
                             if (data.code == 0) {
-                                if (data.data) {
+                                if (data.data!=null) {
                                     agree.text('赞同' + data.data);
                                 }
                                 agree.attr("class", "btn btn-default agree")
@@ -220,7 +226,7 @@
                             return;
                         }
                         $.ajax({
-                            url: '/answer/agree/0',
+                            url: '/answer/agree/1',
                             type: 'get',
                             data: {
                                 answerId: answerId
@@ -230,7 +236,7 @@
                                 console.log(data)
                                 //code==0表示成功
                                 if (data.code == 0) {
-                                    if (data.data) {
+                                    if (data.data!=null) {
                                         disagree.text('不赞同' + data.data);
                                         disagree.attr("class", "btn btn-primary disagree")
                                     }
@@ -260,7 +266,7 @@
                                 console.log(data)
                                 //code==0表示成功
                                 if (data.code == 0) {
-                                    if (data.data) {
+                                    if (data.data!=null) {
                                         disagree.text('不赞同' + data.data);
                                         disagree.attr("class", "btn btn-default disagree")
                                     }
@@ -298,7 +304,7 @@
                         return;
                     }
                     $.ajax({
-                        url: '/answer/agree/0',
+                        url: '/answer/agree/1',
                         type: 'get',
                         data: {
                             answerId: answerId
@@ -360,6 +366,7 @@
                 }
             })
 
+
             //展开评论,显示评论第一页
             $(".toComment").click(function(){
                 var answerId = $(this).parent().parent().find(".answerId").text();
@@ -415,9 +422,10 @@
                             $(commentCount).val(data.data.total);
                             thisNode.innerHTML="<a class='hideComment' href='#'>收起评论</a>"
 
-                            if(data.data.navigatepageNums.length>1){
+                            if(data.data.pages > 1){
+                                var navPageNum = data.data.pages > 5 ? 5 : data.data.pages
                                 var navNode = '<ul class="pagination" style="position: relative; left: 50px;">'
-                                for(var i=1; i<= data.data.navigatepageNums.length; i++){
+                                for(var i=1; i<= navPageNum; i++){
                                     if(i==1){
                                         navNode += ' <li class="active"><a pageNum='+i+' type="navlink" href="/answer/comment/' + answerId + '/' + i + '/' + pageSize + '">' + i + '</a></li>';
                                     }else {
@@ -425,7 +433,8 @@
                                     }
                                 }
                                 navNode+= '<li><a pageNum=2 type="navlink" href="/answer/comment/' + answerId + '/' + 2 + '/' + pageSize + '">下一页</a></li>';
-                                navNode+= '<li><a pageNum='+data.data.navigatepageNums.length+' type="navlink" href="/answer/comment/' + answerId + '/' + data.data.navigatepageNums.length + '/' + pageSize + '">末页</a></li>';
+                                navNode+= '<li><a order="last" pageNum='+data.data.pages+' type="navlink" href="/answer/comment/' + answerId + '/' + data.data.pages + '/' + pageSize + '">末页</a></li>';
+                                navNode+='<li class="disabled"><a>共'+ data.data.pages +'页</a></li>'
                                 navNode+='</ul>';
                                 console.log(navNode)
                                 // alert(navNode)
@@ -439,6 +448,110 @@
                     }
                 })
 
+            })
+
+            //评论翻页
+            $("[type=answerNode] ").on('click', '[type=navlink]', function(e){
+                // if($(this).attr("class")=="disable")
+                //     return;
+                var pageNum = $(this).attr("pageNum")
+                pageNum = parseInt(pageNum)
+                var href = $(this).attr("href")
+                console.log(pageNum + "---" + href)
+                var answerNode =  $(this).parent().parent().parent().parent();
+                console.log(answerNode)
+                var commentNode = answerNode.find(".commentNode");
+                var commentNavNode = answerNode.find(".commentNavNode");
+                var answerId = answerNode.find(".answerId").text();
+                var aNode = $(this)
+                var commentCount = answerNode.find(".commentCount");
+                $.ajax({
+                    url: href,
+                    type: 'get',
+                    success: function(data){
+                        console.log(data)
+                        if(data.code==0){
+                            if(data.data){
+                                commentNode.empty();
+                                commentNavNode.empty();
+                                commentNode.append('<div class="commentCountFlag" style="position:relative; left: 30px;" ><br/>'+ $(commentCount).val()+'条评论</div><hr style=""/>');
+                                $.each(data.data.list, function(index, obj){
+                                    commentNode.append('   <div class="commentDetail" style="width: 70%; position:relative; left: 30px;">\n' +
+                                        '                    <img width="20px" src="'+ obj.userPic+'"/>\n' +
+                                        '                    <span>'+ obj.userName +': </span><span style="float: right; color: darkgray;"> '+obj.createTime+'</span>\n' +
+                                        '                    <br/>\n' +
+                                        '                    <div style="padding: 10px">\n' +
+                                        '                    <span>'+ obj.commentContent +'</span><br/>\n' +
+                                        '                        <span class="commentReport"><a>举报</a></span>\n' +
+                                        '                    </div>\n' +
+                                        '                </div>');
+
+                                })
+                                $(commentCount).val(data.data.total);
+                                // thisNode.innerHTML="<a class='hideComment' href='#'>收起评论</a>"
+
+                                if(data.data.pages > 1){
+                                    var navNode = '<ul class="pagination" style="position: relative; left: 50px;">'
+                                    var leftCount
+                                    var rightCount
+                                    if(pageNum > 2){
+                                        leftCount = 2;
+                                    }else if(pageNum==2){
+                                        leftCount = 1;
+                                    }else{
+                                        leftCount = 0;
+                                    }
+
+                                    rightCount = 5 - leftCount - 1;
+                                    var maxNum = rightCount + pageNum;
+                                    console.log("max: " + maxNum);
+                                    console.log(maxNum > data.data.pages)
+                                    if(maxNum > data.data.pages){
+                                        rightCount = parseInt(data.data.pages) - pageNum
+                                    }
+                                    // rightCount = rightCount+pageNum > data.data.pages ? data.data.pages - pageNum: rightCount
+
+                                    console.log("left: " + leftCount)
+                                    console.log("right: " + rightCount)
+
+                                    var lastPageNum = parseInt(pageNum) - 1;
+                                    console.log("lastPageNum: " + lastPageNum)
+                                    if(pageNum > 1){
+                                        navNode += ' <li><a pageNum=1 type="navlink" href="/answer/comment/' + answerId + '/1/' + pageSize + '">首页</a></li>';
+                                        navNode += ' <li><a pageNum='+lastPageNum+' type="navlink" href="/answer/comment/' + answerId + '/'+ lastPageNum+'/' + pageSize + '">上一页</a></li>';
+                                    }else{
+                                        navNode += ' <li class="disabled"><a pageNum=1 type="navlink" href="/answer/comment/' + answerId + '/1/' + pageSize + '">首页</a></li>';
+                                        navNode += ' <li class="disabled"><a pageNum=1 type="navlink" href="/answer/comment/' + answerId + '/'+ lastPageNum+'/' + pageSize + '">上一页</a></li>';
+
+                                    }
+                                    for(var i=pageNum-leftCount; i<pageNum; i++){
+                                        navNode += ' <li><a pageNum='+i+' type="navlink" href="/answer/comment/' + answerId + '/' + i + '/' + pageSize + '">' + i + '</a></li>';
+                                    }
+                                    navNode += ' <li class="active"><a pageNum='+pageNum+' type="navlink" href="/answer/comment/' + answerId + '/' + pageNum + '/' + pageSize + '">' + pageNum + '</a></li>';
+                                    for(var i=parseInt(pageNum)+1; i<=parseInt(pageNum)+rightCount; i++){
+                                        navNode += ' <li><a pageNum='+i+' type="navlink" href="/answer/comment/' + answerId + '/' + i + '/' + pageSize + '">' + i + '</a></li>';
+                                    }
+
+                                    var nextPage = parseInt(pageNum)+1
+                                    console.log("data.data.pages:---" + data.data.pages)
+                                    if(pageNum < data.data.pages){
+                                        navNode += ' <li><a pageNum='+nextPage+' type="navlink" href="/answer/comment/' + answerId + '/' + nextPage + '/' + pageSize + '">下一页</a></li>';
+                                        navNode += ' <li><a order="last" pageNum='+data.data.pages+' type="navlink" href="/answer/comment/' + answerId + '/' + data.data.pages + '/' + pageSize + '">末页</a></li>';
+                                    }else{
+                                        navNode += ' <li class="disabled"><a pageNum='+pageNum+' type="navlink" href="/answer/comment/' + answerId + '/' + pageNum + '/' + pageSize + '">下一页</a></li>';
+                                        navNode += ' <li class="disabled"><a order="last" pageNum='+data.data.pages+' type="navlink" href="/answer/comment/' + answerId + '/' + data.data.pages + '/' + pageSize + '">末页</a></li>';
+                                    }
+
+                                    navNode+='<li class="disabled"><a>共'+ data.data.pages +'页</a></li>'
+                                    navNode+='</ul>';
+                                    commentNavNode.append(navNode);
+                                }
+                            }
+                        }
+                    }
+                })
+
+                return false;
             })
 
 
@@ -476,95 +589,15 @@
             })
 
 
-            //评论翻页
-            $(".answerNode").on('click', '[type=navlink]', function(e){
-                if($(this).attr("class")=="disable")
-                    return;
-                var pageNum = $(this).attr("pageNum")
-                var href = $(this).attr("href")
-                console.log(pageNum + "---" + href)
-                var answerNode =  $(this).parent().parent().parent().parent();
-                console.log(answerNode)
-                var commentNode = answerNode.find(".commentNode");
-                var commentNavNode = answerNode.find(".commentNavNode");
-                var answerId = answerNode.find(".answerId").text();
-                var aNode = $(this)
-                var commentCount = answerNode.find(".commentCount");
-                $.ajax({
-                    url: href,
-                    type: 'get',
-                    success: function(data){
-                        console.log(data)
-                        if(data.code==0){
-                            if(data.data){
-                                commentNode.empty();
-                                commentNavNode.empty();
-                                commentNode.append('<div class="commentCountFlag" style="position:relative; left: 30px;" ><br/>'+ $(commentCount).val()+'条评论</div><hr style=""/>');
-                                $.each(data.data.list, function(index, obj){
-                                    commentNode.append('   <div class="commentDetail" style="width: 70%; position:relative; left: 30px;">\n' +
-                                        '                    <img width="20px" src="'+ obj.userPic+'"/>\n' +
-                                        '                    <span>'+ obj.userName +': </span><span style="float: right; color: darkgray;"> '+obj.createTime+'</span>\n' +
-                                        '                    <br/>\n' +
-                                        '                    <div style="padding: 10px">\n' +
-                                        '                    <span>'+ obj.commentContent +'</span><br/>\n' +
-                                        '                        <span class="commentReport"><a>举报</a></span>\n' +
-                                        '                    </div>\n' +
-                                        '                </div>');
-
-                                })
-                                $(commentCount).val(data.data.total);
-                                // thisNode.innerHTML="<a class='hideComment' href='#'>收起评论</a>"
-
-                                if(data.data.navigatepageNums.length>1){
-                                    var navNode = '<ul class="pagination" style="position: relative; left: 50px;">'
-                                    var lastPageNum = parseInt(pageNum) -1;
-                                    if(lastPageNum<1)
-                                        lastPageNum = 1;
-                                    console.log(lastPageNum)
-                                    if(pageNum>1) {
-                                        navNode += ' <li><a pageNum=1 type="navlink" href="/answer/comment/' + answerId + '/1/' + pageSize + '">首页</a></li>';
-                                        navNode += ' <li><a pageNum='+lastPageNum+' type="navlink" href="/answer/comment/' + answerId + '/'+ lastPageNum+'/' + pageSize + '">上一页</a></li>';
-                                    }else{
-                                        navNode += ' <li class="disabled"><a pageNum=1 type="navlink" href="/answer/comment/' + answerId + '/1/' + pageSize + '">首页</a></li>';
-                                        navNode += ' <li class="disabled"><a pageNum='+lastPageNum+' type="navlink" href="/answer/comment/' + answerId + '/'+ lastPageNum+'/' + pageSize + '">上一页</a></li>';
-                                    }
-                                    for(var i=1; i<= data.data.navigatepageNums.length; i++){
-                                        if(i==pageNum){
-                                            navNode += ' <li class="active"><a pageNum='+i+' type="navlink" href="/answer/comment/' + answerId + '/' + i + '/' + pageSize + '">' + i + '</a></li>';
-                                        }else {
-                                            navNode += ' <li><a pageNum='+i+' type="navlink" href="/answer/comment/' + answerId + '/' + i + '/' + pageSize + '">' + i + '</a></li>';
-                                        }
-                                    }
-                                    console.log(pageNum<data.data.navigatepageNums.length)
-                                    var nextPage = parseInt(pageNum)+1
-                                    if(nextPage > data.data.navigatepageNums.length)
-                                        nextPage = data.data.navigatepageNums.length;
-                                    if(pageNum<data.data.navigatepageNums.length){
-                                        navNode += ' <li><a pageNum='+nextPage+' type="navlink" href="/answer/comment/' + answerId + '/' + nextPage + '/' + pageSize + '">下一页</a></li>';
-                                        navNode += ' <li><a pageNum='+data.data.navigatepageNums.length+' type="navlink" href="/answer/comment/' + answerId + '/' + data.data.navigatepageNums.length + '/' + pageSize + '">末页</a></li>';
-
-                                    }else{
-                                        navNode += ' <li class="disabled"><a pageNum='+nextPage+' type="navlink" href="/answer/comment/' + answerId + '/' + nextPage + '/' + pageSize + '">下一页</a></li>';
-                                        navNode += ' <li class="disabled"><a pageNum='+data.data.navigatepageNums.length+' type="navlink" href="/answer/comment/' + answerId + '/' + data.data.navigatepageNums.length + '/' + pageSize + '">末页</a></li>';
-
-                                    }
-                                    navNode+='</ul>';
-                                    // alert(navNode)
-                                    commentNavNode.append(navNode);
-                                }
-                            }
-                        }
-                    }
-                })
-
-                return false;
-            })
 
             //提交发表评论
             $(".answerNode").on('click', '.submitComment', function(e){
+                var lastPage = $(this).parent().parent().parent().find("[order=last]");
                 var answerNode =  $(this).parent().parent().parent();
                 var answerId = answerNode.find(".answerId").text();
-                var commentContent = $(this).parent().find(".inputComment").val();
+                var inputComment = $(this).parent().find(".inputComment")
+                var commentContent = $(inputComment).val();
+                var lastPageNum = lastPage.attr("pageNum");
                 if(commentContent.trim()==""){
                     alert("提交内容不能为空")
                     return
@@ -584,6 +617,11 @@
                         console.log(data);
                         if(data.code==0){
                             alert("添加成功")
+                            $(inputComment).val("")
+                            var newLastPageNum = parseInt(lastPageNum)+1
+                            lastPage.attr("pageNum", newLastPageNum)
+                            lastPage.attr("href", "/answer/comment/" + answerId + "/" + newLastPageNum + "/" + pageSize)
+                            lastPage.click()
                         }else{
                             if(data.hint){
                                 alert(data.hint)
@@ -594,24 +632,26 @@
             })
 
             //关注问题/取消关注
-            $(".collectQuestion").click(function(){
+            $("#collectQuestion").click(function(){
                 var collectState = $(this).attr("collect")
                 console.log("collectState---" + collectState)
                 var thisNode = $(this)
                 var questionId = $("#questionId").text()
                 console.log(collectState)
+                console.log(questionId)
+                var operate = collectState==0 ? 1 : 0
                 $.ajax({
-                    url: '/question/collect/' + + questionId + "/" + collectState,
+                    url: '/question/collect/' + + questionId + "/" + operate,
                     type: 'get',
                     success: function(data){
                         console.log(data)
                         if(data.code==0){
                             if(collectState==0){
-                                thisNode.attr("class", "btn-primary collectQuestion")
+                                thisNode.attr("class", "btn-primary")
                                 thisNode.attr("collect", "1")
                                 thisNode.text("已关注")
                             }else if(collectState==1){
-                                thisNode.attr("class", "btn-default collectQuestion")
+                                thisNode.attr("class", "btn-default")
                                 thisNode.text("关注问题")
                                 thisNode.attr("collect", "0")
                             }
@@ -706,6 +746,7 @@
                 })
                 console.log(JSON.stringify(dataArray))
 
+                //获取每个帖子的第一段的文字和图片信息
                 $.ajax({
                     url: '/answer/' + questionId,
                     type: 'post',
@@ -742,10 +783,9 @@
                     </div>
                     <div>
                         <ul class="nav navbar-nav">
-                            <li class="dropdown"><a href="/toIndex" target="_blank">社区首页</a></li>
+                            <li class="dropdown"><a href="/toPost" target="_blank">社区首页</a></li>
                             <li><a href="/toArticle" target="_blank">文章</a></li>
                             <li><a href="/toQuestion" style="color: #2e6da4" target="_blank">问答</a></li>
-                            <li><a href="http://www.baidu.com" target="_blank" style="color: #2e6da4">百度</a></li>
                         </ul>
                     </div>
                     <form class="navbar-form navbar-left" role="search">
@@ -786,7 +826,7 @@
                 <div class="questionTitle" th:text="${resultView.data.questionTitle}">题目: 复联4有人同情灭霸吗?</div>
                 <div class="questionContent" th:text="${resultView.data.questionContent}"></div>
                 <br/><br/>
-                <button class="btn-default collectQuestion" collect="0">关注问题</button>
+                <button id="collectQuestion" class="btn-default" collect="0">关注问题</button>
                 <button class="btn-default" id="addAnswer" data-toggle="modal" data-target="#addAnswerModal">写回答</button>
                 <button class="btn-default report">举报</button>
             </div>
@@ -813,7 +853,7 @@
             </div>
 
             <br/>
-            <div class="panel panel-default answerNode" style="word-wrap:break-word;word-break:break-all; padding: 50px; width: 90%">
+            <div class="panel panel-default answerNode" style="word-wrap:break-word;word-break:break-all; padding: 50px; width: 90%" type="answerNode">
                 <div style="margin: 20px" class="answerUserInfo">
                     <img width="30px" th:src="@{${resultView.data.answerDTO.userPic}}" alt="图片" />
                     <span style="text-align: center" th:text="${resultView.data.answerDTO.userName}">许我半世繁华</span><br/>

@@ -9,6 +9,7 @@ import com.madao.api.form.UserRegisterForm;
 import com.madao.api.form.UserRegisterForm2;
 import com.madao.api.service.UserService;
 import com.madao.api.utils.FormErrorUtil;
+import com.madao.api.utils.KeyUtil;
 import com.madao.api.utils.ResultUtil;
 import com.madao.api.utils.ResultView;
 import org.springframework.beans.BeanUtils;
@@ -16,17 +17,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.rmi.registry.Registry;
+import java.util.LinkedHashMap;
 
 @Controller
 public class UserController {
@@ -37,14 +37,43 @@ public class UserController {
 
     @GetMapping("/checkUserName/{userName}")
     @ResponseBody
-    public boolean testUserName(@PathVariable(value="userName") String userName){
-        return userService.checkIfUserNameExist(userName);
+    public ResultView testUserName(@PathVariable(value="userName") String userName){
+        System.out.println(userName);
+        try {
+            ResultView resultView = userService.checkIfUserNameExist(userName);
+            return resultView;
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.returnFail();
+        }
+
+    }
+
+    @PostMapping("/user/userName/change")
+    @ResponseBody
+    public ResultView changeUserName(@RequestParam("userName") String userName, HttpServletRequest request){
+        Object userObject =  request.getSession().getAttribute("user");
+        if(userObject==null){
+            return ResultUtil.returnFail("用户未登录,请登录后重试");
+        }
+        LinkedHashMap<String, Object> map = (LinkedHashMap<String, Object>) userObject;
+        Long userId =  Long.parseLong(map.get("userId").toString());
+        ResultView resultView =  userService.changeUserName(userId, userName);
+        //更新session中的用户信息
+        if(resultView.getCode().equals(ResultEnum.SUCCESS.getCode())){
+            User user = userService.getUserById(userId);
+            if(user!=null){
+                request.getSession().setAttribute("user", user);
+            }
+
+        }
+        return resultView;
     }
 
     @GetMapping("/index")
     public String toIndex(HttpServletRequest request){
         System.out.println(request.getSession().getAttribute("user"));
-        return "index";
+        return "post";
     }
 
     @ResponseBody
@@ -54,27 +83,27 @@ public class UserController {
     }
 
     @GetMapping("/toLogin")
-    public String toLogin(){
+    public String toLogin(@RequestParam(value = "lastPage", required = false) String lastPage, HttpServletRequest request){
+        if(lastPage!=null && lastPage!=""){
+            request.setAttribute("lastPage", lastPage);
+        }
         return "login";
     }
 
     @ResponseBody
     @PostMapping("/login")
-    public ResultView login(@Validated  UserLoginForm form, BindingResult bindingResult, HttpSession session){
-        System.out.println(form);
+    public ResultView login(@Validated  UserLoginForm form, BindingResult bindingResult, HttpServletRequest request, HttpServletResponse response){
         System.out.println("user...login.......................");
-        //出现异常
-        if(bindingResult.hasErrors()){
-            throw new ResultException(ErrorEnum.PARAM_ERROR, FormErrorUtil.getFormErrors(bindingResult));
-        }
-        ResultView resultView  = userService.login(form);
-        System.out.println("resultView:////" +resultView);
-        if(resultView.getCode().equals(ResultEnum.SUCCESS.getCode())) {
-//            User user = (User) resultView.getData();
-//            BeanUtils.copyProperties(resultView.getData(), user);
-//            System.out.println(user + ".....");
-            session.setAttribute("user", resultView.getData());
-        }
+        HttpSession session = request.getSession();
+
+        ResultView<User> resultView  = userService.login(form);
+        User user = (User) resultView.getData();
+        session.setAttribute("user", user);
+
+        String token = KeyUtil.genUniquKey();
+        session.setAttribute("token", token);
+        Cookie cookie = new Cookie("token", token);
+        response.addCookie(cookie);
         return resultView;
     }
 
@@ -162,6 +191,30 @@ public class UserController {
     public ResultView logout(HttpServletRequest request){
         request.getSession().removeAttribute("user");
         return ResultUtil.returnSuccess();
+    }
+
+    @ResponseBody
+    @PostMapping("/user/pic/change")
+    public ResultView changeUserPic(@RequestParam("picPath") String picPath, HttpServletRequest request){
+        try {
+            Object userObject = request.getSession().getAttribute("user");
+            if (userObject == null) {
+                return ResultUtil.returnFail("用户未登录,请登录后重试");
+            }
+            User user = (User) userObject;
+            Long userId = user.getUserId();
+            ResultView resultView = userService.changeUserPic(userId, picPath);
+            if(resultView.getCode().equals(ResultEnum.SUCCESS.getCode())){
+                User newUser = userService.getUserById(userId);
+                if(newUser!=null){
+                    request.getSession().setAttribute("user", newUser);
+                }
+            }
+            return resultView;
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.returnFail();
+        }
     }
 
 //    @ResponseBody

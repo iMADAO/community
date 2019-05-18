@@ -8,6 +8,7 @@ import com.madao.api.utils.ResultView;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
+import javax.websocket.server.PathParam;
 import java.util.List;
 
 @FeignClient(value = "question", fallbackFactory = QuestionServiceFallbackFactory.class)
@@ -52,11 +53,14 @@ public interface QuestionService {
     ResultView addAnswerComment(@RequestParam("answerId") Long answerId, @RequestParam("userId") Long userId, @RequestParam("commentContent") String commentContent);
 
     @RequestMapping("/question/info")
-    ResultView getQuestionDTOById(@RequestParam("questionId") Long questionId, @RequestParam("answerId") Long answerId);
+    ResultView getQuestionDTOById(@RequestParam("questionId") Long questionId, @RequestParam(value="answerId", required = false) Long answerId);
 
     @RequestMapping("/question/collect")
     ResultView collectQuestion(@RequestParam("questionId") Long questionId, @RequestParam("userId") Long userId, @RequestParam("collectType") Byte collectType);
 
     @PostMapping("/answer/add")
     public ResultView addAnswer(@RequestBody AnswerForm form);
+
+    @RequestMapping("/question/collect/state")
+    public ResultView getQuestionCollectState(@PathParam("questionId") Long questionId, @RequestParam("userId")Long userId);
 }

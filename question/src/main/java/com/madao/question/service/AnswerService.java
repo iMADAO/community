@@ -97,15 +97,17 @@ public class AnswerService {
         criteria.andUserIdEqualTo(userId);
         criteria.andAnswerIdEqualTo(answerId);
 
+        int result = 0;
+
         //查看是否有点赞记录
         List<Agree> agreeList = agreeMapper.selectByExample(example);
         if(agreeList==null || agreeList.size()==0){
-            throw new ResultException("该操作已完成");
+            return result;
         }else {
             agreeMapper.deleteByExample(example);
         }
 
-        int result = 0;
+
         //将该回答的点赞数或不赞同数减一
         Answer answer = answerMapper.selectByPrimaryKey(answerId);
         Byte type = agreeList.get(0).getType();
@@ -232,6 +234,11 @@ public class AnswerService {
         comment.setAnswerId(answerId);
         comment.setCreateTime(new Date());
         answerCommentMapper.insertSelective(comment);
+
+        //在回答中更新评论条数
+        Answer answer = answerMapper.selectByPrimaryKey(answerId);
+        answer.setCommentCount(answer.getCommentCount()+1);
+        answerMapper.updateByPrimaryKeySelective(answer);
         return comment;
     }
 

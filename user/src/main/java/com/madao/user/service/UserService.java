@@ -53,6 +53,9 @@ public class UserService {
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
 
+    @Value("${userPrefix}")
+    private String USER_PREFIX;
+
     public static final String REGEX_MOBILE = "^((17[0-9])|(14[0-9])|(13[0-9])|(15[^4,\\D])|(18[0,5-9]))\\d{8}$";
 
     public static final String REGEX_EMAIL = "^([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
@@ -181,10 +184,10 @@ public class UserService {
         UserExample example = new UserExample();
         UserExample.Criteria criteria = example.createCriteria();
         criteria.andUserNameEqualTo(userName);
-        List<User> userList = userMapper.selectByExample(example);
-        if(userList==null || userList.size()==0){
+        int count = userMapper.countByExample(example);
+        System.out.println("count.." + count);
+        if(count <= 0)
             return true;
-        }
         return false;
     }
 
@@ -222,4 +225,28 @@ public class UserService {
 
     }
 
+    public void setNewUserName(Long userId, String userName) {
+        boolean checkResult = checkUserName(userName);
+        if(!checkResult){
+            throw new ResultException("该用户名已存在");
+        }
+        User user = userMapper.selectByPrimaryKey(userId);
+        if(user==null){
+            throw new ResultException("用户帐号不存在");
+        }
+        user.setUserName(userName);
+        userMapper.updateByPrimaryKeySelective(user);
+        System.out.println(USER_PREFIX);
+        redisTemplate.delete(USER_PREFIX + userId);
+    }
+
+    public void setNewUserPic(Long userId, String picPath) {
+        User user = userMapper.selectByPrimaryKey(userId);
+        if(user==null){
+            throw new ResultException("用户帐号不存在");
+        }
+        user.setUserPic(picPath);
+        userMapper.updateByPrimaryKeySelective(user);
+        redisTemplate.delete(USER_PREFIX + userId);
+    }
 }

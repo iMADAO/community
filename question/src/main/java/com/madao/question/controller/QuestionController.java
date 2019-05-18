@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.websocket.server.PathParam;
 import java.util.List;
 
 @RestController
@@ -55,11 +56,16 @@ public class QuestionController {
         return answerDTO;
     }
 
-
+    //
     @RequestMapping("/question/info")
-    public ResultView getQuestionDTOById(@RequestParam("questionId") Long questionId, @RequestParam("answerId") Long answerId){
+    ResultView getQuestionDTOById(@RequestParam("questionId") Long questionId, @RequestParam(value="answerId", required = false) Long answerId){
         try {
-            QuestionDTO questionDTO = questionService.getQuestionDTO(questionId, answerId);
+            QuestionDTO questionDTO = null;
+            if(answerId!=null) {
+                questionDTO = questionService.getQuestionDTO(questionId, answerId);
+            }else{
+                questionDTO = questionService.getQuestionDTOWithoutAnswer(questionId);
+            }
             return ResultUtil.returnSuccess(questionDTO);
         }catch (Exception e){
             e.printStackTrace();
@@ -67,11 +73,24 @@ public class QuestionController {
         }
     }
 
+    //问题关注
     @RequestMapping("/question/collect")
     public ResultView collectQuestion(@RequestParam("questionId") Long questionId, @RequestParam("userId") Long userId, @RequestParam("collectType") Byte collectType){
         try {
             questionService.collectQuestion(questionId, userId, collectType);
             return ResultUtil.returnSuccess();
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.returnFail(e.getMessage());
+        }
+    }
+
+    //获取用户是否关注问题
+    @RequestMapping("/question/collect/state")
+    public ResultView getQuestionCollectState(@PathParam("questionId") Long questionId, @RequestParam("userId")Long userId){
+        try{
+            boolean result = questionService.getUserCollectQuestionState(questionId, userId);
+            return ResultUtil.returnSuccess(result);
         }catch (Exception e){
             e.printStackTrace();
             return ResultUtil.returnFail(e.getMessage());

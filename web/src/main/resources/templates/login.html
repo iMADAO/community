@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta name="viewport" content="width=device-width,
                                      initial-scale=1.0,
@@ -42,7 +42,13 @@
                             alert(data.hint)
                         }else{
                             alert("登录成功");
-                            location.href="index";
+                            var lastPage = $("#lastPage").text()
+                            if(lastPage){
+                                location.href = lastPage
+                            } else {
+                                location.href = "/toPost";
+                            }
+
                         }
                     }
                 })
@@ -114,6 +120,7 @@
                     <h3 style="text-align: center; color: #2e6da4; font-weight:bold;">登录</h3>
                 </div>
                 <br/>
+                <span id="lastPage" th:if="${lastPage!=null}" th:text="${lastPage}" style="visibility: hidden"></span>
                <form action="/login" method="post">
                    <table>
                        <tr>

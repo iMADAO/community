@@ -64,16 +64,13 @@ public class AnswerController {
     ResultView cancelAgreeAnswer(@RequestParam("userId") Long userId, @RequestParam("answerId") Long answerId){
         try {
             int result = answerService.cancelAgreeOnAnswer(userId, answerId);
-            if(result>0){
-                return ResultUtil.returnSuccess(result);
-            }
+            return ResultUtil.returnSuccess(result);
         }catch(ResultException e){
             return ResultUtil.returnFail(e.getMessage());
         }catch(Exception e){
             e.printStackTrace();
             return ResultUtil.returnFail();
         }
-        return ResultUtil.returnSuccess();
     }
 
     @RequestMapping("/answer/disagree")

@@ -7,13 +7,11 @@ import com.madao.api.form.UserRegisterForm2;
 import com.madao.api.utils.ResultView;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.xml.ws.RequestWrapper;
 import java.util.List;
 
 @FeignClient(value = "user", fallbackFactory = UserServiceFallbackFactory.class)
@@ -21,11 +19,11 @@ public interface UserService {
     @GetMapping(value = "/user/{id}")
     public User getUserById(@PathVariable("id") Long userId);
 
-    @GetMapping(value="/user/name/{userName}")
-    public Boolean checkIfUserNameExist(@PathVariable(value = "userName") String userName);
+    @RequestMapping(value="/user/name/check")
+    public ResultView checkIfUserNameExist(@RequestParam(value = "userName") String userName);
 
     @PostMapping(value="/user/login")
-    public ResultView login(UserLoginForm form);
+    public ResultView<User> login(UserLoginForm form);
 
     @PostMapping(value = "/test/aa")
     public User testUser(String userName);
@@ -44,4 +42,10 @@ public interface UserService {
 
     @RequestMapping("/user/logout")
     public ResultView logout();
+
+    @RequestMapping("/user/name/change")
+    public ResultView changeUserName(@RequestParam("usreId") Long userId, @RequestParam("userName") String userName);
+
+    @RequestMapping("/user/pic/change")
+    ResultView changeUserPic(@RequestParam("userId") Long userId, @RequestParam("picPath") String picPath);
 }

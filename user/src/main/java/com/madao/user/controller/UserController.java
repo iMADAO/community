@@ -2,6 +2,7 @@ package com.madao.user.controller;
 
 import com.madao.api.Exception.ResultException;
 import com.madao.api.entity.User;
+import com.madao.api.enums.ResultEnum;
 import com.madao.api.form.UserLoginForm;
 import com.madao.api.form.UserRegisterForm;
 import com.madao.api.form.UserRegisterForm2;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.xml.transform.Result;
 import java.util.List;
 
 @Controller
@@ -28,22 +30,21 @@ public class UserController {
 //    用户登录
     @ResponseBody
     @PostMapping("/user/login")
-    public ResultView login(@RequestBody  UserLoginForm form, HttpSession session, HttpServletResponse response){
+    public ResultView<User> login(@RequestBody  UserLoginForm form, HttpSession session, HttpServletResponse response){
         User user = null;
         try {
             user = userService.loginValidate(form);
+            ResultView<User> resultView = new ResultView<>();
+            resultView.setCode(ResultEnum.SUCCESS.getCode());
+            resultView.setData(user);
+            return resultView;
+//            return ResultUtil.returnSuccess(user);
         }catch (ResultException e){
             System.out.println("catch");
             ResultView resultView = ResultUtil.returnException(e);
             return  resultView;
         }
-        System.out.println("after Exception");
-        session.setAttribute("user", user);
-        String token = KeyUtil.genUniquKey();
-        session.setAttribute("token", token);
-        Cookie cookie = new Cookie("token", token);
-        response.addCookie(cookie);
-        return ResultUtil.returnSuccess(user);
+
     }
 
     @ResponseBody
@@ -88,10 +89,46 @@ public class UserController {
         return resultView;
     }
 
+    @ResponseBody
+    @RequestMapping(value="/user/name/check")
+    public ResultView checkIfUserNameExist(@RequestParam(value = "userName") String userName){
+        try{
+            Boolean result = userService.checkUserName(userName);
+            return ResultUtil.returnSuccess(result);
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.returnFail();
+        }
+    }
 
-    @GetMapping(value="/user/name/{userName}")
-    public Boolean checkIfUserNameExist(@PathVariable(value = "userName") String userName){
-        return userService.checkUserName(userName);
+    @ResponseBody
+    @RequestMapping("/user/name/change")
+    public ResultView changeUserName(@RequestParam("usreId") Long userId, @RequestParam("userName") String userName){
+        try {
+            userService.setNewUserName(userId, userName);
+            return ResultUtil.returnSuccess();
+        }catch (ResultException e){
+            e.printStackTrace();
+            return ResultUtil.returnFail(e.getMessage());
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.returnFail();
+        }
+    }
+
+    @ResponseBody
+    @RequestMapping("/user/pic/change")
+    ResultView changeUserPic(@RequestParam("userId") Long userId, @RequestParam("picPath") String picPath){
+        try {
+            userService.setNewUserPic(userId, picPath);
+            return ResultUtil.returnSuccess();
+        }catch (ResultException e){
+            e.printStackTrace();
+            return ResultUtil.returnFail(e.getMessage());
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.returnFail();
+        }
     }
 
     //邮箱验证的链接,用户点击链接完成验证

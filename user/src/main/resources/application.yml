@@ -76,3 +76,4 @@ code_effective_time: 600
 code-send-interval: 60
 redis-code-prefix: CODE
 redis-send-interval-prefix: INTERVAL
+userPrefix: USER

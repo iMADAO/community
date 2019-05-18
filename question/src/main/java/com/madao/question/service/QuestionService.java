@@ -2,10 +2,7 @@ package com.madao.question.service;
 
 import com.madao.api.dto.AnswerDTO;
 import com.madao.api.dto.QuestionDTO;
-import com.madao.api.entity.AnswerContent;
-import com.madao.api.entity.Collect;
-import com.madao.api.entity.Question;
-import com.madao.api.entity.User;
+import com.madao.api.entity.*;
 import com.madao.api.enums.CollectTypeEnum;
 import com.madao.api.enums.ContentTypeEnum;
 import com.madao.api.enums.OperateEnum;
@@ -56,17 +53,28 @@ public class QuestionService {
     private String USER_PREFIX;
 
     public Question addQuestion(QuestionForm form){
+        //添加问题
         Question question = new Question();
         BeanUtils.copyProperties(form, question);
         question.setAnswerCount(0);
         question.setQuestionId(KeyUtil.genUniquKeyOnLong());
         questionMapper.insertSelective(question);
+
+        //添加一个默认的空的回答，用于页面查询回答的时候将该问题查询出来
+        Answer answer = new Answer();
+        answer.setQuestionId(question.getQuestionId());
+        answer.setAnswerId(KeyUtil.genUniquKeyOnLong());
+        answerMapper.insertSelective(answer);
         return question;
     }
 
+    //获取问题回答
     public List<AnswerDTO> getQuestion() {
         List<AnswerDTO> answerDTOList =  questionMapper.getAnswer();
         for(AnswerDTO answerDTO: answerDTOList) {
+            if(answerDTO.getUserId()==null){
+                continue;
+            }
             AnswerContentExample example = new AnswerContentExample();
             AnswerContentExample.Criteria criteria = example.createCriteria();
             criteria.andAnswerIdEqualTo(answerDTO.getAnswerId());
@@ -93,6 +101,7 @@ public class QuestionService {
         return answerDTOList;
     }
 
+    //进入问题详情页的时候，查询问题和一个回答的信息
     public QuestionDTO getQuestionDTO(Long questionId, Long answerId) {
         Question question = questionMapper.selectByPrimaryKey(questionId);
         AnswerDTO answerDTO = questionMapper.getAnswerDTOById(answerId);
@@ -123,6 +132,13 @@ public class QuestionService {
         return questionDTO;
     }
 
+    public QuestionDTO getQuestionDTOWithoutAnswer(Long questionId) {
+        Question question = questionMapper.selectByPrimaryKey(questionId);
+        QuestionDTO questionDTO = new QuestionDTO();
+        BeanUtils.copyProperties(question, questionDTO);
+        return questionDTO;
+    }
+
     public void collectQuestion(Long questionId, Long userId, Byte collectType) {
         CollectExample example = new CollectExample();
         CollectExample.Criteria criteria = example.createCriteria();
@@ -147,5 +163,16 @@ public class QuestionService {
             collectMapper.deleteByExample(example);
 
         }
+    }
+
+    public boolean getUserCollectQuestionState(Long questionId, Long userId) {
+        CollectExample example = new CollectExample();
+        CollectExample.Criteria criteria = example.createCriteria();
+        criteria.andUserIdEqualTo(userId);
+        criteria.andTargetIdEqualTo(questionId);
+        criteria.andTypeEqualTo(CollectTypeEnum.QUESTION.getCode());
+
+        int count = collectMapper.countByExample(example);
+        return count > 0 ? true : false;
     }
 }

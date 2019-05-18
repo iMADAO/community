@@ -31,9 +31,7 @@ public class PostDTO {
 
     private Integer segmentCount;
 
-    private int textCount;
+    private List<String> contentList;
 
-    private int imgCount;
-
-    private List<SegmentContent> contentList;
+//    private List<SegmentContent> contentList;
 }

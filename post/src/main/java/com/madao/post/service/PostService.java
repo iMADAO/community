@@ -10,6 +10,7 @@ import com.madao.api.entity.*;
 import com.madao.api.form.BaseForm;
 import com.madao.api.form.ContentForm;
 import com.madao.api.form.PostForm;
+import com.madao.api.form.PostSegmentForm;
 import com.madao.api.service.UserService;
 import com.madao.api.utils.KeyUtil;
 import com.madao.post.bean.PostCategoryExample;
@@ -56,7 +57,7 @@ public class PostService {
     @Autowired
     private PostCommentService postCommentService;
 
-    public static final int COMMENT_PAGE_SIZE = 10;
+    public static final int COMMENT_PAGE_SIZE = 2;
 
     //获取所有一级分类以及第一个分类的子分类
     public ParentCategoryDTO getParentCategoryInOrder() {
@@ -98,20 +99,39 @@ public class PostService {
 
         List<PostDTO> postDTOList = new ArrayList<>(postList.size());
         for(Post post: postList){
-            User user = getUserInfoInCache(post.getUserId());
             PostDTO postDTO = new PostDTO();
             BeanUtils.copyProperties(post, postDTO);
+
+            User user = getUserInfoInCache(post.getUserId());
             BeanUtils.copyProperties(user, postDTO);
 
-            List<SegmentContent> contentList = getAbstractContentByPostId(post.getPostId());
-            if (contentList.get(0)==null) {
-                postDTO.setTextCount(0);
-            }else{
-                postDTO.setTextCount(1);
-            }
-            postDTO.setImgCount(contentList.size()-1);
+            List<String> conentList = getAbstractContentStringByPostId(post.getPostId());
+            postDTO.setContentList(conentList);
+            postDTOList.add(postDTO);
+        }
+        PageInfo<PostDTO> postDTOPageInfo = new PageInfo<>();
+        BeanUtils.copyProperties(postInfo, postDTOPageInfo);
+        postDTOPageInfo.setList(postDTOList);
+        return postDTOPageInfo;
+    }
 
-            postDTO.setContentList(contentList);
+    //不分类获取帖子信息
+    public PageInfo<PostDTO> getPostList(Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageNum);
+        PostExample example = new PostExample();
+        List<Post> postList = postMapper.selectByExample(example);
+        PageInfo<Post> postInfo = new PageInfo<>(postList);
+
+        List<PostDTO> postDTOList = new ArrayList<>(postList.size());
+        for(Post post: postList){
+            PostDTO postDTO = new PostDTO();
+            BeanUtils.copyProperties(post, postDTO);
+
+            User user = getUserInfoInCache(post.getUserId());
+            BeanUtils.copyProperties(user, postDTO);
+
+            List<String> conentList = getAbstractContentStringByPostId(post.getPostId());
+            postDTO.setContentList(conentList);
             postDTOList.add(postDTO);
         }
         PageInfo<PostDTO> postDTOPageInfo = new PageInfo<>();
@@ -139,13 +159,52 @@ public class PostService {
         List<SegmentContent> segmentContentList = new ArrayList<>(4);
 
         SegmentContent segmentContent = segmentContentMapper.getFirstTextContentBySegmentId(firstSegmentId);
-        List<SegmentContent> picSegmentContent = segmentContentMapper.getPicContentBySegmentId(firstSegmentId);
-
         segmentContentList.add(segmentContent);
+
+        List<SegmentContent> picSegmentContent = segmentContentMapper.getPicContentBySegmentId(firstSegmentId);
         for(SegmentContent content: picSegmentContent) {
             segmentContentList.add(content);
         }
         return segmentContentList;
+    }
+
+    //获取每条发帖的第一层的第一个文本信息和前三个图片信息 仅返回字符串形式的内容
+    public List<String> getAbstractContentStringByPostId(Long postId){
+        Long firstSegmentId = postSegmentMapper.getFirstSegmentId(postId);
+        List<String> resultList = new ArrayList<>(4);
+
+        SegmentContent segmentContent = segmentContentMapper.getFirstTextContentBySegmentId(firstSegmentId);
+        if(segmentContent!=null){
+            resultList.add(segmentContent.getContent());
+        }else{
+            resultList.add("");
+        }
+
+        List<SegmentContent> picSegmentContent = segmentContentMapper.getPicContentBySegmentId(firstSegmentId);
+        for(SegmentContent content: picSegmentContent) {
+            if(content!=null) {
+                resultList.add(content.getContent());
+            }else{
+                resultList.add("");
+            }
+        }
+
+        int count = 0;
+        if(picSegmentContent==null){
+            count = 3;
+        }else if(picSegmentContent.size()<3){
+            count = 3 - picSegmentContent.size();
+        }
+
+        for(int i=0; i<count; i++){
+            resultList.add("");
+        }
+
+        System.out.println("resultSize-----" + resultList.size());
+        for(String str: resultList){
+            System.out.println(str + "------------------------------------------");
+        }
+        return resultList;
     }
 
 
@@ -189,7 +248,7 @@ public class PostService {
 
 
     //添加帖子
-    public void insertPost(PostForm postForm) {
+    public Post insertPost(PostForm postForm) {
         //添加Post
         Post post = new Post();
         post.setUserId(postForm.getUserId());
@@ -198,12 +257,17 @@ public class PostService {
         post.setCategoryId(postForm.getCategoryId());
         postMapper.insertSelective(post);
 
+
+        return post;
+    }
+
+    public PostSegment insertPostSegment(PostSegmentForm postForm) {
         //添加一个Segment
         PostSegment postSegment = new PostSegment();
         postSegment.setUserId(postForm.getUserId());
         postSegment.setSegOrder(1);
         postSegment.setSegmentId(KeyUtil.genUniquKeyOnLong());
-        postSegment.setPostId(post.getPostId());
+        postSegment.setPostId(postForm.getPostId());
         postSegment.setCommentCount(0);
         postSegmentMapper.insert(postSegment);
 
@@ -218,13 +282,17 @@ public class PostService {
             segmentContentMapper.insertSelective(segmentContent);
             i++;
         }
+        return postSegment;
     }
 
-    public Map<Long,List<SegmentContent>> getContentByPostIdList(List<Long> postIdList) {
-        Map<Long, List<SegmentContent>> resultMap = new HashMap<>(postIdList.size());
+    public List<List<String>> getContentByPostIdList(List<Long> postIdList) {
+        List<List<String>> resultList = new ArrayList<>();
         for(long postId: postIdList){
-            resultMap.put(postId, getAbstractContentByPostId(postId));
+            resultList.add(getAbstractContentStringByPostId(postId));
         }
-        return resultMap;
+        return resultList;
     }
+
+
+
 }

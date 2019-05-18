@@ -4,6 +4,7 @@ import com.madao.api.entity.PostCategory;
 import com.madao.api.entity.SegmentContent;
 import com.madao.api.form.BaseForm;
 import com.madao.api.form.PostForm;
+import com.madao.api.form.PostSegmentForm;
 import com.madao.api.utils.ResultView;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -37,4 +38,13 @@ public interface PostService {
 
     @RequestMapping("/post/content/abstract")
     public ResultView getAbstractContentByPostId(@RequestBody List<Long> postIdList);
+
+    @RequestMapping("/post/getList/all")
+    ResultView getPostList(@RequestParam("pageNum") Integer pageNum, @RequestParam("pageSize") Integer pageSize);
+
+    @RequestMapping("/post/segment/add")
+    ResultView addPostSegment(PostSegmentForm postForm);
+
+    @RequestMapping("/post/postInfo/comment/get")
+    ResultView getSegmentComment(@RequestParam("segmentId") Long segmentId, @RequestParam("pageNum") Integer pageNum, @RequestParam("pageSize") Integer pageSize);
 }

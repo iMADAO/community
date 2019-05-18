@@ -5,10 +5,13 @@ import com.madao.api.dto.ParentCategoryDTO;
 import com.madao.api.dto.PostCommentDTO;
 import com.madao.api.dto.PostDTO;
 import com.madao.api.dto.PostSegmentDTO;
+import com.madao.api.entity.Post;
 import com.madao.api.entity.PostCategory;
+import com.madao.api.entity.PostSegment;
 import com.madao.api.entity.SegmentContent;
 import com.madao.api.form.BaseForm;
 import com.madao.api.form.PostForm;
+import com.madao.api.form.PostSegmentForm;
 import com.madao.api.utils.ResultUtil;
 import com.madao.api.utils.ResultView;
 import com.madao.post.service.PostCategoryService;
@@ -70,6 +73,18 @@ public class PostController {
         }
     }
 
+    //分页获取所有类型的帖子
+    @RequestMapping("/post/getList/all")
+    ResultView getPostList(@RequestParam("pageNum") Integer pageNum, @RequestParam("pageSize") Integer pageSize){
+        try {
+            PageInfo<PostDTO> pageInfo = postService.getPostList(pageNum, pageSize);
+            return ResultUtil.returnSuccess(pageInfo);
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.returnFail();
+        }
+    }
+
     //分页获取帖子每层的信息
     @RequestMapping("/post/postInfo/getContent")
     public ResultView getPostSegmentByPostId(@RequestBody BaseForm form){
@@ -82,9 +97,9 @@ public class PostController {
         }
     }
 
-    //获取评论分页 todo
+    //获取评论分页
     @RequestMapping("/post/postInfo/comment/get")
-    public ResultView getSegmentComment(Long segmentId, Integer pageNum, Integer pageSize){
+    ResultView getSegmentComment(@RequestParam("segmentId") Long segmentId, @RequestParam("pageNum") Integer pageNum, @RequestParam("pageSize") Integer pageSize){
         try{
             PageInfo<PostCommentDTO> resultPage = postCommentService.getCommentBySegmentId(segmentId, pageNum, pageSize);
             return ResultUtil.returnSuccess(resultPage);
@@ -118,8 +133,8 @@ public class PostController {
     @RequestMapping("/post/add")
     ResultView addPost(@RequestBody PostForm postForm){
         try {
-            postService.insertPost(postForm);
-            return ResultUtil.returnSuccess();
+            Post post  = postService.insertPost(postForm);
+            return ResultUtil.returnSuccess(post);
         }catch (Exception e){
             e.printStackTrace();
             return ResultUtil.returnFail();
@@ -127,14 +142,28 @@ public class PostController {
     }
 
     @ResponseBody
+    @RequestMapping("/post/segment/add")
+    ResultView addPostSegment(@RequestBody PostSegmentForm postForm){
+        try {
+            PostSegment postSegment  = postService.insertPostSegment(postForm);
+            return ResultUtil.returnSuccess(postSegment);
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.returnFail();
+        }
+    }
+
+
+    @ResponseBody
     @RequestMapping("/post/content/abstract")
     public ResultView getAbstractContentByPostId(@RequestBody List<Long> postIdList){
         try {
-            Map<Long, List<SegmentContent>> postContent = postService.getContentByPostIdList(postIdList);
+            List<List<String>> postContent = postService.getContentByPostIdList(postIdList);
             return ResultUtil.returnSuccess(postContent);
         }catch (Exception e){
             e.printStackTrace();
             return ResultUtil.returnFail();
         }
     }
+
 }

@@ -53,13 +53,10 @@ public class QuestionController {
         if(bindingResult.hasErrors()){
             throw new ResultException(ErrorEnum.PARAM_ERROR, FormErrorUtil.getFormErrors(bindingResult));
         }
-        HttpSession session = request.getSession();
-        Object userObject = session.getAttribute("user");
-        if(userObject==null){
+        User user = (User) request.getSession().getAttribute("user");
+        if(user==null)
             return ResultUtil.returnFail("用户未登录");
-        }
-        User user = new User();
-        BeanUtils.copyProperties(userObject, user);
+        Long userId = user.getUserId();
         form.setUserId(user.getUserId());
         System.out.println(form + "-------");
 
@@ -83,8 +80,8 @@ public class QuestionController {
 
     }
 
-    @GetMapping("/toQuestionInfo/{questionId}/{answerId}")
-    public String toQuestionInfo(@PathVariable("questionId") Long questionId, @PathVariable("answerId") Long answerId, HttpServletRequest request){
+    @GetMapping("/toQuestionInfo/{questionId}")
+    public String toQuestionInfo(@PathVariable("questionId") Long questionId, @RequestParam(value="answerId", required = false) Long answerId, HttpServletRequest request){
         ResultView resultView = questionService.getQuestionDTOById(questionId, answerId);
         request.setAttribute("resultView", resultView);
         return "questionInfo";
@@ -98,7 +95,7 @@ public class QuestionController {
     }
     @ResponseBody
     @GetMapping("/getEntileAnswer/{answerId}")
-    public ResultView getEntileAnswer(@PathVariable Long answerId){
+    public ResultView getEntileAnswer(@PathVariable("answerId") Long answerId){
         return questionService.getAnswerContentByQuestionId(answerId);
     }
 
@@ -111,12 +108,10 @@ public class QuestionController {
     @ResponseBody
     @GetMapping("/answer/agree/{type}")
     public ResultView agreeAnswerL(Long answerId, @PathVariable Byte type, HttpServletRequest request){
-        Object userObject =  request.getSession().getAttribute("user");
-        if(userObject==null){
-            return ResultUtil.returnFail("用户未登录,请登录后重试");
-        }
-        LinkedHashMap<String, Object> map = (LinkedHashMap<String, Object>) userObject;
-        Long userId =  Long.parseLong(map.get("userId").toString());
+        User user = (User) request.getSession().getAttribute("user");
+        if(user==null)
+            return ResultUtil.returnFail("用户未登录");
+        Long userId = user.getUserId();
         System.out.println(userId);
         System.out.println(answerId);
         System.out.println(type);
@@ -136,11 +131,10 @@ public class QuestionController {
     @ResponseBody
     @RequestMapping("/answer/agreeType")
     public ResultView getUserAgreeType(@RequestParam("answerIdList") List<Long> answerIdList, HttpServletRequest request){
-        Object userObject = request.getSession().getAttribute("user");
-        if(userObject==null)
-            return ResultUtil.returnSuccess();
-        LinkedHashMap<String, Object> map = (LinkedHashMap<String, Object>) userObject;
-        Long userId = Long.parseLong(map.get("userId").toString());
+        User user = (User) request.getSession().getAttribute("user");
+        if(user==null)
+            return ResultUtil.returnFail("用户未登录");
+        Long userId = user.getUserId();
         return questionService.getUserAgreeType(userId, answerIdList);
     }
 
@@ -150,56 +144,72 @@ public class QuestionController {
         return questionService.getAnswerComment(answerId, pageNum, pageSize);
     }
 
+    //用户对回答的收藏和取消收藏操作
     @ResponseBody
     @RequestMapping("/answer/collect/{answerId}/{operate}")
     public ResultView collectionAnswer(@PathVariable("answerId") Long answerId, @PathVariable("operate") Byte operate, HttpServletRequest request){
-        Object userObj = request.getSession().getAttribute("user");
-        LinkedHashMap<String, Object> map = (LinkedHashMap<String, Object>) userObj;
-        if(userObj==null){
-            return ResultUtil.returnFail("用户未登录,请登录后操作");
-        }
-        Long userId = Long.parseLong(map.get("userId").toString());
+        User user = (User) request.getSession().getAttribute("user");
+        if(user==null)
+            return ResultUtil.returnFail("用户未登录");
+        Long userId = user.getUserId();
         return questionService.collectionAnswer(answerId, userId, operate);
     }
 
+    //获取用户是否收藏回答
     @ResponseBody
     @RequestMapping("/answer/collect/getList")
     public ResultView getCollectFlagByAnswerIdList(@RequestParam("answerIdList") List<Long> answerIdList, HttpServletRequest request){
-        Object userObject = request.getSession().getAttribute("user");
-        if(userObject==null)
-            return ResultUtil.returnSuccess();
-        LinkedHashMap<String, Object> map = (LinkedHashMap<String, Object>) userObject;
-        Long userId = Long.parseLong(map.get("userId").toString());
+        User user = (User) request.getSession().getAttribute("user");
+        if(user==null)
+            return ResultUtil.returnFail("用户未登录");
+        Long userId = user.getUserId();
         return questionService.getCollectFlagInList(answerIdList, userId);
+    }
+
+    //获取用户是否关注问题
+    @ResponseBody
+    @RequestMapping("/question/collect/state/{questionId}")
+    public ResultView getQuestionCollectState(@PathVariable("questionId") Long questionId, HttpServletRequest request){
+        User user = (User) request.getSession().getAttribute("user");
+        if(user==null)
+            return ResultUtil.returnFail("用户未登录");
+        Long userId = user.getUserId();
+        try{
+            return questionService.getQuestionCollectState(questionId, userId);
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.returnFail();
+        }
     }
 
     @ResponseBody
     @PostMapping(value = "/answer/comment", consumes = "application/json")
     public ResultView addAnswerComment(@RequestBody @Valid AnswerCommentAddForm form, HttpServletRequest request){
-        Object userObject = request.getSession().getAttribute("user");
-        if(userObject==null)
+        System.out.println("add answer comment");
+        System.out.println(form);
+        User user = (User) request.getSession().getAttribute("user");
+        if(user==null)
             return ResultUtil.returnFail("用户未登录");
-        LinkedHashMap<String, Object> map = (LinkedHashMap<String, Object>) userObject;
-        Long userId = Long.parseLong(map.get("userId").toString());
+        Long userId = user.getUserId();
         return questionService.addAnswerComment(form.getAnswerId(), userId, form.getCommentContent());
     }
 
+    //用户关注问题或者取消关注
     @ResponseBody
     @GetMapping("/question/collect/{questionId}/{collectType}")
     public ResultView collectQuestion(@PathVariable("questionId") Long questionId, @PathVariable("collectType") Byte collectType, HttpServletRequest request){
-        Object userObject = request.getSession().getAttribute("user");
-        if(userObject==null)
+        User user = (User) request.getSession().getAttribute("user");
+        if(user==null)
             return ResultUtil.returnFail("用户未登录");
-        LinkedHashMap<String, Object> map = (LinkedHashMap<String, Object>) userObject;
-        Long userId = Long.parseLong(map.get("userId").toString());
+        Long userId = user.getUserId();
         return questionService.collectQuestion(questionId, userId, collectType);
     }
 
 
-
+    //上传图片
     @ResponseBody
     @RequestMapping("/pic/upload")
-    public ResultView upload(@RequestParam("file") MultipartFile imageFile, @RequestParam("num") Integer num) {
+    public ResultView upload(@RequestParam("file") MultipartFile imageFile, @RequestParam(value = "num", required = false) Integer num) {
         if (imageFile.isEmpty()) {
             return ResultUtil.returnFail("未选择图片");
         }
@@ -244,11 +254,10 @@ public class QuestionController {
     @ResponseBody
     @PostMapping("/answer/{questionId}")
     public ResultView addAnswer(@RequestBody List<ContentForm> form, @PathVariable("questionId") Long questionId, HttpServletRequest request){
-        Object userObject = request.getSession().getAttribute("user");
-        if(userObject==null)
+        User user = (User) request.getSession().getAttribute("user");
+        if(user==null)
             return ResultUtil.returnFail("用户未登录");
-        LinkedHashMap<String, Object> map = (LinkedHashMap<String, Object>) userObject;
-        Long userId = Long.parseLong(map.get("userId").toString());
+        Long userId = user.getUserId();
         AnswerForm answerForm = new AnswerForm(questionId, userId, form);
         return questionService.addAnswer(answerForm);
     }

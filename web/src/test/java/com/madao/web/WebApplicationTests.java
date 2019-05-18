@@ -12,6 +12,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -42,4 +44,14 @@ public class WebApplicationTests {
 		System.out.println(user);
 	}
 
+	@Test
+	public void test3(){
+		List<String> list = new ArrayList<>();
+		list.add("");
+		list.add("aa");
+		list.add(null);
+		System.out.println(list.size());
+		for(String a: list)
+			System.out.println(a);
+	}
 }

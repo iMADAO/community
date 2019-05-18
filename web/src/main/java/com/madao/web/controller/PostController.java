@@ -4,6 +4,7 @@ import com.madao.api.entity.PostCategory;
 import com.madao.api.form.BaseForm;
 import com.madao.api.form.ContentForm;
 import com.madao.api.form.PostForm;
+import com.madao.api.form.PostSegmentForm;
 import com.madao.api.service.PostService;
 import com.madao.api.utils.ResultUtil;
 import com.madao.api.utils.ResultView;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.xml.crypto.Data;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -23,6 +25,7 @@ public class PostController {
 
     public static final int DEFAULT_SIZE = 10;
 
+    //根据类别分页获取帖子，并返回页面
     @RequestMapping("/toPost/{categoryId}")
     public String toPostByCategory(@PathVariable("categoryId") Long categoryId, HttpServletRequest request){
         BaseForm baseForm = new BaseForm(categoryId, 1, DEFAULT_SIZE);
@@ -36,6 +39,18 @@ public class PostController {
         return "post";
     }
 
+    //分页获取帖子，不分类,返回页面
+    @RequestMapping("/toPost")
+    public String toPost(HttpServletRequest request){
+        ResultView resultView = postService.getPostList(1, DEFAULT_SIZE);
+        System.out.println("toPost....." + resultView);
+        request.setAttribute("data", resultView);
+        return "post";
+
+    }
+
+
+    //测试查看数据用
     @ResponseBody
     @RequestMapping("/toPost2/{categoryId}")
     public ResultView toPostByCategory(@PathVariable("categoryId") Long categoryId){
@@ -44,10 +59,10 @@ public class PostController {
         return resultView;
     }
 
-    @GetMapping("/toIndex")
-    public String toIndex(){
-        return "index";
-    }
+//    @GetMapping("/toIndex")
+//    public String toIndex(){
+//        return "index";
+//    }
 
     @ResponseBody
     @GetMapping("/post/category/parent")
@@ -84,6 +99,19 @@ public class PostController {
             e.printStackTrace();
         }
         return "postInfo";
+    }
+
+    @ResponseBody
+    @RequestMapping("/post/info/test/{postId}/{pageNum}/{pageSize}")
+    public ResultView toPostInfoTest(@PathVariable("postId") Long postId, @PathVariable("pageNum") Integer pageNum, @PathVariable("pageSize") Integer pageSize, HttpServletRequest request){
+        BaseForm form = new BaseForm(postId, pageNum, pageSize);
+        try {
+            ResultView resultView = postService.getPostSegmentByPostId(form);
+            return resultView;
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.returnFail();
+        }
     }
 
     @ResponseBody
@@ -136,8 +164,26 @@ public class PostController {
     }
 
     @ResponseBody
+    @PostMapping("/post/segment/{postId}")
+    public ResultView addPostSegment(@RequestBody List<ContentForm> form, @PathVariable("postId") Long postId, HttpServletRequest request){
+        Object userObject =  request.getSession().getAttribute("user");
+        if(userObject==null){
+            return ResultUtil.returnFail("用户未登录,请登录后重试");
+        }
+        LinkedHashMap<String, Object> map = (LinkedHashMap<String, Object>) userObject;
+        Long userId =  Long.parseLong(map.get("userId").toString());
+
+        PostSegmentForm postSegmentForm = new PostSegmentForm();
+        postSegmentForm.setUserId(userId);
+        postSegmentForm.setAnswerContentFormList(form);
+        postSegmentForm.setPostId(postId);
+        return postService.addPostSegment(postSegmentForm);
+    }
+
+    //
+    @ResponseBody
     @RequestMapping("/post/content/abstract")
-    public ResultView getPostContentAbstractByPostId(@RequestBody List<Long> postIdList){
+    public ResultView getPostContentAbstractByPostId(@RequestParam("postIdList") List<Long> postIdList){
         try {
             return postService.getAbstractContentByPostId(postIdList);
         }catch (Exception e){
@@ -145,5 +191,19 @@ public class PostController {
             return ResultUtil.returnFail();
         }
     }
+
+    @ResponseBody
+    @RequestMapping("/post/segment/comment/{segmentId}/{pageNum}/{pageSize}")
+    public ResultView getPostComment(@PathVariable("segmentId") Long segmentId, @PathVariable("pageSize") Integer pageSize, @PathVariable("pageNum") Integer pageNum){
+        try{
+            ResultView resultView = postService.getSegmentComment(segmentId, pageNum, pageSize);
+            return resultView;
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.returnFail();
+        }
+    }
+
+
 
 }
