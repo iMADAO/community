@@ -13,6 +13,7 @@
     <script type="text/javascript">
         $(function() {
             var pageSize = 1;
+            var commentPageSize = 1;
             var postPageSize = 10
             $("#logoutNode").click(function(){
                 $.ajax({
@@ -159,9 +160,10 @@
                 window.open("/toPost/" + categoryId)
             })
 
+
             $(".postInfoLink").click(function(){
                 var postId = $(this).attr("postId")
-                window.open("/post/info/" + postId + "/1/" + postPageSize)
+                window.open("/post/info/" + postId + "/1/" + postPageSize + "/" + commentPageSize)
             })
 
 

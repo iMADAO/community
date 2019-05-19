@@ -7,13 +7,6 @@ public class Collect {
     @JsonSerialize(using = ToStringSerializer.class)
     private Long collectId;
 
-    public Collect(Long collectId, Long userId, Long targetId, Byte type) {
-        this.collectId = collectId;
-        this.userId = userId;
-        this.targetId = targetId;
-        this.type = type;
-    }
-
     @JsonSerialize(using = ToStringSerializer.class)
     private Long userId;
 
@@ -21,6 +14,15 @@ public class Collect {
     private Long targetId;
 
     private Byte type;
+
+    public Collect(Long collectId, Long userId, Long targetId, Byte type) {
+        this.collectId = collectId;
+        this.userId = userId;
+        this.targetId = targetId;
+        this.type = type;
+    }
+
+
 
     public Collect() {
     }

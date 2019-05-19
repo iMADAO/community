@@ -2,21 +2,17 @@ package com.madao.post.service;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.madao.api.dto.ParentCategoryDTO;
-import com.madao.api.dto.PostCommentDTO;
-import com.madao.api.dto.PostDTO;
-import com.madao.api.dto.PostSegmentDTO;
+import com.madao.api.dto.*;
 import com.madao.api.entity.*;
+import com.madao.api.enums.CollectTypeEnum;
+import com.madao.api.enums.OperateEnum;
 import com.madao.api.form.BaseForm;
 import com.madao.api.form.ContentForm;
 import com.madao.api.form.PostForm;
 import com.madao.api.form.PostSegmentForm;
 import com.madao.api.service.UserService;
 import com.madao.api.utils.KeyUtil;
-import com.madao.post.bean.PostCategoryExample;
-import com.madao.post.bean.PostExample;
-import com.madao.post.bean.PostSegmentExample;
-import com.madao.post.bean.SegmentContentExample;
+import com.madao.post.bean.*;
 import com.madao.post.mapper.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,10 +20,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -50,6 +43,8 @@ public class PostService {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private CollectMapper collectMapper;
 
     @Autowired
     private RedisTemplate redisTemplate;
@@ -209,7 +204,7 @@ public class PostService {
 
 
     //获取帖子详情分页,包括每层和该层的内容
-    public PageInfo<PostSegmentDTO> getPostSegmentByPostId(Long postId, Integer pageNum, Integer pageSize) {
+    public PageInfo<PostSegmentDTO> getPostSegmentByPostId(Long postId, Integer pageNum, Integer pageSize, Integer commentPageSize) {
         PageHelper.startPage(pageNum, pageSize);
         PostSegmentExample example = new PostSegmentExample();
         PostSegmentExample.Criteria criteria = example.createCriteria();
@@ -232,7 +227,7 @@ public class PostService {
             List<SegmentContent> segmentContentList = segmentContentMapper.selectByExampleWithBLOBs(contentExample);
             postSegmentDTO.setContentList(segmentContentList);
 
-            PageInfo<PostCommentDTO> commentDTOPage = postCommentService.getCommentBySegmentId(postSegment.getSegmentId(), 1, COMMENT_PAGE_SIZE);
+            PageInfo<PostCommentDTO> commentDTOPage = postCommentService.getCommentBySegmentId(postSegment.getSegmentId(), 1, commentPageSize);
             System.out.println(commentDTOPage);
             postSegmentDTO.setPostComment(commentDTOPage);
 
@@ -262,10 +257,15 @@ public class PostService {
     }
 
     public PostSegment insertPostSegment(PostSegmentForm postForm) {
+        PostSegmentExample example = new PostSegmentExample();
+        PostSegmentExample.Criteria criteria = example.createCriteria();
+        criteria.andPostIdEqualTo(postForm.getPostId());
+        int count = postSegmentMapper.countByExample(example);
+        int segmentOrder = count+1;
         //添加一个Segment
         PostSegment postSegment = new PostSegment();
         postSegment.setUserId(postForm.getUserId());
-        postSegment.setSegOrder(1);
+        postSegment.setSegOrder(segmentOrder);
         postSegment.setSegmentId(KeyUtil.genUniquKeyOnLong());
         postSegment.setPostId(postForm.getPostId());
         postSegment.setCommentCount(0);
@@ -294,5 +294,75 @@ public class PostService {
     }
 
 
+    public PageInfo<CollectDTO<PostDTO>> getCollectPost(Long userId, Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        CollectExample collectExample = new CollectExample();
+        CollectExample.Criteria criteria  = collectExample.createCriteria();
+        criteria.andTypeEqualTo(CollectTypeEnum.POST.getCode());
+        criteria.andUserIdEqualTo(userId);
+        List<Collect> collectionList = collectMapper.selectByExample(collectExample);
+        PageInfo<Collect> pageInfo = new PageInfo<>(collectionList);
 
+        List<CollectDTO<PostDTO>> collectDTOList = new ArrayList<>(collectionList.size());
+        for(Collect collect: collectionList){
+            CollectDTO<PostDTO> collectDTO = new CollectDTO<>();
+            BeanUtils.copyProperties(collect, collectDTO);
+            PostDTO postDTO = getPostDTO(collect.getTargetId());
+            collectDTO.setData(postDTO);
+            collectDTOList.add(collectDTO);
+        }
+
+        PageInfo<CollectDTO<PostDTO>> collectPageInfo = new PageInfo<>();
+        BeanUtils.copyProperties(pageInfo, collectPageInfo);
+        collectPageInfo.setList(collectDTOList);
+        return collectPageInfo;
+    }
+
+    private PostDTO getPostDTO(Long postId) {
+        Post post = postMapper.selectByPrimaryKey(postId);
+        PostDTO postDTO = new PostDTO();
+        BeanUtils.copyProperties(post, postDTO);
+
+        User user = getUserInfoInCache(post.getUserId());
+        BeanUtils.copyProperties(user, postDTO);
+
+        List<String> conentList = getAbstractContentStringByPostId(post.getPostId());
+        postDTO.setContentList(conentList);
+        return postDTO;
+    }
+
+    public boolean getUserCollectPostState(Long userId, Long postId) {
+        CollectExample example = new CollectExample();
+        CollectExample.Criteria criteria = example.createCriteria();
+        criteria.andUserIdEqualTo(userId);
+        criteria.andTargetIdEqualTo(postId);
+        criteria.andTypeEqualTo(CollectTypeEnum.POST.getCode());
+        int count = collectMapper.countByExample(example);
+        return count==0 ? false : true;
+    }
+
+    //添加或者取消帖子收藏
+    public void updatePostCollectState(Long userId, Long postId, Byte operate) {
+        CollectExample example = new CollectExample();
+        CollectExample.Criteria criteria = example.createCriteria();
+        criteria.andUserIdEqualTo(userId);
+        criteria.andTargetIdEqualTo(postId);
+        criteria.andTypeEqualTo(CollectTypeEnum.POST.getCode());
+        int count = collectMapper.countByExample(example);
+        if(operate.equals(OperateEnum.CANCEL.getCode())){
+            if(count==0)
+                return;
+            collectMapper.deleteByExample(example);
+        }else if(operate.equals(OperateEnum.OPERATE.getCode())){
+            if(count!=0)
+                return;
+
+            Collect collect = new Collect();
+            collect.setType(CollectTypeEnum.POST.getCode());
+            collect.setTargetId(postId);
+            collect.setUserId(userId);
+            collect.setCollectId(KeyUtil.genUniquKeyOnLong());
+            collectMapper.insertSelective(collect);
+        }
+    }
 }

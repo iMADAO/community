@@ -4,6 +4,7 @@ import com.madao.api.entity.PostCategory;
 import com.madao.api.entity.SegmentContent;
 import com.madao.api.form.BaseForm;
 import com.madao.api.form.PostForm;
+import com.madao.api.form.PostGetForm;
 import com.madao.api.form.PostSegmentForm;
 import com.madao.api.utils.ResultView;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -25,7 +26,7 @@ public interface PostService {
     public ResultView getPostListByCategoryId(@RequestBody BaseForm form);
 
     @RequestMapping("/post/postInfo/getContent")
-    public ResultView getPostSegmentByPostId(@RequestBody BaseForm form);
+    public ResultView getPostSegmentByPostId(@RequestBody PostGetForm form);
 
     @RequestMapping("/post/comment")
     public ResultView addPostComment(@RequestParam("segmentId") Long segmentId, @RequestParam("userId") Long userId, @RequestParam("commentContent") String content);
@@ -47,4 +48,13 @@ public interface PostService {
 
     @RequestMapping("/post/postInfo/comment/get")
     ResultView getSegmentComment(@RequestParam("segmentId") Long segmentId, @RequestParam("pageNum") Integer pageNum, @RequestParam("pageSize") Integer pageSize);
+
+    @RequestMapping("/post/user/collect")
+    ResultView getPostCollect(@RequestParam("userId") Long userId,  @RequestParam("pageNum") Integer pageNum, @RequestParam("pageSize") Integer pageSize);
+
+    @RequestMapping("/post/collect/state")
+    ResultView getPostCollectState(@RequestParam("userId") Long userId, @RequestParam("postId") Long postId);
+
+    @RequestMapping("/post/collect/update")
+    ResultView setPostCollect(@RequestParam("userId") Long userId, @RequestParam("postId") Long postId, @RequestParam("operate") Byte operate);
 }

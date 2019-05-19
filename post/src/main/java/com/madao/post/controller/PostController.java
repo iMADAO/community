@@ -1,16 +1,14 @@
 package com.madao.post.controller;
 
 import com.github.pagehelper.PageInfo;
-import com.madao.api.dto.ParentCategoryDTO;
-import com.madao.api.dto.PostCommentDTO;
-import com.madao.api.dto.PostDTO;
-import com.madao.api.dto.PostSegmentDTO;
+import com.madao.api.dto.*;
 import com.madao.api.entity.Post;
 import com.madao.api.entity.PostCategory;
 import com.madao.api.entity.PostSegment;
 import com.madao.api.entity.SegmentContent;
 import com.madao.api.form.BaseForm;
 import com.madao.api.form.PostForm;
+import com.madao.api.form.PostGetForm;
 import com.madao.api.form.PostSegmentForm;
 import com.madao.api.utils.ResultUtil;
 import com.madao.api.utils.ResultView;
@@ -87,9 +85,9 @@ public class PostController {
 
     //分页获取帖子每层的信息
     @RequestMapping("/post/postInfo/getContent")
-    public ResultView getPostSegmentByPostId(@RequestBody BaseForm form){
+    public ResultView getPostSegmentByPostId(@RequestBody PostGetForm form){
         try {
-            PageInfo<PostSegmentDTO> resultPageInfo = postService.getPostSegmentByPostId(form.getId(), form.getPageNum(), form.getPageSize());
+            PageInfo<PostSegmentDTO> resultPageInfo = postService.getPostSegmentByPostId(form.getPostId(), form.getPageNum(), form.getPageSize(), form.getCommentPageSize());
             return ResultUtil.returnSuccess(resultPageInfo);
         }catch (Exception e){
             e.printStackTrace();
@@ -164,6 +162,44 @@ public class PostController {
             e.printStackTrace();
             return ResultUtil.returnFail();
         }
+    }
+
+    //获取用户收藏的帖子
+    @ResponseBody
+    @RequestMapping("/post/user/collect")
+    ResultView getPostCollect(@RequestParam("userId") Long userId, @RequestParam("pageNum") Integer pageNum, @RequestParam("pageSize") Integer pageSize){
+        try {
+            PageInfo<CollectDTO<PostDTO>> resultPage = postService.getCollectPost(userId, pageNum, pageSize);
+            return ResultUtil.returnSuccess(resultPage);
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.returnFail();
+        }
+    }
+
+    @ResponseBody
+    @RequestMapping("/post/collect/state")
+    ResultView getPostCollectState(@RequestParam("userId") Long userId, @RequestParam("postId") Long postId){
+        try {
+            boolean result = postService.getUserCollectPostState(userId, postId);
+            return ResultUtil.returnSuccess(result);
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.returnFail();
+        }
+    }
+
+    @ResponseBody
+    @RequestMapping("/post/collect/update")
+    ResultView setPostCollect(@RequestParam("userId") Long userId, @RequestParam("postId") Long postId, @RequestParam("operate") Byte operate){
+        try {
+            postService.updatePostCollectState(userId, postId, operate);
+            return ResultUtil.returnSuccess();
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.returnFail();
+        }
+
     }
 
 }

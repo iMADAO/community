@@ -9,10 +9,13 @@
     <style>
         a:link {color:#000000;}
     </style>
+    <script type="text/javascript" src="../static/jquery-1.7.2.js"></script>
     <link type="text/css" rel="stylesheet" href="../static/bootstrap-3.3.7-dist/css/bootstrap.css"></link>
     <script type="text/javascript" src="../static/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
-    <script type="text/javascript" src="../static/jquery-1.7.2.js"></script>
-    <script type="text/javascript"></script>
+    <script type="text/javascript">
+        $(function(){
+        })
+    </script>
 
 </head>
 <body>
@@ -50,7 +53,8 @@
             </nav>
 
             <div class="panel panel-default" style="word-wrap:break-word;word-break:break-all; width: 90%; padding: 20px">
-
+                分类:
+                <a th:href="'/toArticle?categoryId=' + @{${category.categoryId}}" style="margin: 5px" th:each="category:${data.data}" class="btn btn-default categoryBtn" th:text="${category.categoryName}" th:categoryId="${category.categoryId}"></a>
             </div>
         </div>
         <div class="col-sm-1"></div>

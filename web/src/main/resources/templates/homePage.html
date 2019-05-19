@@ -114,6 +114,8 @@
                 return true;
             })
 
+
+
         })
     </script>
 </head>
@@ -159,16 +161,16 @@
                 </div>
             </nav>
             <div class="col-sm-2">
-                <ul class="nav nav-pills nav-stacked" role="tablist">
-                    <li><a href="#">我的帐号</a></li>
+                <ul class="nav nav-pills nav-stacked" role="tablist" id="selectBtn">
+                    <li class="active"><a href="#" >我的帐号</a></li>
                     <li><a href="#">我的发表</a></li>
-                    <li><a href="#">我的收藏</a></li>
+                    <li><a href="#" class="mycollect">我的收藏</a></li>
                     <li><a href="#">问题关注</a></li>
                 </ul>
             </div>
 
             <!--我的帐号部分-->
-            <div id="target" class="col-sm-8">
+            <div id="account" class="col-sm-8">
                 <table class="table" th:if="${session.user!=null}">
                     <tr>
                         <td>帐号名</td>
@@ -252,6 +254,13 @@
             </div>
 
             <!--我的收藏部分-->
+            <div id="collect" class="col-sm-8">
+                <ul class="nav nav-pills" role="tablist">
+                    <li class="active"><a href="#" >帖子收藏</a></li>
+                    <li><a href="#">问答收藏</a></li>
+                    <li><a href="#" class="mycollect">文章收藏</a></li>
+                </ul>
+            </div>
 	、<!--
             <ul style="width: 100%">
                 <li style="display: inline; width: 30%">aa</li>

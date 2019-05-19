@@ -1,10 +1,8 @@
 package com.madao.web.controller;
 
 import com.madao.api.entity.PostCategory;
-import com.madao.api.form.BaseForm;
-import com.madao.api.form.ContentForm;
-import com.madao.api.form.PostForm;
-import com.madao.api.form.PostSegmentForm;
+import com.madao.api.entity.User;
+import com.madao.api.form.*;
 import com.madao.api.service.PostService;
 import com.madao.api.utils.ResultUtil;
 import com.madao.api.utils.ResultView;
@@ -89,9 +87,9 @@ public class PostController {
         }
     }
 
-    @RequestMapping("/post/info/{postId}/{pageNum}/{pageSize}")
-    public String toPostInfo(@PathVariable("postId") Long postId, @PathVariable("pageNum") Integer pageNum, @PathVariable("pageSize") Integer pageSize, HttpServletRequest request){
-        BaseForm form = new BaseForm(postId, pageNum, pageSize);
+    @RequestMapping("/post/info/{postId}/{pageNum}/{pageSize}/{commentPageSize}")
+    public String toPostInfo(@PathVariable("postId") Long postId, @PathVariable("pageNum") Integer pageNum, @PathVariable("pageSize") Integer pageSize, @PathVariable("commentPageSize") Integer commentPageSize ,HttpServletRequest request){
+        PostGetForm form = new PostGetForm(postId, pageNum, pageSize, commentPageSize);
         try {
             ResultView resultView = postService.getPostSegmentByPostId(form);
             request.setAttribute("data", resultView);
@@ -102,9 +100,9 @@ public class PostController {
     }
 
     @ResponseBody
-    @RequestMapping("/post/info/test/{postId}/{pageNum}/{pageSize}")
-    public ResultView toPostInfoTest(@PathVariable("postId") Long postId, @PathVariable("pageNum") Integer pageNum, @PathVariable("pageSize") Integer pageSize, HttpServletRequest request){
-        BaseForm form = new BaseForm(postId, pageNum, pageSize);
+    @RequestMapping("/post/info/test/{postId}/{pageNum}/{pageSize}/{commentPageSize}")
+    public ResultView toPostInfoTest(@PathVariable("postId") Long postId, @PathVariable("pageNum") Integer pageNum, @PathVariable("pageSize") Integer pageSize, @PathVariable("commentPageSize") Integer commentPageSize, HttpServletRequest request){
+        PostGetForm form = new PostGetForm(postId, pageNum, pageSize, commentPageSize);
         try {
             ResultView resultView = postService.getPostSegmentByPostId(form);
             return resultView;
@@ -115,9 +113,9 @@ public class PostController {
     }
 
     @ResponseBody
-    @RequestMapping("/post/info2/{postId}/{pageNum}/{pageSize}")
-    public ResultView toPostInfo2(@PathVariable("postId") Long postId, @PathVariable("pageNum") Integer pageNum, @PathVariable("pageSize") Integer pageSize, HttpServletRequest request){
-        BaseForm form = new BaseForm(postId, pageNum, pageSize);
+    @RequestMapping("/post/info2/{postId}/{pageNum}/{pageSize}/{commentPageSize}")
+    public ResultView toPostInfo2(@PathVariable("postId") Long postId, @PathVariable("pageNum") Integer pageNum, @PathVariable("pageSize") Integer pageSize, @PathVariable("commentPageSize") Integer commentPageSize, HttpServletRequest request){
+        PostGetForm form = new PostGetForm(postId, pageNum, pageSize, commentPageSize);
         try {
             ResultView resultView = postService.getPostSegmentByPostId(form);
             return resultView;
@@ -131,12 +129,11 @@ public class PostController {
     @PostMapping("/post/comment/{segmentId}")
     public ResultView addPostComment(@PathVariable("segmentId") Long segmentId,@RequestParam("commentContent") String commentContent, HttpServletRequest request){
         System.out.println("commentContent:...." + commentContent);
-        Object userObject =  request.getSession().getAttribute("user");
-        if(userObject==null){
+        User user = (User) request.getSession().getAttribute("user");
+        if (user == null) {
             return ResultUtil.returnFail("用户未登录,请登录后重试");
         }
-        LinkedHashMap<String, Object> map = (LinkedHashMap<String, Object>) userObject;
-        Long userId =  Long.parseLong(map.get("userId").toString());
+        Long userId = user.getUserId();
         try{
             ResultView resultView = postService.addPostComment(segmentId, userId, commentContent);
             return resultView;
@@ -149,12 +146,11 @@ public class PostController {
     @ResponseBody
     @PostMapping("/post/{categoryId}")
     public ResultView addPost(@RequestBody List<ContentForm> form, @PathVariable("categoryId") Long categoryId, HttpServletRequest request){
-        Object userObject =  request.getSession().getAttribute("user");
-        if(userObject==null){
+        User user = (User) request.getSession().getAttribute("user");
+        if (user == null) {
             return ResultUtil.returnFail("用户未登录,请登录后重试");
         }
-        LinkedHashMap<String, Object> map = (LinkedHashMap<String, Object>) userObject;
-        Long userId =  Long.parseLong(map.get("userId").toString());
+        Long userId = user.getUserId();
 
         PostForm postForm = new PostForm();
         postForm.setUserId(userId);
@@ -166,13 +162,11 @@ public class PostController {
     @ResponseBody
     @PostMapping("/post/segment/{postId}")
     public ResultView addPostSegment(@RequestBody List<ContentForm> form, @PathVariable("postId") Long postId, HttpServletRequest request){
-        Object userObject =  request.getSession().getAttribute("user");
-        if(userObject==null){
+        User user = (User) request.getSession().getAttribute("user");
+        if (user == null) {
             return ResultUtil.returnFail("用户未登录,请登录后重试");
         }
-        LinkedHashMap<String, Object> map = (LinkedHashMap<String, Object>) userObject;
-        Long userId =  Long.parseLong(map.get("userId").toString());
-
+        Long userId = user.getUserId();
         PostSegmentForm postSegmentForm = new PostSegmentForm();
         postSegmentForm.setUserId(userId);
         postSegmentForm.setAnswerContentFormList(form);
@@ -202,6 +196,43 @@ public class PostController {
             e.printStackTrace();
             return ResultUtil.returnFail();
         }
+    }
+
+
+    @ResponseBody
+    @RequestMapping("/post/collect/state/{postId}")
+    public ResultView getUserPostCollectState(@PathVariable("postId") Long postId, HttpServletRequest request){
+        try{
+            User user = (User) request.getSession().getAttribute("user");
+            if (user == null) {
+                return ResultUtil.returnFail("用户未登录,请登录后重试");
+            }
+            Long userId = user.getUserId();
+            ResultView resultView = postService.getPostCollectState(userId, postId);
+            return resultView;
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.returnFail();
+        }
+    }
+
+    //用户进行帖子收藏和取消收藏操作
+    @ResponseBody
+    @RequestMapping("/post/collect/operate/{postId}/{operate}")
+    public ResultView setPostCollectState(@PathVariable("postId") Long postId, @PathVariable("operate") Byte operate, HttpServletRequest request){
+        try{
+            User user = (User) request.getSession().getAttribute("user");
+            if (user == null) {
+                return ResultUtil.returnFail("用户未登录,请登录后重试");
+            }
+            Long userId = user.getUserId();
+            ResultView resultView = postService.setPostCollect(userId, postId, operate);
+            return resultView;
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.returnFail();
+        }
+
     }
 
 
