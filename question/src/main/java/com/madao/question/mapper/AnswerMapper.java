@@ -27,4 +27,6 @@ public interface AnswerMapper {
     int updateByPrimaryKeySelective(Answer record);
 
     int updateByPrimaryKey(Answer record);
+
+    List<Long> getAnswerIdListByQuestionIdOrderbyAgree(Long questionId, Integer startRow, Integer size);
 }

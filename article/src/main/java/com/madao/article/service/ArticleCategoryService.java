@@ -28,7 +28,7 @@ public class ArticleCategoryService {
         return articleCategoryList;
     }
 
-    private PageInfo<Article> getArticleListByCategoryId(Long categoryId, int pageNum, int pageSize){
+    public PageInfo<Article> getArticleListByCategoryId(Long categoryId, int pageNum, int pageSize){
         PageHelper.startPage(pageNum, pageSize);
         ArticleExample example = new ArticleExample();
         ArticleExample.Criteria criteria = example.createCriteria();
@@ -37,4 +37,6 @@ public class ArticleCategoryService {
         PageInfo<Article> pageInfo = new PageInfo<>(articleList);
         return pageInfo;
     }
+
+
 }

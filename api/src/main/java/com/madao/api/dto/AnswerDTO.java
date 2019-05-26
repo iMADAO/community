@@ -34,6 +34,8 @@ public class AnswerDTO {
 
     private Integer disagreeCount;
 
+    private Byte state;
+
     private Byte agreeType = AgreeEnum.DEFAULT.getCode();
 
     private Integer commentCount;
@@ -43,4 +45,6 @@ public class AnswerDTO {
     private Date createTime;
 
     private Date updateTime;
+
+    private List<Byte> userOperateState;
 }

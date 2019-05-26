@@ -10,7 +10,11 @@
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
     <result column="comment_count" property="commentCount" jdbcType="INTEGER" />
+    <result column="state" property="state" jdbcType="TINYINT" />
   </resultMap>
+  <select id="getAnswerIdListByQuestionIdOrderbyAgree" resultType="java.lang.Long">
+    select answer_id from answer where question_id = #{param1} and state=0 order by agree_count desc limit #{param2}, #{param3}
+  </select>
   <sql id="Example_Where_Clause" >
     <where >
       <foreach collection="oredCriteria" item="criteria" separator="or" >
@@ -71,7 +75,7 @@
   </sql>
   <sql id="Base_Column_List" >
     answer_id, question_id, user_id, agree_count, disagree_count, create_time, update_time, 
-    comment_count
+    comment_count, state
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.madao.question.bean.AnswerExample" >
     select
@@ -106,10 +110,12 @@
   <insert id="insert" parameterType="com.madao.api.entity.Answer" >
     insert into answer (answer_id, question_id, user_id, 
       agree_count, disagree_count, create_time, 
-      update_time, comment_count)
+      update_time, comment_count, state
+      )
     values (#{answerId,jdbcType=BIGINT}, #{questionId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, 
       #{agreeCount,jdbcType=INTEGER}, #{disagreeCount,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{updateTime,jdbcType=TIMESTAMP}, #{commentCount,jdbcType=INTEGER})
+      #{updateTime,jdbcType=TIMESTAMP}, #{commentCount,jdbcType=INTEGER}, #{state,jdbcType=TINYINT}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.madao.api.entity.Answer" >
     insert into answer
@@ -138,6 +144,9 @@
       <if test="commentCount != null" >
         comment_count,
       </if>
+      <if test="state != null" >
+        state,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="answerId != null" >
@@ -163,6 +172,9 @@
       </if>
       <if test="commentCount != null" >
         #{commentCount,jdbcType=INTEGER},
+      </if>
+      <if test="state != null" >
+        #{state,jdbcType=TINYINT},
       </if>
     </trim>
   </insert>
@@ -199,6 +211,9 @@
       <if test="record.commentCount != null" >
         comment_count = #{record.commentCount,jdbcType=INTEGER},
       </if>
+      <if test="record.state != null" >
+        state = #{record.state,jdbcType=TINYINT},
+      </if>
     </set>
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
@@ -213,7 +228,8 @@
       disagree_count = #{record.disagreeCount,jdbcType=INTEGER},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       update_time = #{record.updateTime,jdbcType=TIMESTAMP},
-      comment_count = #{record.commentCount,jdbcType=INTEGER}
+      comment_count = #{record.commentCount,jdbcType=INTEGER},
+      state = #{record.state,jdbcType=TINYINT}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -242,6 +258,9 @@
       <if test="commentCount != null" >
         comment_count = #{commentCount,jdbcType=INTEGER},
       </if>
+      <if test="state != null" >
+        state = #{state,jdbcType=TINYINT},
+      </if>
     </set>
     where answer_id = #{answerId,jdbcType=BIGINT}
   </update>
@@ -253,7 +272,8 @@
       disagree_count = #{disagreeCount,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
-      comment_count = #{commentCount,jdbcType=INTEGER}
+      comment_count = #{commentCount,jdbcType=INTEGER},
+      state = #{state,jdbcType=TINYINT}
     where answer_id = #{answerId,jdbcType=BIGINT}
   </update>
 </mapper>

@@ -9,11 +9,104 @@
     <style>
         a:link {color:#000000;}
     </style>
-    <script type="text/javascript" src="../static/jquery-1.7.2.js"></script>
+    <script type="text/javascript" src="../static/jquery-1.12.4.min.js"></script>
+    <script type="text/javascript" src="../static/jquery.form.js"></script>
     <link type="text/css" rel="stylesheet" href="../static/bootstrap-3.3.7-dist/css/bootstrap.css"></link>
     <script type="text/javascript" src="../static/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
     <script type="text/javascript">
         $(function(){
+            var categoryBtn = $(".categoryBtn")
+            var categoryId = $("#articleContent").attr("categoryId");
+            console.log(categoryId)
+            $.each(categoryBtn, function(index, obj){
+                console.log($(obj).attr("categoryId"))
+                if($(obj).attr("categoryId")==categoryId){
+                    $(obj).attr("class", "btn btn-primary categoryBtn")
+                }
+            })
+
+            String.prototype.endWith=function(endStr){
+                var d=this.length-endStr.length;
+                return (d>=0&&this.lastIndexOf(endStr)==d);
+            }
+
+            $("#uploadFileBtn").click(function () {
+                alert("aaa")
+                var value = $("#uploadFile").val();
+                if(value==""){
+                    alert("未选择文件");
+                    return false;
+                }
+                var checkResult = value.endWith(".docx") || value.endWith(".doc");
+                if(checkResult==false){
+                    alert("仅支持.doc或.docx格式的文件")
+                    return false;
+                }
+            })
+
+            $("#uploadForm").ajaxForm(function(data) {
+                console.log(data)
+                if(data.code==0){
+                    alert("上传成功")
+                    var path = data.data;
+                    console.log(path);
+                    $("#filePath").val(path);
+                }else{
+                    if(data.hint){
+                        alert(data.hint)
+                    }
+                }
+                return false;
+            })
+
+            $("#submitAll").click(function(){
+                var categoryId = $("#articleContent").attr("categoryId");
+                if(!categoryId){
+                    alert("未选择类别")
+                    return
+                }
+                var filePath = $("#filePath").val();
+                var title = $("#articleTitle").val();
+                var originName = $("#uploadFile").val();
+                $.ajax({
+                    url: '/article',
+                    type: 'post',
+                    dataType: 'json',
+                    async: false,
+                    data: {
+                        'categoryId': categoryId,
+                        'filePath': filePath,
+                        'originName': originName,
+                        'title': title
+                    },
+                    success: function(data) {
+                        console.log(data)
+                        if(data.code==0){
+                            var flag = confirm("上传成功，是否立即查看")
+                            if(flag){
+                                window.open(data.accessUrl)
+                            }
+                            $("#articleNode").append(' <div>\n' +
+                                '                        <span>'+ data.title +'</span><br/><br/> <a href="'+ data.accessUrl+'" target="_blank">预览</a> <a href="/file/download/' + data.articleId + '" target="_blank">下载</a>\n' +
+                                '                        <span> ' +  data.downloadCount +'</span>\n' +
+                                '                        <div style="float: right">\n' +
+                                '                            <span>由 <a href="#">'+ data.userName+'</a> 于</span> <span>'+ data.createTime +'</span> 上传\n' +
+                                '                        </div>\n' +
+                                '                    </div>')
+
+
+
+                        }
+
+                    },
+                    error: function(data){
+                        console.log(data)
+                        if(data.hint){
+                            alert(data.hint)
+                        }
+                    }
+                })
+            })
         })
     </script>
 
@@ -31,9 +124,9 @@
                     </div>
                     <div>
                         <ul class="nav navbar-nav">
-                            <li class="dropdown"><a href="#">社区首页</a></li>
-                            <li><a href="#" style="color: #2e6da4">文章</a></li>
-                            <li><a href="#">问答</a></li>
+                            <li class="dropdown"><a href="/toPost" target="_blank">社区首页</a></li>
+                            <li><a href="/toArticle" target="_blank" style="color: #2e6da4">文库</a></li>
+                            <li><a href="/toQuestion" target="_blank">问答</a></li>
                         </ul>
                     </div>
                     <form class="navbar-form navbar-left" role="search">
@@ -43,10 +136,23 @@
                         <button type="submit" class="btn btn-default">搜文章</button>
                     </form>
                     <div>
-                        <ul class="nav navbar-nav navbar-right">
-                            <li th:if="${session.user}"><a  href="toHomePage">个人中心</a></li>
-                            <li th:if="${session.user==null}"><a href="/toRegister"><span class="glyphicon glyphicon-user"></span> 注册</a></li>
-                            <li th:if="${session.user==null}"><a href="/toLogin"><span class="glyphicon glyphicon-log-in"></span> 登录</a></li>
+                        <ul class="nav navbar-nav navbar-right" id="userNav">
+                            <li th:if="${session.user}">
+                                <div>
+                                    <div class="dropdown" align="left">
+                                        <span class="dropdown-toggle" id="menu1" data-toggle="dropdown" >
+                                             <img th:src="@{${session.user.userPic}}" width="45px" src="../static/img/da8e974dc_xs.jpg" class="img-thumbnail"/>
+                                        </span>
+                                        <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
+                                            <li role="presentation"><a role="menuitem" tabindex="-1" href="/toHomePage" target="_blank">个人中心</a></li>
+                                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#" id="logoutNode">退出登录</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </li>
+
+                            <li th:if="${session.user==null}"><a href="/toRegister" target="_blank"><span class="glyphicon glyphicon-user"></span> 注册</a></li>
+                            <li th:if="${session.user==null}"><a id="toLogin" href="/toLogin" target="_blank"><span class="glyphicon glyphicon-log-in"></span> 登录</a></li>
                         </ul>
                     </div>
                 </div>
@@ -54,7 +160,48 @@
 
             <div class="panel panel-default" style="word-wrap:break-word;word-break:break-all; width: 90%; padding: 20px">
                 分类:
-                <a th:href="'/toArticle?categoryId=' + @{${category.categoryId}}" style="margin: 5px" th:each="category:${data.data}" class="btn btn-default categoryBtn" th:text="${category.categoryName}" th:categoryId="${category.categoryId}"></a>
+                <a th:if="${data.data.categoryList}" th:href="'/toArticle/' + @{${category.categoryId}}" style="margin: 5px" th:each="category:${data.data.categoryList}" class="btn btn-default categoryBtn" th:text="${category.categoryName}" th:categoryId="${category.categoryId}"></a>
+            </div>
+
+            <button class="btn btn-primary" data-toggle="modal" data-target="#uploadModal">我要上传</button>
+            <!-- 模态框（Modal） -->
+            <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title" id="myModalLabel">上传文章</h4>
+                        </div>
+                        <div class="modal-body">
+                            <textarea id="articleTitle" placeholder="文章标题" style="width: 100%"></textarea>
+                            <br/>
+                            选择文件
+                            <form id="uploadForm" action="/docfile/upload" method="post" enctype="multipart/form-data">
+                                <input type="file" name="file" id="uploadFile"/>
+                                <input type="submit" value="提交" class="btn btn-primary" id="uploadFileBtn"/>
+                            </form>
+                            <input type="hidden" id="filePath"/>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                            <button type="button" class="btn btn-primary" id="submitAll">提交更改</button>
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal -->
+            </div>
+
+            <div id="articleContent" class="panel panel-default" style="word-wrap:break-word;word-break:break-all; width: 90%; padding: 20px" th:categoryId="${categoryId}">
+                <div th:each="article:${data.data.articlePageInfo.list}" id="articleNode">
+                    <span style="visibility: hidden" th:text="${article.articleId}" class="articleId"></span>
+                    <div>
+                        <span th:text="${article.title}"></span><br/><br/> <a th:href="@{${article.accessUrl}}" target="_blank">预览</a> <a th:href="@{'/file/download/' + ${article.articleId}}" target="_blank">下载</a>
+                        <span th:text="${'下载数:' + article.downloadCount}"></span>
+                        <div style="float: right">
+                            <span th:if="${article.userName!=null}">由 <a  th:text="${article.userName}"></a> 于</span> <span th:text="${article.createTime}"></span> 上传
+                        </div>
+                    </div>
+                </div>
+                <!--</div>-->
             </div>
         </div>
         <div class="col-sm-1"></div>

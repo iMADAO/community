@@ -2,16 +2,19 @@ package com.madao.post.service;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.madao.api.Exception.ResultException;
 import com.madao.api.dto.*;
 import com.madao.api.entity.*;
 import com.madao.api.enums.CollectTypeEnum;
 import com.madao.api.enums.OperateEnum;
+import com.madao.api.enums.StateEnum;
 import com.madao.api.form.BaseForm;
 import com.madao.api.form.ContentForm;
 import com.madao.api.form.PostForm;
 import com.madao.api.form.PostSegmentForm;
 import com.madao.api.service.UserService;
 import com.madao.api.utils.KeyUtil;
+import com.madao.api.utils.ResultView;
 import com.madao.post.bean.*;
 import com.madao.post.mapper.*;
 import org.springframework.beans.BeanUtils;
@@ -19,7 +22,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PostMapping;
 
+import javax.swing.text.Segment;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -83,52 +88,35 @@ public class PostService {
         return postCategoryMapper.selectByExample(example);
     }
 
-    //根据分类分页获取帖子
+    //根据分类分页获取可见的帖子
     public PageInfo<PostDTO> getPostListByCategoryId(BaseForm form) {
         PageHelper.startPage(form.getPageNum(), form.getPageSize());
         PostExample example = new PostExample();
         PostExample.Criteria criteria = example.createCriteria();
         criteria.andCategoryIdEqualTo(form.getId());
+        criteria.andStateEqualTo(StateEnum.VISIBLE.getCode());
         List<Post> postList = postMapper.selectByExample(example);
         PageInfo<Post> postInfo = new PageInfo<>(postList);
 
         List<PostDTO> postDTOList = new ArrayList<>(postList.size());
-        for(Post post: postList){
-            PostDTO postDTO = new PostDTO();
-            BeanUtils.copyProperties(post, postDTO);
-
-            User user = getUserInfoInCache(post.getUserId());
-            BeanUtils.copyProperties(user, postDTO);
-
-            List<String> conentList = getAbstractContentStringByPostId(post.getPostId());
-            postDTO.setContentList(conentList);
-            postDTOList.add(postDTO);
-        }
+        populatePostDTO(postList, postDTOList);
         PageInfo<PostDTO> postDTOPageInfo = new PageInfo<>();
         BeanUtils.copyProperties(postInfo, postDTOPageInfo);
         postDTOPageInfo.setList(postDTOList);
         return postDTOPageInfo;
     }
 
-    //不分类获取帖子信息
+    //不分类获取可见的帖子信息
     public PageInfo<PostDTO> getPostList(Integer pageNum, Integer pageSize) {
-        PageHelper.startPage(pageNum, pageNum);
+        PageHelper.startPage(pageNum, pageSize);
         PostExample example = new PostExample();
+        PostExample.Criteria criteria = example.createCriteria();
+        criteria.andStateEqualTo(StateEnum.VISIBLE.getCode());
         List<Post> postList = postMapper.selectByExample(example);
         PageInfo<Post> postInfo = new PageInfo<>(postList);
 
         List<PostDTO> postDTOList = new ArrayList<>(postList.size());
-        for(Post post: postList){
-            PostDTO postDTO = new PostDTO();
-            BeanUtils.copyProperties(post, postDTO);
-
-            User user = getUserInfoInCache(post.getUserId());
-            BeanUtils.copyProperties(user, postDTO);
-
-            List<String> conentList = getAbstractContentStringByPostId(post.getPostId());
-            postDTO.setContentList(conentList);
-            postDTOList.add(postDTO);
-        }
+        populatePostDTO(postList, postDTOList);
         PageInfo<PostDTO> postDTOPageInfo = new PageInfo<>();
         BeanUtils.copyProperties(postInfo, postDTOPageInfo);
         postDTOPageInfo.setList(postDTOList);
@@ -138,12 +126,21 @@ public class PostService {
 
     //尝试从缓存中获取用户信息，如果没有，从数据库获取，并缓存
     public User getUserInfoInCache(Long userId){
-        User user = (User) redisTemplate.opsForValue().get(USER_PREFIX + userId);
-        System.out.println("redis get user...." + user);
+        User user = null;
+        try {
+           user  = (User) redisTemplate.opsForValue().get(USER_PREFIX + userId);
+            System.out.println("redis get user...." + user);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
         if(user==null){
             user = userService.getUserById(userId);
             System.out.println("database get user" + user);
-            redisTemplate.opsForValue().set(USER_PREFIX + userId, user, 3600, TimeUnit.SECONDS);
+            try {
+                redisTemplate.opsForValue().set(USER_PREFIX + userId, user, 3600, TimeUnit.SECONDS);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
         return user;
     }
@@ -252,6 +249,26 @@ public class PostService {
         post.setCategoryId(postForm.getCategoryId());
         postMapper.insertSelective(post);
 
+        PostSegment postSegment = new PostSegment();
+        postSegment.setCommentCount(0);
+        postSegment.setPostId(post.getPostId());
+        postSegment.setSegmentId(KeyUtil.genUniquKeyOnLong());
+        postSegment.setSegOrder(1);
+        postSegment.setUserId(postForm.getUserId());
+        postSegmentMapper.insertSelective(postSegment);
+
+        int order = 1;
+        for(ContentForm contentForm: postForm.getAnswerContentFormList()) {
+            SegmentContent content = new SegmentContent();
+            content.setContentId(KeyUtil.genUniquKeyOnLong());
+            content.setContent(contentForm.getContent());
+            content.setType(contentForm.getType());
+            content.setSegmentId(postSegment.getSegmentId());
+            content.setContentOrder(order);
+            segmentContentMapper.insertSelective(content);
+            order++;
+        }
+
 
         return post;
     }
@@ -308,6 +325,7 @@ public class PostService {
             CollectDTO<PostDTO> collectDTO = new CollectDTO<>();
             BeanUtils.copyProperties(collect, collectDTO);
             PostDTO postDTO = getPostDTO(collect.getTargetId());
+            System.out.println(postDTO);
             collectDTO.setData(postDTO);
             collectDTOList.add(collectDTO);
         }
@@ -320,6 +338,8 @@ public class PostService {
 
     private PostDTO getPostDTO(Long postId) {
         Post post = postMapper.selectByPrimaryKey(postId);
+        if(post==null)
+            return null;
         PostDTO postDTO = new PostDTO();
         BeanUtils.copyProperties(post, postDTO);
 
@@ -364,5 +384,130 @@ public class PostService {
             collect.setCollectId(KeyUtil.genUniquKeyOnLong());
             collectMapper.insertSelective(collect);
         }
+    }
+
+    public PostCategory getCategoryByName(String categoryName) {
+        PostCategoryExample example = new PostCategoryExample();
+        PostCategoryExample.Criteria criteria = example.createCriteria();
+        criteria.andCategoryNameEqualTo(categoryName);
+        List<PostCategory> postCategoryList = postCategoryMapper.selectByExample(example);
+        if(postCategoryList==null || postCategoryList.size()==0)
+            throw new ResultException("该类别不存在");
+        return postCategoryList.get(0);
+    }
+
+
+    //根据分类分页获取所有帖子
+    public PageInfo<PostDTO> getPostListByCategoryIdInAllState(BaseForm form) {
+        PageHelper.startPage(form.getPageNum(), form.getPageSize());
+        PostExample example = new PostExample();
+        PostExample.Criteria criteria = example.createCriteria();
+        criteria.andCategoryIdEqualTo(form.getId());
+        criteria.andStateEqualTo(StateEnum.VISIBLE.getCode());
+        List<Post> postList = postMapper.selectByExample(example);
+        PageInfo<Post> postInfo = new PageInfo<>(postList);
+
+        List<PostDTO> postDTOList = new ArrayList<>(postList.size());
+        populatePostDTO(postList, postDTOList);
+        PageInfo<PostDTO> postDTOPageInfo = new PageInfo<>();
+        BeanUtils.copyProperties(postInfo, postDTOPageInfo);
+        postDTOPageInfo.setList(postDTOList);
+        return postDTOPageInfo;
+    }
+
+    //不分类获取全部状态的帖子信息
+    public PageInfo<PostDTO> getPostListInAllState(Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        PostExample example = new PostExample();
+        List<Post> postList = postMapper.selectByExample(example);
+        PageInfo<Post> postInfo = new PageInfo<>(postList);
+
+        List<PostDTO> postDTOList = new ArrayList<>(postList.size());
+        populatePostDTO(postList, postDTOList);
+        PageInfo<PostDTO> postDTOPageInfo = new PageInfo<>();
+        BeanUtils.copyProperties(postInfo, postDTOPageInfo);
+        postDTOPageInfo.setList(postDTOList);
+        return postDTOPageInfo;
+    }
+
+
+    public void disablePost(Long postId) {
+        Post post = postMapper.selectByPrimaryKey(postId);
+        if(post.getState()==StateEnum.INVISIBLE.getCode())
+            return ;
+        post.setState(StateEnum.INVISIBLE.getCode());
+        postMapper.updateByPrimaryKeySelective(post);
+    }
+
+    public PageInfo<PostDTO> getPostListByUserId(Long userId, Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        PostExample example = new PostExample();
+        PostExample.Criteria criteria = example.createCriteria();
+        criteria.andUserIdEqualTo(userId);
+        List<Post> postList = postMapper.selectByExample(example);
+        PageInfo<Post> postInfo = new PageInfo<>(postList);
+
+        List<PostDTO> postDTOList = new ArrayList<>(postList.size());
+        populatePostDTO(postList, postDTOList);
+        PageInfo<PostDTO> postDTOPageInfo = new PageInfo<>();
+        BeanUtils.copyProperties(postInfo, postDTOPageInfo);
+        postDTOPageInfo.setList(postDTOList);
+        return postDTOPageInfo;
+    }
+
+    private void populatePostDTO(List<Post> postList, List<PostDTO> postDTOList){
+        for(Post post: postList){
+            PostDTO postDTO = new PostDTO();
+            User user = getUserInfoInCache(post.getUserId());
+            BeanUtils.copyProperties(user, postDTO);
+
+            //这里的user和post都有state属性，如果放在user前会被user的state属性父该覆盖
+            BeanUtils.copyProperties(post, postDTO);
+
+            List<String> conentList = getAbstractContentStringByPostId(post.getPostId());
+            postDTO.setContentList(conentList);
+            postDTOList.add(postDTO);
+        }
+    }
+
+    //用户操作帖子状态
+    public void operatePost(Long userId, Long postId, Byte operate) {
+        Post post = postMapper.selectByPrimaryKey(postId);
+        if(!userId.equals(post.getUserId())){
+            throw new ResultException("该帖子不属于当前用户");
+        }
+        //如果已经是操作过了的状态，直接返回
+        if(operate.equals(post.getState()))
+            return;
+        //如果在合法操作内的话
+        if(operate.equals(StateEnum.VISIBLE.getCode()) || operate.equals(StateEnum.INVISIBLE.getCode())){
+            post.setState(operate);
+            postMapper.updateByPrimaryKeySelective(post);
+        }
+    }
+
+    //获取用户收藏的帖子，带分页
+    public PageInfo<PostDTO> getPostListByUserCollected(Long userId, Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        CollectExample collectExample = new CollectExample();
+        CollectExample.Criteria criteria = collectExample.createCriteria();
+        criteria.andTypeEqualTo(CollectTypeEnum.POST.getCode());
+        criteria.andUserIdEqualTo(userId);
+        List<Collect> collectList = collectMapper.selectByExample(collectExample);
+        PageInfo<Collect> collectPageInfo = new PageInfo<>(collectList);
+
+        List<Post> postList = new ArrayList<>();
+        for(Collect collect: collectList){
+            Post post = postMapper.selectByPrimaryKey(collect.getTargetId());
+            postList.add(post);
+        }
+        List<PostDTO> postDTOList = new ArrayList<>();
+        populatePostDTO(postList, postDTOList);
+
+        PageInfo<PostDTO> postDTOPageInfo = new PageInfo<>();
+        BeanUtils.copyProperties(collectPageInfo, postDTOPageInfo);
+        postDTOPageInfo.setList(postDTOList);
+
+        return postDTOPageInfo;
     }
 }

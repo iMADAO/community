@@ -57,4 +57,25 @@ public interface PostService {
 
     @RequestMapping("/post/collect/update")
     ResultView setPostCollect(@RequestParam("userId") Long userId, @RequestParam("postId") Long postId, @RequestParam("operate") Byte operate);
+
+    @RequestMapping("/post/category/name")
+    ResultView getCategoryByName(@RequestParam("categoryName") String categoryName);
+
+    @RequestMapping("/post/getList/allState")
+    public ResultView getPostListByCategoryIdInAllState(@RequestBody BaseForm form);
+
+    @RequestMapping("/post/getList/all/allState")
+    ResultView getPostListInAllState(@RequestParam("pageNum") Integer pageNum, @RequestParam("pageSize") Integer pageSize);
+
+    @RequestMapping("/post/disable")
+    ResultView disablePost(@RequestParam("postId") Long postId);
+
+    @RequestMapping("/post/getList/person")
+    ResultView getPostListByUser(@RequestParam("userId") Long userId, @RequestParam("pageNum") Integer pageNum, @RequestParam("pageSize") Integer pageSize);
+
+    @RequestMapping("/post/person/operate")
+    ResultView operatePostByUser(@RequestParam("userId") Long userId, @RequestParam("postId") Long postId, @RequestParam("operate") Byte operate);
+
+    @RequestMapping("/post/person/collect")
+    ResultView getPostListByUserCollected(@RequestParam("userId")Long userId, @RequestParam("pageNum")Integer pageNum, @RequestParam("pageSize")Integer pageSize);
 }

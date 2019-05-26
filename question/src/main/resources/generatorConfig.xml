@@ -30,7 +30,7 @@
             <property name="enableSubPackages" value="true" />
         </javaClientGenerator>
         <!-- 表名 -->
-        <table tableName="post_comment" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="true" />
+        <table tableName="answer" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="true" />
         <!--<table tableName="answer_content" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="true" />-->
 
     </context>

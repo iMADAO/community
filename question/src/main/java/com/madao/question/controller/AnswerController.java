@@ -5,6 +5,7 @@ import com.madao.api.Exception.ResultException;
 import com.madao.api.dto.AnswerCommentDTO;
 import com.madao.api.entity.AnswerComment;
 import com.madao.api.entity.AnswerContent;
+import com.madao.api.entity.User;
 import com.madao.api.form.AnswerForm;
 import com.madao.api.service.UserService;
 import com.madao.api.utils.ResultUtil;
@@ -171,5 +172,17 @@ public class AnswerController {
             return ResultUtil.returnFail("请稍后重试");
         }
         return ResultUtil.returnSuccess();
+    }
+
+    //用户操作回答状态
+    @RequestMapping("/question/person/operate")
+    ResultView operateAnswer(@RequestParam("userId")Long userId, @RequestParam("answerId")Long answerId, @RequestParam("operate")Byte operate){
+        try {
+            answerService.operateAnswer(userId, answerId, operate);
+            return ResultUtil.returnSuccess();
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.returnFail();
+        }
     }
 }

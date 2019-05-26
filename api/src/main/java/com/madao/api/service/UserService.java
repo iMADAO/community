@@ -16,8 +16,8 @@ import java.util.List;
 
 @FeignClient(value = "user", fallbackFactory = UserServiceFallbackFactory.class)
 public interface UserService {
-    @GetMapping(value = "/user/{id}")
-    public User getUserById(@PathVariable("id") Long userId);
+    @RequestMapping(value = "/user")
+    public User getUserById(@RequestParam("userId") Long userId);
 
     @RequestMapping(value="/user/name/check")
     public ResultView checkIfUserNameExist(@RequestParam(value = "userName") String userName);

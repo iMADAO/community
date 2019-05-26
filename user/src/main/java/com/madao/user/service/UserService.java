@@ -1,6 +1,7 @@
 package com.madao.user.service;
 
 import com.madao.api.Exception.ResultException;
+import com.madao.api.entity.PostCategory;
 import com.madao.api.entity.User;
 import com.madao.api.enums.ErrorEnum;
 import com.madao.api.enums.UserStateEnum;

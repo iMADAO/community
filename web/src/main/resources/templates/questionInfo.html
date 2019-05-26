@@ -141,7 +141,7 @@
             })
 
             //点赞
-            $(".agree").click(function() {
+            $("#answerListNode").on('click', '.agree', function(e){
                 var answerId = $(this).parent().parent().find(".answerId").text();
                 var agree = $(this)
                 var agreeClass = agree.attr("class")
@@ -291,7 +291,7 @@
 
             })
 
-            $(".disagree").click(function () {
+            $("#answerListNode").on('click', '.disagree', function(e){
                 var answerId = $(this).parent().parent().find(".answerId").text();
                 var disagree = $(this)
                 var disagreeClass = disagree.attr("class")
@@ -368,7 +368,7 @@
 
 
             //展开评论,显示评论第一页
-            $(".toComment").click(function(){
+            $("#answerListNode").on('click', '.toComment', function(e){
                 var answerId = $(this).parent().parent().find(".answerId").text();
                 console.log(answerId)
                 var answerNode = $(this).parent().parent();
@@ -556,7 +556,8 @@
 
 
             //点击收藏按钮,收藏或者取消收藏的操作
-            $(".collect").click(function(){
+
+            $("#answerListNode").on('click', '.collect', function(e){
                 var collect = $(this).attr("collect");
                 console.log("collect:" + collect);
                 var answerId = $(this).parent().parent().find(".answerId").text();
@@ -632,7 +633,7 @@
             })
 
             //关注问题/取消关注
-            $("#collectQuestion").click(function(){
+            $("#answerListNode").on('click', '#collectQuestion', function(e){
                 var collectState = $(this).attr("collect")
                 console.log("collectState---" + collectState)
                 var thisNode = $(this)
@@ -764,6 +765,117 @@
                 })
             })
 
+            $("#answerListNode").on('click', '#nextAnswer', function(e){
+                var answerIdNodes = $(".answerId");
+                var answerIdArr = new Array();
+                $.each(answerIdNodes, function(index, obj){
+                    answerIdArr.push($(obj).text());
+                })
+                var thisNode = $(this)
+                // alert(answerIdArr[0])
+                var questionId = $("#questionId").text();
+                $.ajax({
+                    url: '/question/answer/next',
+                    type: 'get',
+                    dataType: 'json',
+                    data:{
+                        'questionId': questionId,
+                        'answerIdList': answerIdArr.toString()
+                    },
+                    success: function(data){
+                        console.log(data)
+                        if(data.code==0){
+                            //图文内容的节点
+                            var answerContentNode = ""
+                            $.each(data.data.answerContentList, function(index, content){
+                                answerContentNode +='<div >\n'
+                                if(content.type==0){
+                                    answerContentNode+='  <div style="line-height:22px;text-align: justify;">' + content.content+ '</div>'
+                                }else if(content.type==1){
+                                    answerContentNode += '<div>\n' +
+                                        '<img class="img-responsive"  src="'+ content.content+'">\n' +
+                                        '</div>\n'
+                                }
+                                answerContentNode+='</div>\n'
+                            })
+                            //赞同的节点
+                            var agreeState
+                            var collectState
+                            if(data.data.userOperateState!=null) {
+                                var agreeState = parseInt(data.data.userOperateState[0])
+                                var collectState = parseInt(data.data.userOperateState[1])
+                            }else{
+                                agreeState = -1;
+                                collectState = 0;
+                            }
+                            var agreeNode = ""
+                            var collectNode = ""
+                            if(agreeState==0) {
+                                agreeNode += '<span class="btn btn-primary agree">赞同 ' + data.data.agreeCount + '</span>\n' +
+                                    '            <span class="btn btn-default disagree">不赞同 ' + data.data.disagreeCount + '</span>\n';
+                            }else if(agreeState==1){
+                                agreeNode += '<span class="btn btn-default agree">赞同 ' + data.data.agreeCount + '</span>\n' +
+                                    '            <span class="btn btn-primary disagree">不赞同 ' + data.data.disagreeCount + '</span>\n';
+                            }else{
+                                agreeNode += '<span class="btn btn-default agree">赞同 ' + data.data.agreeCount + '</span>\n' +
+                                    '            <span class="btn btn-default disagree">不赞同 ' + data.data.disagreeCount + '</span>\n';
+                            }
+
+                            if(collectState==0){
+                                collectNode+= '<span class="btn btn-default collect" collect="0">收藏</span>\n'
+                            }else if(collectState==1){
+                                collectNode+= '<span class="btn btn-primary collect" collect="1">收藏</span>\n'
+                            }
+                            var newAnswerNode = ""
+                            newAnswerNode += ' <div class="panel panel-default answerNode" style="word-wrap:break-word;word-break:break-all; padding: 50px; width: 90%" type="answerNode">\n' +
+                                '                <div style="margin: 20px" class="answerUserInfo">\n' +
+                                '                    <img width="30px" src="'+ data.data.userPic+'" alt="图片" />\n' +
+                                '                    <span style="text-align: center" >'+ data.data.userName+'</span><br/>\n' +
+                                '                    <span style="color: darkgray">'+data.data.agreeCount+'个人赞同该回答</span>\n' +
+                                '                    <span class="answerId" style="visibility: hidden">'+data.data.answerId+'</span>\n' +
+                                '                </div>\n' +
+                                '                <div style="margin: 30px" class="answerNode">\n'
+                            newAnswerNode += answerContentNode;
+
+                            newAnswerNode +=    '       <br/>\n' +
+                                '                    <br/>\n' +
+                                '                    <span style="color: darkgray; float: right;">'+ data.data.createTime+'</span>\n' +
+                                '                </div>\n' +
+                                '                <br/>\n' +
+                                '                <div style="position:relative; left: 30px;">\n' +
+                                    agreeNode +
+                                '                    <span class="toComment"><a class="getComment" href="#">'+ data.data.commentCount+'条评论</a></span>\n' +
+                                    collectNode +
+                                '                    <span><input type="hidden" class="commentCount" value='+ data.data.commentCount+'></span></span>\n' +
+                                '                </div>\n' +
+                                '\n' +
+                                '                <div class="commentNode">\n' +
+                                '\n' +
+                                '                </div>\n' +
+                                '                <div class="commentNavNode">\n' +
+                                '\n' +
+                                '                </div>\n' +
+                                '                <div style="width: 100%; position: relative; left: 20px" class="toAddComment">\n' +
+                                '                    <!--<textarea style="width: 70%" class="inputComment" placeholder="我的评论"/>-->\n' +
+                                '                    <!--<button style="position: relative; left:10px" class="btn btn-primary submitComment">提交</button>-->\n' +
+                                '                </div>\n' +
+                                '            </div>'
+                            $("#nextAnswer").remove()
+                            $("#answerListNode").append(newAnswerNode)
+                            $("#answerListNode").append('            <btn style="width: 80%;margin: 15px" class="btn btn-primary" id="nextAnswer">下一条回答</btn>\n')
+                        }else{
+                            if(data.hint){
+                                alert(data.hint)
+                            }
+                        }
+                        // $("#")
+                    }
+                })
+            })
+            // $("#nextAnswer").click(function(){
+            //
+            // })
+
 
 
 
@@ -775,7 +887,7 @@
     <div class="row">
         <div class="col-sm-1">
         </div>
-        <div class="col-sm-9">
+        <div class="col-sm-9" id="answerListNode">
             <nav class="navbar navbar-default" role="navigation">
                 <div class="container-fluid">
                     <div class="navbar-header">
@@ -784,7 +896,7 @@
                     <div>
                         <ul class="nav navbar-nav">
                             <li class="dropdown"><a href="/toPost" target="_blank">社区首页</a></li>
-                            <li><a href="/toArticle" target="_blank">文章</a></li>
+                            <li><a href="/toArticle" target="_blank">文库</a></li>
                             <li><a href="/toQuestion" style="color: #2e6da4" target="_blank">问答</a></li>
                         </ul>
                     </div>
@@ -846,7 +958,7 @@
                         <div class="modal-footer">
                             <br/>
                             <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                            <button type="button" class="btn btn-primary" id="submitBtn">提交</button>
+                            <button type="button" class="btn btn-primary" data-dismiss="modal" id="submitBtn">提交</button>
                         </div>
                     </div><!-- /.modal-content -->
                 </div><!-- /.modal -->
@@ -865,7 +977,7 @@
                         <div th:if="${answerContent.type==1}">
                             <img class="img-responsive"  th:src="@{${answerContent.content}}">
                         </div>
-                        <div th:if="${answerContent.type==0}" th:text="${answerContent.content}">
+                        <div style="line-height:22px;text-align: justify;" th:if="${answerContent.type==0}" th:text="${answerContent.content}">
                         </div>
                     </div>
 
@@ -892,6 +1004,11 @@
                     <!--<textarea style="width: 70%" class="inputComment" placeholder="我的评论"/>-->
                     <!--<button style="position: relative; left:10px" class="btn btn-primary submitComment">提交</button>-->
                 </div>
+            </div>
+            <div>
+            <btn style="width: 80%;margin: 15px" class="btn btn-primary" id="nextAnswer">下一条回答</btn>
+            <br/>
+            <br/>
             </div>
         </div>
         <div class="col-sm-1"></div>

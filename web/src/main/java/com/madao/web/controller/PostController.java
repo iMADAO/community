@@ -21,12 +21,14 @@ public class PostController {
     @Autowired
     private PostService postService;
 
-    public static final int DEFAULT_SIZE = 10;
+    public static final int DEFAULT_SIZE = 5;
 
-    //根据类别分页获取帖子，并返回页面
+    //根据类别分页获取可见状态的帖子，并返回页面
     @RequestMapping("/toPost/{categoryId}")
-    public String toPostByCategory(@PathVariable("categoryId") Long categoryId, HttpServletRequest request){
-        BaseForm baseForm = new BaseForm(categoryId, 1, DEFAULT_SIZE);
+    public String toPostByCategory(@PathVariable("categoryId") Long categoryId, HttpServletRequest request, @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum, @RequestParam(value = "pageSize", required = false)Integer pageSize){
+        if(pageSize==null)
+            pageSize = DEFAULT_SIZE;
+        BaseForm baseForm = new BaseForm(categoryId, pageNum, pageSize);
         ResultView resultView = postService.getPostListByCategoryId(baseForm);
         request.setAttribute("data", resultView);
 
@@ -37,14 +39,56 @@ public class PostController {
         return "post";
     }
 
+    //获取某类别下所有状态的帖子
+    @ResponseBody
+    @RequestMapping("/getPost/visible/{categoryId}/{pageNum}/{pageSize}")
+    public ResultView toPostByCategoryInAllState(@PathVariable("categoryId") Long categoryId, @PathVariable("pageNum") Integer pageNum, @PathVariable("pageSize") Integer pageSize){
+        try {
+            BaseForm baseForm = new BaseForm(categoryId, pageNum, pageSize);
+            ResultView resultView = postService.getPostListByCategoryIdInAllState(baseForm);
+            return resultView;
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.returnFail();
+        }
+    }
+
     //分页获取帖子，不分类,返回页面
     @RequestMapping("/toPost")
-    public String toPost(HttpServletRequest request){
-        ResultView resultView = postService.getPostList(1, DEFAULT_SIZE);
+    public String toPost(HttpServletRequest request, @RequestParam(value="pageNum", defaultValue = "1") Integer pageNum, @RequestParam(value = "pageSize", required = false)Integer pageSize){
+        if(pageSize==null)
+            pageSize = DEFAULT_SIZE;
+        ResultView resultView = postService.getPostList(pageNum, pageSize);
         System.out.println("toPost....." + resultView);
         request.setAttribute("data", resultView);
         return "post";
+    }
 
+    //分页获取所有状态所有类别的帖子
+    @ResponseBody
+    @RequestMapping("/getPost/allState/{pageNum}/{pageSize}")
+    public ResultView toPost(@PathVariable("pageNum") Integer pageNum, @PathVariable("pageSize") Integer pageSize){
+        try {
+            ResultView resultView = postService.getPostListInAllState(pageNum, pageSize);
+            return resultView;
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.returnFail();
+        }
+
+    }
+
+    //禁用帖子
+    @ResponseBody
+    @RequestMapping("/post/disable/{postId}")
+    public ResultView disablePost(@PathVariable("postId") Long postId){
+        try {
+            ResultView resultView = postService.disablePost(postId);
+            return resultView;
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.returnFail();
+        }
     }
 
 
@@ -146,6 +190,7 @@ public class PostController {
     @ResponseBody
     @PostMapping("/post/{categoryId}")
     public ResultView addPost(@RequestBody List<ContentForm> form, @PathVariable("categoryId") Long categoryId, HttpServletRequest request){
+        form.stream().forEach(System.out::println);
         User user = (User) request.getSession().getAttribute("user");
         if (user == null) {
             return ResultUtil.returnFail("用户未登录,请登录后重试");
@@ -235,6 +280,67 @@ public class PostController {
 
     }
 
+    @ResponseBody
+    @RequestMapping("/post/category/name")
+    public ResultView getCategoryByName(@RequestParam("categoryName") String categoryName){
+        try {
+            ResultView resultView = postService.getCategoryByName(categoryName);
+            System.out.println(resultView);
+            return resultView;
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.returnFail();
+        }
+    }
+
+    //获取用户个人的发帖分页
+    @ResponseBody
+    @RequestMapping("/post/get/person/{pageNum}/{pageSize}")
+    public ResultView getPostListByUser(HttpServletRequest request, @PathVariable("pageNum") Integer pageNum, @PathVariable("pageSize") Integer pageSize){
+        try{
+            User user = (User) request.getSession().getAttribute("user");
+            if(user==null)
+                return ResultUtil.returnFail("用户未登录");
+            ResultView resultView = postService.getPostListByUser(user.getUserId(), pageNum, pageSize);
+            return resultView;
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.returnFail();
+        }
+    }
+
+    //用户对发表帖子的操作,可见或者不可见
+    @ResponseBody
+    @PutMapping("/post/person/visible/{postId}/{operate}")
+    public ResultView operatePostByUser(@PathVariable("postId") Long postId, @PathVariable("operate") Byte operate, HttpServletRequest request){
+        try{
+            User user = (User) request.getSession().getAttribute("user");
+            if(user==null)
+                return ResultUtil.returnFail("用户未登录");
+            ResultView resultView = postService.operatePostByUser(user.getUserId(), postId, operate);
+            System.out.println(resultView);
+            return resultView;
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.returnFail();
+        }
+    }
+
+    @ResponseBody
+    @RequestMapping("/post/person/collect/{pageNum}/{pageSize}")
+    public ResultView getPostListByUserCollected(@PathVariable("pageNum") Integer pageNum, @PathVariable("pageSize")Integer pageSize, HttpServletRequest request){
+        try{
+            User user = (User) request.getSession().getAttribute("user");
+            if(user==null)
+                return ResultUtil.returnFail("用户未登录");
+            ResultView resultView = postService.getPostListByUserCollected(user.getUserId(), pageNum, pageSize);
+            System.out.println(resultView);
+            return resultView;
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.returnFail();
+        }
+    }
 
 
 }

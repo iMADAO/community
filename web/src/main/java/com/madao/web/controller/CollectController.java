@@ -16,8 +16,8 @@ import javax.servlet.http.HttpServletRequest;
 public class CollectController {
     @Autowired
     private PostService postService;
-    @RequestMapping("/collect/{pageNum}/{pageSize}")
-    public ResultView getUserCollectByType(@PathVariable("type") Byte type, @PathVariable("pageNum") Integer pageNum, @PathVariable("pageSize") Integer pageSize, HttpServletRequest request){
+    @RequestMapping("/collect/get/post/{pageNum}/{pageSize}")
+    public ResultView getUserCollectByType(@PathVariable("pageNum") Integer pageNum, @PathVariable("pageSize") Integer pageSize, HttpServletRequest request){
         try{
             User user = (User) request.getSession().getAttribute("user");
             if (user == null) {

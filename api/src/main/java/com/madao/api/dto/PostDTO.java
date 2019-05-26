@@ -31,6 +31,8 @@ public class PostDTO {
 
     private Integer segmentCount;
 
+    private Byte state;
+
     private List<String> contentList;
 
 //    private List<SegmentContent> contentList;

@@ -21,6 +21,8 @@ public class Post {
 
     private Integer segmentCount;
 
+    private Byte state;
+
     public Long getPostId() {
         return postId;
     }
@@ -67,5 +69,13 @@ public class Post {
 
     public void setSegmentCount(Integer segmentCount) {
         this.segmentCount = segmentCount;
+    }
+
+    public Byte getState() {
+        return state;
+    }
+
+    public void setState(Byte state) {
+        this.state = state;
     }
 }

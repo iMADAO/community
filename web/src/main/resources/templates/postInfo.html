@@ -274,8 +274,11 @@
                 var commentInputNode = $(this).parent().find(".inputComment");
                 var commentInput = commentInputNode.val();
                 var lastPageBtn = $(segmentNode).find("[order=last]")
-                console.log(lastPageBtn[0].innerHTML)
-                console.log(segmentId)
+                console.log(lastPageBtn==undefined)
+                // console.log(lastPageBtn[0].innerHTML)
+                console.log(segmentId + "----" + commentInput)
+
+                // return;
                 if(commentInput=="") {
                     console.log("commentInput empty")
                     alert("评论内容不能为空")
@@ -289,6 +292,7 @@
                         'commentContent': commentInput
                     },
                     success: function(data){
+                        console.log(data)
                         if(data.code==0){
                             commentInputNode.val("")
                             alert("添加成功")
@@ -296,6 +300,8 @@
                             $(lastPageBtn).attr("pageNum", lastPage)
                             console.log(lastPage)
                             lastPageBtn.click()
+
+                            //todo 第一个评论添加的时候，添加完获取评论
                         }else{
                             if(data.hint){
                                 alert(data.hint)
@@ -399,7 +405,7 @@
                         code=data.code
                         if(data.code==0){
                             alert("添加成功")
-
+                            window.location.reload()
                         }else{
                             if(data.hint){
                                 alert(data.hint)
@@ -426,7 +432,7 @@
                     <div>
                         <ul class="nav navbar-nav">
                             <li class="dropdown"><a href="/toPost" target="_blank">社区首页</a></li>
-                            <li><a href="/toArticle" target="_blank">文章</a></li>
+                            <li><a href="/toArticle" target="_blank">文库</a></li>
                             <li><a href="/toQuestion" target="_blank">问答</a></li>
                         </ul>
                     </div>
@@ -442,7 +448,7 @@
                                 <div>
                                     <div class="dropdown">
                                         <span class="dropdown-toggle" id="menu1" data-toggle="dropdown" >
-                                             <img width="45px" src="../static/img/da8e974dc_xs.jpg" class="img-thumbnail"/>
+                                             <img width="45px" th:src="@{${session.user.userPic}}" class="img-thumbnail"/>
                                         </span>
                                         <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
                                             <li role="presentation"><a role="menuitem" tabindex="-1" href="/toHomePage" target="_blank">个人中心</a></li>

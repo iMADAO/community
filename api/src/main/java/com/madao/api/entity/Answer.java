@@ -1,18 +1,12 @@
 package com.madao.api.entity;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-
 import java.util.Date;
 
 public class Answer {
-    @JsonSerialize(using = ToStringSerializer.class)
     private Long answerId;
 
-    @JsonSerialize(using = ToStringSerializer.class)
     private Long questionId;
 
-    @JsonSerialize(using = ToStringSerializer.class)
     private Long userId;
 
     private Integer agreeCount;
@@ -24,6 +18,23 @@ public class Answer {
     private Date updateTime;
 
     private Integer commentCount;
+
+    private Byte state;
+
+    @Override
+    public String toString() {
+        return "Answer{" +
+                "answerId=" + answerId +
+                ", questionId=" + questionId +
+                ", userId=" + userId +
+                ", agreeCount=" + agreeCount +
+                ", disagreeCount=" + disagreeCount +
+                ", createTime=" + createTime +
+                ", updateTime=" + updateTime +
+                ", commentCount=" + commentCount +
+                ", state=" + state +
+                '}';
+    }
 
     public Long getAnswerId() {
         return answerId;
@@ -87,5 +98,13 @@ public class Answer {
 
     public void setCommentCount(Integer commentCount) {
         this.commentCount = commentCount;
+    }
+
+    public Byte getState() {
+        return state;
+    }
+
+    public void setState(Byte state) {
+        this.state = state;
     }
 }

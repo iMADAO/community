@@ -1,27 +1,23 @@
 package com.madao.question.service;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.madao.api.dto.AnswerDTO;
 import com.madao.api.dto.QuestionDTO;
 import com.madao.api.entity.*;
-import com.madao.api.enums.CollectTypeEnum;
-import com.madao.api.enums.ContentTypeEnum;
-import com.madao.api.enums.OperateEnum;
+import com.madao.api.enums.*;
 import com.madao.api.form.QuestionForm;
 import com.madao.api.service.UserService;
 import com.madao.api.utils.KeyUtil;
-import com.madao.question.bean.AnswerContentExample;
-import com.madao.question.bean.CollectExample;
-import com.madao.question.bean.QuestionExample;
-import com.madao.question.mapper.AnswerContentMapper;
-import com.madao.question.mapper.AnswerMapper;
-import com.madao.question.mapper.CollectMapper;
-import com.madao.question.mapper.QuestionMapper;
+import com.madao.question.bean.*;
+import com.madao.question.mapper.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -48,6 +44,9 @@ public class QuestionService {
 
     @Autowired
     private CollectMapper collectMapper;
+
+    @Autowired
+    private AgreeMapper agreeMapper;
 
     @Value("${userPrefix}")
     private String USER_PREFIX;
@@ -174,5 +173,156 @@ public class QuestionService {
 
         int count = collectMapper.countByExample(example);
         return count > 0 ? true : false;
+    }
+
+    //获取可见的回答分页
+    public PageInfo<AnswerDTO> getQuestionPageVisible(Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<AnswerDTO> answerDTOList =  questionMapper.getAnswerByState(StateEnum.VISIBLE.getCode());
+        PageInfo<AnswerDTO> resultPage = new PageInfo<>(answerDTOList);
+        setAnswerContentByAnswerDTOList(answerDTOList);
+        return resultPage;
+    }
+
+    //获取用户信息
+    public User getUserFromCache(Long userId){
+        User user = null;
+        try {
+            user = (User) redisTemplate.opsForValue().get(USER_PREFIX + userId);
+            System.out.println("redis get user...." + user);
+        }catch (Exception e){
+            System.out.println("redis---error");
+        }
+
+        if(user==null){
+            user = userService.getUserById(userId);
+            System.out.println("database get user" + user);
+            try {
+                redisTemplate.opsForValue().set(USER_PREFIX + userId, user, 3600, TimeUnit.SECONDS);
+            }catch (Exception e){
+                System.out.println("reids Fall.....");
+            }
+        }
+        return user;
+    }
+
+    //获取下一个回答
+    public AnswerDTO getNextAnswer(Long questionId, List<Long> answerIdList) {
+        List<Long> answerIdListData = getAnswerIdByPosition(questionId, 0, answerIdList.size()+1);
+        System.out.println("answerIdListDataSize-----" + answerIdListData.size());
+        if(answerIdListData.size()<=answerIdList.size()){
+            return null;
+        }
+        Long targetAnswerId = null;
+        for(Long answerId: answerIdListData){
+            if(!answerIdList.contains(answerId)){
+                targetAnswerId = answerId;
+                break;
+            }
+        }
+        System.out.println("targetAnswerId----" + targetAnswerId);
+        if(targetAnswerId==null)
+            return null;
+        Answer answer = answerMapper.selectByPrimaryKey(targetAnswerId);
+        AnswerDTO answerDTO = new AnswerDTO();
+        User user = getUserFromCache(answer.getUserId());
+        BeanUtils.copyProperties(user, answerDTO);
+        BeanUtils.copyProperties(answer, answerDTO);
+
+        AnswerContentExample example = new AnswerContentExample();
+        AnswerContentExample.Criteria criteria = example.createCriteria();
+        criteria.andAnswerIdEqualTo(answer.getAnswerId());
+        List<AnswerContent> answerContentList = answerContentMapper.selectByExample(example);
+        answerDTO.setAnswerContentList(answerContentList);
+        return answerDTO;
+    }
+
+    public List<Long> getAnswerIdByPosition(Long questionId, Integer startRow, Integer size){
+        List<Long> answerIdList = answerMapper.getAnswerIdListByQuestionIdOrderbyAgree(questionId, startRow, size);
+        return answerIdList;
+    }
+
+    //检查用户是否点赞、收藏回答，并添加结果
+    public void addAnswerState(AnswerDTO answerDTO, Long userId) {
+        List<Byte> resultList = new ArrayList<>();
+
+        AgreeExample agreeExample = new AgreeExample();
+        AgreeExample.Criteria agreeExampleCriteria = agreeExample.createCriteria();
+        agreeExampleCriteria.andUserIdEqualTo(userId);
+        agreeExampleCriteria.andAnswerIdEqualTo(answerDTO.getAnswerId());
+        List<Agree> agreeList = agreeMapper.selectByExample(agreeExample);
+        if(agreeList!=null && agreeList.size()!=0){
+            resultList.add(agreeList.get(0).getType());
+        }else{
+            resultList.add(AgreeEnum.DEFAULT.getCode());
+        }
+
+
+        CollectExample collectExample = new CollectExample();
+        CollectExample.Criteria criteria = collectExample.createCriteria();
+        criteria.andUserIdEqualTo(userId);
+        criteria.andTargetIdEqualTo(answerDTO.getAnswerId());
+        criteria.andTypeEqualTo(CollectTypeEnum.ANSWER.getCode());
+        int count = collectMapper.countByExample(collectExample);
+        if(count > 0){
+            resultList.add(OperateEnum.OPERATE.getCode());
+        }else{
+            resultList.add(OperateEnum.CANCEL.getCode());
+        }
+        System.out.println("resultList------");
+        resultList.stream().forEach(System.out::println);
+        answerDTO.setUserOperateState(resultList);
+    }
+
+    public PageInfo<AnswerDTO> getQuestionByPerson(Long userId, Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<AnswerDTO> answerDTOList =  questionMapper.getAnswerByUserId(userId);
+        PageInfo<AnswerDTO> resultPage = new PageInfo<>(answerDTOList);
+        setAnswerContentByAnswerDTOList(answerDTOList);
+        return resultPage;
+    }
+
+    public void setAnswerContentByAnswerDTOList(List<AnswerDTO> answerDTOList){
+        for(AnswerDTO answerDTO: answerDTOList) {
+            if(answerDTO.getUserId()==null){
+                continue;
+            }
+            AnswerContentExample example = new AnswerContentExample();
+            AnswerContentExample.Criteria criteria = example.createCriteria();
+            criteria.andAnswerIdEqualTo(answerDTO.getAnswerId());
+            criteria.andTypeEqualTo(ContentTypeEnum.TEXT.getCode().intValue());
+            List<AnswerContent> answerContentList = answerContentMapper.selectByExample(example);
+            System.out.println("answerContentList ...." + answerContentList.size());
+            if(answerContentList!=null && answerContentList.size()!=0) {
+                Collections.sort(answerContentList, (x, y) -> {
+                    return y.getContentOrder() - x.getContentOrder();
+                });
+                answerDTO.setContent(answerContentList.get(0).getContent());
+            }
+            User user  = getUserFromCache(answerDTO.getUserId());
+            answerDTO.setUserName(user.getUserName());
+            answerDTO.setUserPic(user.getUserPic());
+
+        }
+    }
+
+    //获取用户收藏的回答
+    public PageInfo<AnswerDTO> getQuestionByPersonCollected(Long userId, Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        CollectExample collectExample = new CollectExample();
+        CollectExample.Criteria criteria = collectExample.createCriteria();
+        criteria.andUserIdEqualTo(userId);
+        criteria.andTypeEqualTo(CollectTypeEnum.ANSWER.getCode());
+        List<Collect> collectList = collectMapper.selectByExample(collectExample);
+        PageInfo<Collect> pageInfo = new PageInfo<>(collectList);
+
+        List<AnswerDTO> answerDTOList = new ArrayList<>();
+        for(Collect collect: collectList){
+            AnswerDTO answerDTO = questionMapper.getAnswerDTOById(collect.getTargetId());
+        }
+        PageInfo<AnswerDTO> answerDTOPageInfo = new PageInfo<>();
+        BeanUtils.copyProperties(collectList, answerDTOList);
+        answerDTOPageInfo.setList(answerDTOList);
+        return answerDTOPageInfo;
     }
 }

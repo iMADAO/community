@@ -21,6 +21,8 @@ public class Article {
 
     private String originName;
 
+    private Byte state;
+
     private String title;
 
     public Long getArticleId() {
@@ -93,6 +95,14 @@ public class Article {
 
     public void setOriginName(String originName) {
         this.originName = originName == null ? null : originName.trim();
+    }
+
+    public Byte getState() {
+        return state;
+    }
+
+    public void setState(Byte state) {
+        this.state = state;
     }
 
     public String getTitle() {

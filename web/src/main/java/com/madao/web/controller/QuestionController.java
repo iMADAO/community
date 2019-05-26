@@ -27,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import javax.xml.transform.Result;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -46,6 +47,8 @@ public class QuestionController {
     @Value("${PICLOCAL_PATH}")
     private String PICLOCAL_PATH;
 
+    public static final int DEFAULT_SIZE = 5;
+
 
     @ResponseBody
     @PostMapping("/question")
@@ -63,12 +66,17 @@ public class QuestionController {
         return questionService.addQuestion(form);
     }
 
+    //获取可见的回答
     @GetMapping("/toQuestion")
-    public String toQuestion(HttpServletRequest request){
-        List<AnswerDTO> answerDTOList = questionService.getQuestion();
-        for(AnswerDTO answerDTO: answerDTOList)
-            System.out.println(answerDTO);
-        request.setAttribute("answerDTOList", answerDTOList);
+    public String toQuestion(HttpServletRequest request, @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum, @RequestParam(value = "pageSize", required = false) Integer pageSize){
+        if(pageSize==null)
+            pageSize = DEFAULT_SIZE;
+        ResultView resultView = questionService.getQuestion(pageNum, pageSize);
+        request.setAttribute("data", resultView);
+//        List<AnswerDTO> answerDTOList = questionService.getQuestion();
+//        for(AnswerDTO answerDTO: answerDTOList)
+//            System.out.println(answerDTO);
+//        request.setAttribute("answerDTOList", answerDTOList);
         return "question";
     }
 
@@ -79,6 +87,42 @@ public class QuestionController {
         System.out.println(user);
 
     }
+
+    //获取问题的下一条回答
+    @ResponseBody
+    @RequestMapping("/question/answer/next")
+    public ResultView getNextAnswer(@RequestParam("answerIdList") List<Long> answerIdList, @RequestParam("questionId") Long questionId, HttpServletRequest request){
+        User user = (User) request.getSession().getAttribute("user");
+        Long userId = user==null ? null : user.getUserId();
+        try {
+            System.out.println(answerIdList.size());
+            ResultView resultView = questionService.getNextAnswer(answerIdList, questionId, userId);
+            System.out.println(resultView);
+            return resultView;
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.returnFail();
+        }
+
+    }
+
+    @ResponseBody
+    @RequestMapping("/post/person/getList/{pageNum}/{pageSize}")
+    public ResultView getPostByPerson(@PathVariable("pageNum")Integer pageNum, @PathVariable("pageSize") Integer pageSize, HttpServletRequest request){
+        try {
+            User user = (User) request.getSession().getAttribute("user");
+            if (user == null) {
+                return ResultUtil.returnFail();
+            }
+            ResultView resultView = questionService.getQuestionDTOByPerson(user.getUserId(), pageNum, pageSize);
+            return resultView;
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.returnFail();
+        }
+
+    }
+
 
     @GetMapping("/toQuestionInfo/{questionId}")
     public String toQuestionInfo(@PathVariable("questionId") Long questionId, @RequestParam(value="answerId", required = false) Long answerId, HttpServletRequest request){
@@ -263,6 +307,8 @@ public class QuestionController {
     }
 
 
+
+
     //测试用
     @ResponseBody
     @RequestMapping("/testRealPath")
@@ -276,6 +322,38 @@ public class QuestionController {
     @RequestMapping("/toTest")
     public String toTest(){
         return "test";
+    }
+
+    @ResponseBody
+    @PutMapping("/answer/person/visible/{answerId}/{operate}")
+    public ResultView operateAnswerByPerson(@PathVariable("answerId")Long answerId, @PathVariable("operate") Byte operate, HttpServletRequest request){
+        User  user = (User) request.getSession().getAttribute("user");
+        if(user==null){
+            return ResultUtil.returnFail("用户未登录");
+        }
+        try {
+            ResultView resultView = questionService.operateAnswer(user.getUserId(), answerId, operate);
+            return resultView;
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.returnFail();
+        }
+    }
+
+    @ResponseBody
+    @RequestMapping("/answer/person/collected/{pageNum}/{pageSize}")
+    public ResultView getAnswerListByUserCollected(@PathVariable("pageNum") Integer pageNum, @PathVariable("pageSize") Integer pageSize, HttpServletRequest request){
+        User  user = (User) request.getSession().getAttribute("user");
+        if(user==null){
+            return ResultUtil.returnFail("用户未登录");
+        }
+        try {
+            ResultView resultView = questionService.getQuestionDTOByPersonCollected(user.getUserId(), pageNum, pageSize);
+            return resultView;
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.returnFail();
+        }
     }
 
 

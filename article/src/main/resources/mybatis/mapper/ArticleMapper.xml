@@ -11,6 +11,7 @@
     <result column="file_path" property="filePath" jdbcType="VARCHAR" />
     <result column="download_count" property="downloadCount" jdbcType="INTEGER" />
     <result column="origin_name" property="originName" jdbcType="VARCHAR" />
+    <result column="state" property="state" jdbcType="TINYINT" />
   </resultMap>
   <resultMap id="ResultMapWithBLOBs" type="com.madao.api.entity.Article" extends="BaseResultMap" >
     <result column="title" property="title" jdbcType="LONGVARCHAR" />
@@ -75,7 +76,7 @@
   </sql>
   <sql id="Base_Column_List" >
     article_id, user_id, create_time, update_time, category_id, access_url, file_path, 
-    download_count, origin_name
+    download_count, origin_name, state
   </sql>
   <sql id="Blob_Column_List" >
     title
@@ -132,11 +133,11 @@
     insert into article (article_id, user_id, create_time, 
       update_time, category_id, access_url, 
       file_path, download_count, origin_name, 
-      title)
+      state, title)
     values (#{articleId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, 
       #{updateTime,jdbcType=TIMESTAMP}, #{categoryId,jdbcType=BIGINT}, #{accessUrl,jdbcType=VARCHAR}, 
       #{filePath,jdbcType=VARCHAR}, #{downloadCount,jdbcType=INTEGER}, #{originName,jdbcType=VARCHAR}, 
-      #{title,jdbcType=LONGVARCHAR})
+      #{state,jdbcType=TINYINT}, #{title,jdbcType=LONGVARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.madao.api.entity.Article" >
     insert into article
@@ -167,6 +168,9 @@
       </if>
       <if test="originName != null" >
         origin_name,
+      </if>
+      <if test="state != null" >
+        state,
       </if>
       <if test="title != null" >
         title,
@@ -199,6 +203,9 @@
       </if>
       <if test="originName != null" >
         #{originName,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null" >
+        #{state,jdbcType=TINYINT},
       </if>
       <if test="title != null" >
         #{title,jdbcType=LONGVARCHAR},
@@ -241,6 +248,9 @@
       <if test="record.originName != null" >
         origin_name = #{record.originName,jdbcType=VARCHAR},
       </if>
+      <if test="record.state != null" >
+        state = #{record.state,jdbcType=TINYINT},
+      </if>
       <if test="record.title != null" >
         title = #{record.title,jdbcType=LONGVARCHAR},
       </if>
@@ -260,6 +270,7 @@
       file_path = #{record.filePath,jdbcType=VARCHAR},
       download_count = #{record.downloadCount,jdbcType=INTEGER},
       origin_name = #{record.originName,jdbcType=VARCHAR},
+      state = #{record.state,jdbcType=TINYINT},
       title = #{record.title,jdbcType=LONGVARCHAR}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
@@ -275,7 +286,8 @@
       access_url = #{record.accessUrl,jdbcType=VARCHAR},
       file_path = #{record.filePath,jdbcType=VARCHAR},
       download_count = #{record.downloadCount,jdbcType=INTEGER},
-      origin_name = #{record.originName,jdbcType=VARCHAR}
+      origin_name = #{record.originName,jdbcType=VARCHAR},
+      state = #{record.state,jdbcType=TINYINT}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -307,6 +319,9 @@
       <if test="originName != null" >
         origin_name = #{originName,jdbcType=VARCHAR},
       </if>
+      <if test="state != null" >
+        state = #{state,jdbcType=TINYINT},
+      </if>
       <if test="title != null" >
         title = #{title,jdbcType=LONGVARCHAR},
       </if>
@@ -323,6 +338,7 @@
       file_path = #{filePath,jdbcType=VARCHAR},
       download_count = #{downloadCount,jdbcType=INTEGER},
       origin_name = #{originName,jdbcType=VARCHAR},
+      state = #{state,jdbcType=TINYINT},
       title = #{title,jdbcType=LONGVARCHAR}
     where article_id = #{articleId,jdbcType=BIGINT}
   </update>
@@ -335,7 +351,8 @@
       access_url = #{accessUrl,jdbcType=VARCHAR},
       file_path = #{filePath,jdbcType=VARCHAR},
       download_count = #{downloadCount,jdbcType=INTEGER},
-      origin_name = #{originName,jdbcType=VARCHAR}
+      origin_name = #{originName,jdbcType=VARCHAR},
+      state = #{state,jdbcType=TINYINT}
     where article_id = #{articleId,jdbcType=BIGINT}
   </update>
 </mapper>

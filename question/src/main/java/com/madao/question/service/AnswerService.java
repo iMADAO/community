@@ -7,6 +7,7 @@ import com.madao.api.dto.AnswerCommentDTO;
 import com.madao.api.entity.*;
 import com.madao.api.enums.AgreeEnum;
 import com.madao.api.enums.CommentEnum;
+import com.madao.api.enums.StateEnum;
 import com.madao.api.form.ContentForm;
 import com.madao.api.form.AnswerForm;
 import com.madao.api.service.UserService;
@@ -14,10 +15,8 @@ import com.madao.api.utils.KeyUtil;
 import com.madao.question.bean.AgreeExample;
 import com.madao.question.bean.AnswerCommentExample;
 import com.madao.question.bean.AnswerContentExample;
-import com.madao.question.mapper.AgreeMapper;
-import com.madao.question.mapper.AnswerCommentMapper;
-import com.madao.question.mapper.AnswerContentMapper;
-import com.madao.question.mapper.AnswerMapper;
+import com.madao.question.bean.AnswerExample;
+import com.madao.question.mapper.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,6 +41,9 @@ public class AnswerService {
 
     @Autowired
     private AnswerCommentMapper answerCommentMapper;
+
+    @Autowired
+    private QuestionMapper questionMapper;
 
     @Autowired
     private RedisTemplate redisTemplate;
@@ -261,5 +263,36 @@ public class AnswerService {
 
             answerContentMapper.insertSelective(answerContent);
         }
+
+        //更新问题的回答数量 删除默认回答
+        Question question = questionMapper.selectByPrimaryKey(form.getQuestionId());
+        question.setAnswerCount(question.getAnswerCount()+1);
+        questionMapper.updateByPrimaryKeySelective(question);
+
+        AnswerExample example = new AnswerExample();
+        AnswerExample.Criteria criteria = example.createCriteria();
+        criteria.andUserIdEqualTo(-1L);
+        answerMapper.deleteByExample(example);
+    }
+
+    public void operateAnswer(Long userId, Long answerId, Byte operate) {
+        Answer answer = answerMapper.selectByPrimaryKey(answerId);
+        if(answer==null){
+            throw new ResultException("该回答不存在");
+        }
+        if(!answer.getUserId().equals(userId)){
+            throw new ResultException("该回答不属于用户");
+        }
+        if(!operate.equals(StateEnum.VISIBLE.getCode()) && !operate.equals(StateEnum.INVISIBLE.getCode())){
+            throw new ResultException("操作不正确");
+        }
+
+        if(answer.getState().equals(operate)){
+            return;
+        }
+        //更新状态
+        answer.setState(operate);
+        answerMapper.updateByPrimaryKeySelective(answer);
+
     }
 }

@@ -2,6 +2,7 @@ package com.madao.web.controller;
 
 import com.madao.api.entity.Article;
 import com.madao.api.entity.FileUploadResult;
+import com.madao.api.entity.User;
 import com.madao.api.enums.OperateEnum;
 import com.madao.api.service.ArticleService;
 import com.madao.api.utils.KeyUtil;
@@ -9,6 +10,7 @@ import com.madao.api.utils.ResultUtil;
 import com.madao.api.utils.ResultView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -32,7 +34,12 @@ public class FileController {
     //上传文档，保存到本地
     @ResponseBody
     @RequestMapping("/docfile/upload")
-    public ResultView upload(@RequestParam("file") MultipartFile docFile) {
+    public ResultView upload(@RequestParam("file") MultipartFile docFile, HttpServletRequest request) {
+        User user = (User) request.getSession().getAttribute("user");
+        if (user == null) {
+            return ResultUtil.returnFail("用户未登录,请登录后重试");
+        }
+        Long userId = user.getUserId();
         if (docFile.isEmpty()) {
             return ResultUtil.returnFail("未选择文件");
         }
@@ -68,10 +75,10 @@ public class FileController {
     }
 
     //文件下载
-    @RequestMapping("/file/download")
-    public String downloadFile(@RequestParam("articleId") Long articleId, HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException {
+    @RequestMapping("/file/download/{articleId}")
+    public String downloadFile(@PathVariable("articleId") Long articleId, HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException {
 
-        ResultView resultView = articleService.getArticleById(articleId);
+        ResultView<Article> resultView = articleService.getArticleById(articleId);
         if(resultView.getCode()!=0){
             return "";
         }

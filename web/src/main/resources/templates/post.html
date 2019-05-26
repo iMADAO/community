@@ -12,6 +12,79 @@
     <script type="text/javascript" src="../static/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
     <script type="text/javascript">
         $(function() {
+            //根据当前页码和总页数生成分页导航
+            var pageNavNode = $("#pageNavNode");
+            var totalPage = $("#totalPageNum").text()
+            totalPage = parseInt(totalPage)
+            var pageSize = $("#pageSize").text()
+            var categoryId = $("#category").attr("categoryId")
+            var target = "/toPost"
+            if(categoryId){
+                console.log("categoryId=====" + categoryId)
+                target += ("/" + categoryId);
+            }
+            pageSize = parseInt(pageSize)
+            if(totalPage > 1){
+                var pageNum = $("#pageNum").text()
+                pageNum = parseInt(pageNum)
+                console.log(totalPage + "---------" + pageNum)
+                var navNode = '<ul class="pagination" style="position: relative; left: 50px;">'
+                var leftCount
+                var rightCount
+                if(pageNum > 2){
+                    leftCount = 2;
+                }else if(pageNum==2){
+                    leftCount = 1;
+                }else{
+                    leftCount = 0;
+                }
+
+                rightCount = 5 - leftCount - 1;
+                var maxNum = rightCount + pageNum;
+                console.log("max: " + maxNum);
+                console.log(maxNum > totalPage)
+                if(maxNum > totalPage){
+                    rightCount = parseInt(totalPage) - pageNum
+                }
+                // rightCount = rightCount+pageNum > data.data.pages ? data.data.pages - pageNum: rightCount
+
+                console.log("left: " + leftCount)
+                console.log("right: " + rightCount)
+
+                var lastPageNum = parseInt(pageNum) - 1;
+                console.log("lastPageNum: " + lastPageNum)
+                if(pageNum > 1){
+                    navNode += ' <li><a pageNum=1 type="navlink" href="'+target+'?pageNum=1&pageSize=' + pageSize + '">首页</a></li>';
+                    navNode += ' <li><a pageNum='+lastPageNum+' type="navlink" href="'+target+'?pageNum=' + lastPageNum+'&pageSize=' + pageSize + '">上一页</a></li>';
+                }else{
+                    navNode += ' <li class="disabled"><a pageNum=1 type="navlink" href="#">首页</a></li>';
+                    navNode += ' <li class="disabled"><a pageNum=1 type="navlink" href="#">上一页</a></li>';
+
+                }
+                for(var i=pageNum-leftCount; i<pageNum; i++){
+                    navNode += ' <li><a pageNum='+i+' type="navlink" href="'+target+'?pageNum=' + i + '&pageSize=' + pageSize + '">' + i + '</a></li>';
+                }
+                navNode += ' <li class="active"><a pageNum='+pageNum+' type="navlink" href="'+target+'?pageNum=' + pageNum + '&pageSize=' + pageSize + '">' + pageNum + '</a></li>';
+                for(var i=parseInt(pageNum)+1; i<=parseInt(pageNum)+rightCount; i++){
+                    navNode += ' <li><a pageNum='+i+' type="navlink" href="'+target+'?pageNum=' + i + '&pageSize=' + pageSize + '">' + i + '</a></li>';
+                }
+
+                var nextPage = parseInt(pageNum)+1
+                console.log("flag--" + pageNum< totalPage)
+                if(pageNum < totalPage){
+                    navNode += ' <li><a pageNum='+nextPage+' type="navlink" href="'+target+'?pageNum=' + nextPage + '&pageSize=' + pageSize + '">下一页</a></li>';
+                    navNode += ' <li><a order="last" pageNum='+totalPage+' type="navlink" href="'+target+'?pageNum=' + totalPage + '&pageSize=' + pageSize + '">末页</a></li>';
+                }else{
+                    navNode += ' <li class="disabled"><a pageNum='+pageNum+' type="navlink" href="#">下一页</a></li>';
+                    navNode += ' <li class="disabled"><a order="last" pageNum='+totalPage+' type="navlink" href="#">末页</a></li>';
+                }
+                navNode+='<li class="disabled"><a>共'+ totalPage +'页</a></li>'
+                navNode+='</ul>';
+                // alert(navNode)
+                pageNavNode.append(navNode);
+            }
+
+
             var pageSize = 1;
             var commentPageSize = 1;
             var postPageSize = 10
@@ -39,6 +112,7 @@
             })
 
             $("#toLogin").attr("href", "/toLogin?lastPage=" + window.location.href)
+            $("#toRegister").attr("href", "/toRegister?lastPage=" + window.location.href)
 
             var categoryParentNode = $("#categoryParent");
             $.ajax({
@@ -167,7 +241,7 @@
             })
 
 
-            //写回答
+
             $("#addPostText").click(function(){
                 var contentNumNode = $(this).parent().find("#contentNum");
                 var nextNum = parseInt(contentNumNode.text()) + 1;
@@ -226,7 +300,7 @@
                 $("#contentNum").text(i-1);
             })
 
-            //提交回答
+            //提交发帖
             $("#submitBtn").click(function(){
                 var categoryId = $("#category").attr("categoryId")
                 if(!categoryId){
@@ -258,12 +332,13 @@
                     type: 'post',
                     contentType: "application/json; charset=utf-8",
                     data: JSON.stringify(dataArray),
+                    async: false,
                     success: function(data){
                         console.log(data)
                         code=data.code
                         if(data.code==0){
                             alert("添加成功")
-                            link = "http://localhost:8088/post/info/" + data.data.postId + "/1/10"
+                            link = "http://localhost:8088/post/info/" + data.data.postId + "/1/10/1"
                             console.log(link)
                             window.open(link)
                         }else{
@@ -280,9 +355,34 @@
                 }
             })
 
+            $("#entryCategory").click(function(){
+                var searchContent = $("#searchContent").val();
+                if(searchContent=="")
+                    return
+                $.ajax({
+                    url: '/post/category/name',
+                    dataType: 'json',
+                    async: false,
+                    data: {
+                        categoryName: searchContent
+                    },
+                    success: function(data){
+                        console.log(data)
+                        if(data.code==0) {
+                            window.open("/toPost/" + data.data.categoryId)
+                        }else{
+                            if(data.hint){
+                                alert(data.hint)
+                            }
+                        }
 
+                    },
+                    error: function(data){
+                        alert("请稍后重试")
+                    }
+                })
 
-
+            })
         })
     </script>
 </head>
@@ -295,6 +395,9 @@
         <div class="col-sm-1">
         </div>
         <div class="col-sm-9">
+            <span id="pageNum" th:text="${data.data.pageNum}" style="visibility: hidden"></span>
+            <span id="totalPageNum" th:text="${data.data.pages}" style="visibility: hidden"></span>
+            <span id="pageSize" th:text="${data.data.pageSize}" style="visibility: hidden"></span>
             <nav class="navbar navbar-default" role="navigation">
                 <div class="container-fluid">
                     <div class="navbar-header">
@@ -303,15 +406,15 @@
                     <div>
                         <ul class="nav navbar-nav">
                             <li class="dropdown"><a href="#" style="color: #2e6da4;">社区首页</a></li>
-                            <li><a href="/toArticle" target="_blank">文章</a></li>
+                            <li><a href="/toArticle" target="_blank">文库</a></li>
                             <li><a href="/toQuestion" target="_blank">问答</a></li>
                         </ul>
                     </div>
                     <form class="navbar-form navbar-left" role="search">
                         <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Search">
+                            <input type="text" class="form-control" placeholder="Search" id="searchContent">
                         </div>
-                        <button type="submit"  class="btn btn-default">进入社区</button>
+                        <button type="submit"  class="btn btn-default" id="entryCategory">进入社区</button>
                         <!--<button class="btn btn-default">我要发帖</button>-->
                     </form>
                     <div>
@@ -330,7 +433,7 @@
                                 </div>
                             </li>
 
-                            <li th:if="${session.user==null}"><a href="/toRegister" target="_blank"><span class="glyphicon glyphicon-user"></span> 注册</a></li>
+                            <li th:if="${session.user==null}"><a id="toRegister" href="/toRegister" target="_blank"><span class="glyphicon glyphicon-user"></span> 注册</a></li>
                             <li th:if="${session.user==null}"><a id="toLogin" href="/toLogin" target="_blank"><span class="glyphicon glyphicon-log-in"></span> 登录</a></li>
                         </ul>
                     </div>
@@ -425,15 +528,15 @@
                     <span style="width: 60%;"></span>
                 </div>
             </div>
-            <ul class="pagination">
-                <li><a href="#">&laquo;</a></li>
-                <li><a href="#">1</a></li>
-                <li><a href="#">2</a></li>
-                <li><a href="#">3</a></li>
-                <li><a href="#">4</a></li>
-                <li><a href="#">5</a></li>
-                <li><a href="#">&raquo;</a></li>
-            </ul>
+            <div id="pageNavNode">
+                <!--<li><a href="#">&laquo;</a></li>-->
+                <!--<li><a href="#">1</a></li>-->
+                <!--<li><a href="#">2</a></li>-->
+                <!--<li><a href="#">3</a></li>-->
+                <!--<li><a href="#">4</a></li>-->
+                <!--<li><a href="#">5</a></li>-->
+                <!--<li><a href="#">&raquo;</a></li>-->
+            </div>
         </div>
         <div class="col-sm-1">
 

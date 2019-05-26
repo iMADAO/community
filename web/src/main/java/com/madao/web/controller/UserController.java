@@ -26,7 +26,9 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.rmi.registry.Registry;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 @Controller
 public class UserController {
@@ -52,16 +54,15 @@ public class UserController {
     @PostMapping("/user/userName/change")
     @ResponseBody
     public ResultView changeUserName(@RequestParam("userName") String userName, HttpServletRequest request){
-        Object userObject =  request.getSession().getAttribute("user");
-        if(userObject==null){
+        User user = (User) request.getSession().getAttribute("user");
+        if (user == null) {
             return ResultUtil.returnFail("用户未登录,请登录后重试");
         }
-        LinkedHashMap<String, Object> map = (LinkedHashMap<String, Object>) userObject;
-        Long userId =  Long.parseLong(map.get("userId").toString());
+        Long userId = user.getUserId();
         ResultView resultView =  userService.changeUserName(userId, userName);
         //更新session中的用户信息
         if(resultView.getCode().equals(ResultEnum.SUCCESS.getCode())){
-            User user = userService.getUserById(userId);
+            user = userService.getUserById(userId);
             if(user!=null){
                 request.getSession().setAttribute("user", user);
             }
@@ -197,11 +198,10 @@ public class UserController {
     @PostMapping("/user/pic/change")
     public ResultView changeUserPic(@RequestParam("picPath") String picPath, HttpServletRequest request){
         try {
-            Object userObject = request.getSession().getAttribute("user");
-            if (userObject == null) {
+            User user = (User) request.getSession().getAttribute("user");
+            if (user == null) {
                 return ResultUtil.returnFail("用户未登录,请登录后重试");
             }
-            User user = (User) userObject;
             Long userId = user.getUserId();
             ResultView resultView = userService.changeUserPic(userId, picPath);
             if(resultView.getCode().equals(ResultEnum.SUCCESS.getCode())){
@@ -217,6 +217,21 @@ public class UserController {
         }
     }
 
+    @RequestMapping("/toAdmin")
+    public String toAdmin(){
+        return "admin";
+    }
+
+    @RequestMapping("toAdminLogin")
+    public String toAdminLogin(){
+        return "adminLogin";
+    }
+
+    @RequestMapping("/toTestAjax")
+    public String testAjax(){
+        return "testAjax";
+    }
+
 //    @ResponseBody
 //    @GetMapping(value="/user/logout2")
 //    public ResultView logout2(HttpServletRequest request){
@@ -230,5 +245,10 @@ public class UserController {
 //        System.out.println("调用.............");
 //        return userService.getUserById(1L);
 //    }
+
+    @RequestMapping("/testAjax")
+    public void testAjax(@RequestParam("data") List<Integer> data){
+        data.stream().forEach(System.out::println);
+    }
 
 }

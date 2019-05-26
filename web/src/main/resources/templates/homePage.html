@@ -115,6 +115,466 @@
             })
 
 
+            var toAccountNode = $("#toAccount")
+            var toPublishNode = $("#toPublish")
+            var toCollectNode = $("#toCollect")
+            var accountNode = $("#account")
+            var publishNode = $("#publish")
+            var collectNode = $("#collect")
+            $(toAccountNode).click(function(){
+                $(this).addClass("active")
+                $(toPublishNode).removeClass("active")
+                $(toCollectNode).removeClass("active")
+                $(accountNode).css("visibility", "visible")
+                $(publishNode).css("visibility", "collapse")
+                $(collectNode).css("visibility", "collapse")
+                var parent = $(accountNode).parent()
+                parent.prepend(accountNode)
+
+                // $(toAccountNode).attr("class", "active")
+            })
+
+            $(toPublishNode).click(function(){
+                $(this).addClass("active")
+                $(toAccountNode).removeClass("active")
+                $(toCollectNode).removeClass("active")
+                $(publishNode).css("visibility", "visible")
+                $(accountNode).css("visibility", "collapse")
+                $(collectNode).css("visibility", "collapse")
+                var parent = $(publishNode).parent()
+                parent.prepend(publishNode)
+            })
+
+            $(toCollectNode).click(function(){
+                $(this).addClass("active")
+                $(toAccountNode).removeClass("active")
+                $(toPublishNode).removeClass("active")
+                $(collectNode).css("visibility", "visible")
+                $(accountNode).css("visibility", "collapse")
+                $(publishNode).css("visibility", "collapse")
+                var parent = $(collectNode).parent()
+                parent.prepend(collectNode)
+            })
+
+            //帖子收藏
+            $("#postCollect").click(function(){
+                var divNode = $(this).parent().parent().parent().find(".contentPlace");
+                var pageSize = 5
+                $.ajax({
+                    url: '/post/person/collect/1/' + pageSize,
+                    type: 'get',
+                    dataType: 'json',
+                    success: function(data){
+                        console.log(data)
+                        if(data.code==0){
+                            $(divNode).empty();
+                            var postNode = ""
+                            var commentSize = 5
+                            $.each(data.data.list, function(index, post){
+                                var imgNode1 = ""
+                                var imgNode2 = ""
+                                var imgNode3 = ""
+
+                                btn='<button class="btn btn-warning">取消收藏</button>'
+                                if(post.contentList[1]!=null){
+                                    imgNode1 += '<img class="imgContent" width="100%" src="'+ post.contentList[1]+'"/>'
+                                }
+                                if(post.contentList[2]!=null){
+                                    imgNode1 += '<img class="imgContent" width="100%" src="'+ post.contentList[2]+'"/>'
+                                } if(post.contentList[3]!=null){
+                                    imgNode1 += '<img class="imgContent" width="100%" src="'+ post.contentList[3]+'"/>'
+                                }
+                                postNode +=' <div class="panel panel-default postNode" style="height: 250px; padding: 5px; margin: 10px; >\n' +
+                                    '                    <span class="postId"  style="visibility: hidden;">'+post.postId+'</span>\n' +
+                                    '                    <table style="height: 20%; width: 100%;">\n' +
+                                    '                        <tr>\n' +
+                                    '                            <td  width="7%" style="color: darkgray;">共'+post.segmentCount+'楼</td>\n' +
+                                    '                            <td width="80%"><a postId="'+post.postId+'" class="postInfoLink"  target="_blank"  href="/post/info/'+ post.postId+'/1/'+ pageSize+'/'+ commentSize+'" >'+post.contentList[0]+'</a></td>\n' +
+                                    '                            <td width="10%" align="center"style="color: darkgray"><span>'+post.userName+'</span> <br/><br/><span style="color: darkgray">'+post.createTime+'</span></td>\n' +
+                                    '                            <td>'+ btn+'</td>'+
+                                    '                        </tr>\n' +
+                                    '                    </table>\n' +
+                                    '\n' +
+                                    '                    <table width="100%" style="height: 50%;">\n' +
+                                    '                        <tr>\n' +
+                                    '                            <td width="5%"></td>\n' +
+                                    '                            <td width="20%">'+imgNode1+'</td>\n' +
+                                    '                            <td width="20%">'+imgNode2+'</td>\n' +
+                                    '                            <td width="20%">'+imgNode3+'</td>\n' +
+                                    '                            <td width="40%"></td>\n' +
+                                    '                        </tr>\n' +
+                                    '                    </table>\n' +
+                                    '                    <span style="width: 60%;"></span>\n' +
+                                    '                </div>'
+                            })
+                            $(divNode).append(postNode);
+                            $(divNode).append('<div id="pageNavNode"></div>')
+
+                            //为节点的按钮添加点击事件
+                            $(".postBtn").click(function(){
+                                var postId = $(this).attr("postId")
+                                var thisNode = $(this)
+                                var postNode = $(this).parent().parent().parent().parent().parent()
+                                $.ajax({
+                                    url: '/post/person/visible/' + postId + '/' + operate,
+                                    type: 'put',
+                                    dataType: 'json',
+                                    success: function(data){
+                                        console.log(data)
+                                        if(data.code==0){
+                                            $(thisNode).attr("state", operate)
+                                            if(operate==0){
+                                                $(thisNode).attr("class", "btn btn-warning postBtn")
+                                                $(thisNode).text("不发表")
+                                                $(postNode).css("background-color", "")
+                                            }else if(operate==1){
+                                                $(thisNode).attr("class", "btn btn-primary postBtn")
+                                                $(thisNode).text("发表")
+                                                $(postNode).css("background-color", "#d5d5d5")
+                                            }
+                                        }else{
+                                            if(data.hint){
+                                                alert(data.hint)
+                                            }
+                                        }
+                                    }
+                                })
+
+                            })
+                        }else {
+                            if (data.hint) {
+                                alert(data.hint)
+                            }
+                        }
+                    }
+
+                })
+
+            })
+
+            //问答收藏
+            $("#questionCollect").click(function(){
+                var divNode = $(this).parent().parent().parent().find(".contentPlace");
+                var pageSize = 5;
+
+            })
+
+            //文章收藏
+            $("#articleCollect").click(function(){
+                var divNode = $(this).parent().parent().parent().find(".contentPlace");
+                $(divNode).empty();
+                $(divNode).append('')
+            })
+
+            //帖子发表
+            $("#postPublish").click(function(){
+                var pageSize = 2;
+                var divNode = $(this).parent().parent().parent().find(".contentPlace");
+                //请求个人帖子的数据
+                $.ajax({
+                    url: '/post/get/person/1/' + pageSize,
+                    type: 'get',
+                    dataType: 'json',
+                    success: function(data){
+                        console.log(data)
+                        if(data.code==0){
+                            $(divNode).empty();
+                            var postNode = ""
+                            // divNode+='<span style="visibility: hidden" id="totalPage">'+ data.data.pages+'</span>'
+                            // divNode+='<span style="visibility: hidden" id="pageNum">'+ data.data.pageNum+'</span>'
+                            // divNode+='<span style="visibility: hidden" id="pageSize">'+ data.data.pageSize+'</span>'
+                            var commentSize = 5
+                            $.each(data.data.list, function(index, post){
+                                var imgNode1 = ""
+                                var imgNode2 = ""
+                                var imgNode3 = ""
+                                var btn = ""
+                                var backgroud = ""
+
+                                if(post.state==0){
+                                    btn = '<button class="btn btn-warning postBtn" state="0" postId="'+ post.postId+'">不发表</button>'
+                                }else if(post.state==1){
+                                    backgroud = "#d5d5d5"
+                                    btn = '<button class="btn btn-primary postBtn" state="1" postId="'+ post.postId+'" >发表</button>'
+                                }else if(post.state==-1){
+                                    backgroud = "#d5d5d5"
+                                    btn = '<button class="btn btn-danger postBtn" state="-1" postId="'+ post.postId+'" >已被管理员禁用</button>'
+                                }
+                                if(post.contentList[1]!=null){
+                                    imgNode1 += '<img class="imgContent" width="100%" src="'+ post.contentList[1]+'"/>'
+                                }
+                                if(post.contentList[2]!=null){
+                                    imgNode1 += '<img class="imgContent" width="100%" src="'+ post.contentList[2]+'"/>'
+                                } if(post.contentList[3]!=null){
+                                    imgNode1 += '<img class="imgContent" width="100%" src="'+ post.contentList[3]+'"/>'
+                                }
+                                postNode +=' <div class="panel panel-default postNode" style="height: 250px; padding: 5px; margin: 10px; background-color: '+ backgroud+'">\n' +
+                                    '                    <span class="postId"  style="visibility: hidden;">'+post.postId+'</span>\n' +
+                                    '                    <table style="height: 20%; width: 100%;">\n' +
+                                    '                        <tr>\n' +
+                                    '                            <td  width="7%" style="color: darkgray;">共'+post.segmentCount+'楼</td>\n' +
+                                    '                            <td width="80%"><a postId="'+post.postId+'" class="postInfoLink"  target="_blank"  href="/post/info/'+ post.postId+'/1/'+ pageSize+'/'+ commentSize+'" >'+post.contentList[0]+'</a></td>\n' +
+                                    '                            <td width="10%" align="center"style="color: darkgray"><span>'+post.userName+'</span> <br/><br/><span style="color: darkgray">'+post.createTime+'</span></td>\n' +
+                                    '                            <td>'+ btn+'</td>'+
+                                    '                        </tr>\n' +
+                                    '                    </table>\n' +
+                                    '\n' +
+                                    '                    <table width="100%" style="height: 50%;">\n' +
+                                    '                        <tr>\n' +
+                                    '                            <td width="5%"></td>\n' +
+                                    '                            <td width="20%">'+imgNode1+'</td>\n' +
+                                    '                            <td width="20%">'+imgNode2+'</td>\n' +
+                                    '                            <td width="20%">'+imgNode3+'</td>\n' +
+                                    '                            <td width="40%"></td>\n' +
+                                    '                        </tr>\n' +
+                                    '                    </table>\n' +
+                                    '                    <span style="width: 60%;"></span>\n' +
+                                    '                </div>'
+                            })
+                            $(divNode).append(postNode);
+                            $(divNode).append('<div id="pageNavNode"></div>')
+
+                            //为节点的按钮添加点击事件
+                            $(".postBtn").click(function(){
+                                var postId = $(this).attr("postId")
+                                var state = $(this).attr("state")
+                                if(state==-1)
+                                    return;
+                                var operate = state==0 ? 1 : 0
+                                var thisNode = $(this)
+                                var postNode = $(this).parent().parent().parent().parent().parent()
+                                $.ajax({
+                                    url: '/post/person/visible/' + postId + '/' + operate,
+                                    type: 'put',
+                                    dataType: 'json',
+                                    success: function(data){
+                                        console.log(data)
+                                        if(data.code==0){
+                                            $(thisNode).attr("state", operate)
+                                            if(operate==0){
+                                                $(thisNode).attr("class", "btn btn-warning postBtn")
+                                                $(thisNode).text("不发表")
+                                                $(postNode).css("background-color", "")
+                                            }else if(operate==1){
+                                                $(thisNode).attr("class", "btn btn-primary postBtn")
+                                                $(thisNode).text("发表")
+                                                $(postNode).css("background-color", "#d5d5d5")
+                                            }
+                                        }else{
+                                            if(data.hint){
+                                                alert(data.hint)
+                                            }
+                                        }
+                                    }
+                                })
+
+                            })
+                        }else {
+                            if (data.hint) {
+                                alert(data.hint)
+                            }
+                        }
+                    }
+
+                })
+
+
+
+            })
+
+            //问答发表
+            $("#questionPublish").click(function(){
+                var pageSize = 5
+                var divNode = $(this).parent().parent().parent().find(".contentPlace");
+                $.ajax({
+                    url: '/post/person/getList/1/' + pageSize,
+                    type: 'get',
+                    success: function(data){
+                        console.log(data)
+                        if(data.code==0) {
+                            var questionNode = ""
+                            $.each(data.data.list, function (index, answerDTO) {
+                                var btn = ""
+                                var backgroud = ""
+
+                                if(answerDTO.state==0){
+                                    btn = '<button class="btn btn-warning answerBtn" state="0" answerId="'+ answerDTO.answerId+'">不发表</button>'
+                                }else if(answerDTO.state==1){
+                                    backgroud = "#d5d5d5"
+                                    btn = '<button class="btn btn-primary answerBtn" state="1" answerId="'+ answerDTO.answerId+'" >发表</button>'
+                                }else if(answerDTO.state==-1){
+                                    backgroud = "#d5d5d5"
+                                    btn = '<button class="btn btn-danger answerBtn" state="-1" answerId="'+ answerDTO.answerId+'" >已被管理员禁用</button>'
+                                }
+                                console.log(btn)
+                                var content = answerDTO.content;
+                                if (content.length > 20)
+                                    content = content.substr(0, 20);
+                                questionNode += '<div type="answerNode" th:each="answerDTO:${data.data.list}" class="panel panel-default" style="word-wrap:break-word;word-break:break-all; padding: 10px;background-color: '+ backgroud+'">\n' +
+                                    '                <div style="height: 100%; " class="panel-body">\n' +
+                                    '                    <span class="answerId" style="visibility: hidden">' + answerDTO.answerId + '</span>\n' +
+                                    '                    <div ><a href="/toQuestionInfo/' + answerDTO.questionId + '?answerId=' + answerDTO.answerId + '" style="color: black; font-size: larger;" target="_blank">' + answerDTO.questionTitle + '</a> <span style="color: darkgray">' + answerDTO.answerCount + ' 个回答</span>'+btn+'</div>\n' +
+
+                                    '                    <br/>\n' +
+                                    '                    <img class="img-thumbnail" width="50px" src="' + answerDTO.userPic + '">\n' +
+                                    '                    <a href="#">' + answerDTO.userName + '</a>\n' +
+                                    '                    <div><br/><a class="readAll"  href="#" style="color: black;">' + content + '</a><a class="readAll">阅读全文</a></div>\n' +
+
+                                    '                </div>\n' +
+                                    '                <br/>\n' +
+                                    '                <div  style="position:relative; left: 30px;">\n' +
+                                    '                    <span class="btn btn-default agree">赞同 ' + answerDTO.agreeCount + '</span>\n' +
+                                    '                    <span class="btn btn-default disagree">不赞同' + answerDTO.disagreeCount + '</span>\n' +
+                                    '                    <span class="toComment"><a class="getComment"  href="#">' + answerDTO.commentCount + '条评论</a></span>\n' +
+                                    '                    <span><input type="hidden" class="commentCount" value=' + answerDTO.commentCount + '"></span></span>\n' +
+                                    '                </div>\n' +
+                                    '\n' +
+                                    '                <div class="commentNode">\n' +
+                                    '\n' +
+                                    '                </div>\n' +
+                                    '                <div class="commentNavNode">\n' +
+                                    '\n' +
+                                    '                </div>\n' +
+                                    '                <div style="width: 100%; position: relative; left: 20px" class="toAddComment">\n' +
+                                    '                    <!--<textarea style="width: 70%" class="inputComment" placeholder="我的评论"/>-->\n' +
+                                    '                    <!--<button style="position: relative; left:10px" class="btn btn-primary submitComment">提交</button>-->\n' +
+                                    '                </div>\n' +
+                                    '            </div>'
+                            })
+                            $(divNode).empty()
+                            $(divNode).append(questionNode)
+
+
+                            //为节点的按钮添加点击事件
+                            $(".answerBtn").click(function(){
+                                var answerId = $(this).attr("answerId")
+                                var state = $(this).attr("state")
+                                if(state==-1)
+                                    return;
+                                var operate = state==0 ? 1 : 0
+                                var thisNode = $(this)
+                                var postNode = $(this).parent().parent()
+                                $.ajax({
+                                    url: '/answer/person/visible/' + answerId + '/' + operate,
+                                    type: 'put',
+                                    dataType: 'json',
+                                    success: function(data){
+                                        console.log(data)
+                                        if(data.code==0){
+                                            $(thisNode).attr("state", operate)
+                                            if(operate==0){
+                                                $(thisNode).attr("class", "btn btn-warning postBtn")
+                                                $(thisNode).text("不发表")
+                                                $(postNode).css("background-color", "")
+                                            }else if(operate==1){
+                                                $(thisNode).attr("class", "btn btn-primary postBtn")
+                                                $(thisNode).text("发表")
+                                                $(postNode).css("background-color", "#d5d5d5")
+                                            }
+                                        }else{
+                                            if(data.hint){
+                                                alert(data.hint)
+                                            }
+                                        }
+                                    }
+                                })
+
+                            })
+                        }else{
+                            if(data.hint){
+                                alert(data.hint)
+                            }
+                        }
+                    }
+                })
+            })
+
+            //文章发表
+            $("#articlePublish").click(function(){
+                var divNode = $(this).parent().parent().parent().find(".contentPlace");
+                var pageSize = 5;
+                $.ajax({
+                    url: '/article/person/getList/1/'+ pageSize,
+                    type: 'get',
+                    dataType: 'json',
+                    success: function(data){
+                        console.log(data)
+                        if(data.code==0){
+                            var articleNode = ""
+                            $.each(data.data.list, function(index, article){
+                                var btn = ""
+                                var backgroud = ""
+
+                                if(article.state==0){
+                                    btn = '<button class="btn btn-warning articleBtn" state="0" articleId="'+ article.articleId+'">不发表</button>'
+                                }else if(answerDTO.state==1){
+                                    backgroud = "#d5d5d5"
+                                    btn = '<button class="btn btn-primary articleBtn" state="1" articleId="'+ article.articleId+'" >发表</button>'
+                                }else if(answerDTO.state==-1){
+                                    backgroud = "#d5d5d5"
+                                    btn = '<button class="btn btn-danger articleBtn" state="-1" articleId="'+ article.articleId+'" >已被管理员禁用</button>'
+                                }
+                                articleNode+='<div class="articleNode">\n' +
+                                    '                    <span style="visibility: hidden" class="articleId">'+article.articleId+'</span>\n' +
+                                    '                    <div>\n' +
+                                    '                        <span>'+article.title+'</span><br/><br/> <a href="'+article.accessUrl+'" target="_blank">预览</a> <a href="/file/download/'+article.articleId+'" target="_blank">下载</a>\n' +
+                                    '                        <span>'+article.downloadCount+'次下载</span>\n' +
+                                    '                        <div style="float: right">\n' +
+                                    '                            <span>由<a>'+article.userName+'</a> 于</span> <span>'+article.createTime+'</span> 上传\n' +
+                                                            btn+
+                                    '                        </div>\n' +
+                                    '                    </div>\n' +
+                                    '                </div>'
+                            })
+                            $(divNode).empty();
+                            $(divNode).append(articleNode);
+
+                            //为节点的按钮添加点击事件
+                            $(".articleBtn").click(function(){
+                                var articleId = $(this).attr("articleId")
+                                var state = $(this).attr("state")
+                                if(state==-1)
+                                    return;
+                                var operate = state==0 ? 1 : 0
+                                var thisNode = $(this)
+                                var postNode = $(this).parent().parent()
+                                $.ajax({
+                                    url: '/article/person/visible/' + articleId + '/' + operate,
+                                    type: 'put',
+                                    dataType: 'json',
+                                    success: function(data){
+                                        console.log(data)
+                                        if(data.code==0){
+                                            $(thisNode).attr("state", operate)
+                                            if(operate==0){
+                                                $(thisNode).attr("class", "btn btn-warning postBtn")
+                                                $(thisNode).text("不发表")
+                                                $(postNode).css("background-color", "")
+                                            }else if(operate==1){
+                                                $(thisNode).attr("class", "btn btn-primary postBtn")
+                                                $(thisNode).text("发表")
+                                                $(postNode).css("background-color", "#d5d5d5")
+                                            }
+                                        }else{
+                                            if(data.hint){
+                                                alert(data.hint)
+                                            }
+                                        }
+                                    }
+                                })
+
+                            })
+
+                        }else{
+                            if(data.hint)
+                                alert(data.hint)
+                        }
+                    }
+                })
+
+            })
+
+
 
         })
     </script>
@@ -162,15 +622,14 @@
             </nav>
             <div class="col-sm-2">
                 <ul class="nav nav-pills nav-stacked" role="tablist" id="selectBtn">
-                    <li class="active"><a href="#" >我的帐号</a></li>
-                    <li><a href="#">我的发表</a></li>
-                    <li><a href="#" class="mycollect">我的收藏</a></li>
-                    <li><a href="#">问题关注</a></li>
+                    <li class="active" id="toAccount"><a href="#" >我的帐号</a></li>
+                    <li id="toPublish"><a href="#" >我的发表</a></li>
+                    <li id="toCollect"><a href="#">我的收藏</a></li>
                 </ul>
             </div>
-
+            <div>
             <!--我的帐号部分-->
-            <div id="account" class="col-sm-8">
+            <div id="account" class="col-sm-8" style="visibility: visible; border-left: 1px solid #d5d5d5;">
                 <table class="table" th:if="${session.user!=null}">
                     <tr>
                         <td>帐号名</td>
@@ -253,14 +712,27 @@
                 </table>
             </div>
 
-            <!--我的收藏部分-->
-            <div id="collect" class="col-sm-8">
+            <!--我的发表部分-->
+            <div id="publish" class="col-sm-8" style="visibility: collapse; border-left: 1px solid #d5d5d5;">
                 <ul class="nav nav-pills" role="tablist">
-                    <li class="active"><a href="#" >帖子收藏</a></li>
-                    <li><a href="#">问答收藏</a></li>
-                    <li><a href="#" class="mycollect">文章收藏</a></li>
+                    <li><a href="#" id="postPublish">帖子发表</a></li>
+                    <li><a href="#" id="questionPublish">问答发表</a></li>
+                    <li><a href="#" id="articlePublish">文章发表</a></li>
                 </ul>
+                <div class="contentPlace"></div>
             </div>
+
+            <!--我的收藏部分-->
+            <div id="collect" class="col-sm-8" style="visibility: collapse; border-left: 1px solid #d5d5d5;">
+                <ul class="nav nav-pills" role="tablist">
+                    <li><a href="#" id="postCollect">帖子收藏</a></li>
+                    <li><a href="#" id="questionCollect">问答收藏</a></li>
+                    <li><a href="#" id="articleCollect">文章收藏</a></li>
+                </ul>
+                <div class="contentPlace"></div>
+            </div>
+            </div>
+
 	、<!--
             <ul style="width: 100%">
                 <li style="display: inline; width: 30%">aa</li>

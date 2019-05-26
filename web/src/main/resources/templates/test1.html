@@ -11,32 +11,46 @@
     <script type="text/javascript" src="../static/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
     <script type="text/javascript">
         $(function(){
-            $("#btn1").click(function(){
-                $.ajax({
-                    url: 'test',
-                    type: 'get',
-                    datatype: 'json',
-                    success: function(data){
-                        console.log(data)
-                        var str= data.userName + "  " + data.email;
-                        alert(str)
-                        $("#t").html(str)
-                    }
-                })
-                // $.get("test", function(data, status){
-                //     alert("数据:" + data + "\n状态：" + status)
-                // })
-                // alert("bbb");
+            // $("#btn1").click(function(){
+            //     $.ajax({
+            //         url: 'test',
+            //         type: 'get',
+            //         datatype: 'json',
+            //         success: function(data){
+            //             console.log(data)
+            //             var str= data.userName + "  " + data.email;
+            //             alert(str)
+            //             $("#t").html(str)
+            //         }
+            //     })
+            //     // $.get("test", function(data, status){
+            //     //     alert("数据:" + data + "\n状态：" + status)
+            //     // })
+            //     // alert("bbb");
+            // })
+            // $("#testBtn1").click(function(){
+            //     alert("testBtn1")
+            //     var newWeb=window.open('_blank');
+            //     newWeb.location = "/toQuestionInfo/1"
+            // })
+            //
+            // $("#testBtn1").click()
+            //
+            // // window.open(url);
+            //
+            $(".tt").click(function(){
+                var parent = $(this).parent();
+                var firstChild = $(parent).children(":first")
+                var thisNode = $(this)
+                // $(firstChild).prepend(thisNode)
+                $(parent).prepend(thisNode)
+                // console.log(firstChild==$(this))
+                // var temp = firstChild.clone()
+                // var thisTemp = thisNode.clone()
+                // $(parent).append(temp)
+                // $(thisNode).remove()
+                // alert(firstChild)
             })
-            $("#testBtn1").click(function(){
-                alert("testBtn1")
-                var newWeb=window.open('_blank');
-                newWeb.location = "/toQuestionInfo/1"
-            })
-
-            $("#testBtn1").click()
-
-            // window.open(url);
 
 
         })
@@ -96,6 +110,11 @@
 </div>
 <button id="testBtn1">按钮123</button>
 
-<embed width="800" height="600" src="/static/前言.docx"></embed>
+<!--<embed width="800" height="600" src="/static/前言.docx"></embed>-->
+<div id="test">
+    <div id="aa" class="tt">aa</div>
+    <div id="bb" class="tt">bb</div>
+    <div id="cc" class="tt">cc</div>
+</div>
 </body>
 </html>

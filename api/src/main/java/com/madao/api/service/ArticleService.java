@@ -14,7 +14,7 @@ public interface ArticleService {
     public ResultView getAllCategoryInArticle();
 
     @RequestMapping("/article/get")
-    public ResultView getArticleById(@RequestParam("articleId") Long articleId);
+    public ResultView<Article> getArticleById(@RequestParam("articleId") Long articleId);
 
     @RequestMapping("/article/download/increase")
     void increaseArticleDownloadCount(Long articleId);
@@ -27,5 +27,11 @@ public interface ArticleService {
 
     @RequestMapping("/article/getList/byCategory")
     public ResultView getArticleList(@RequestParam("pageNum")Integer pageNum, @RequestParam("pageSize") Integer pageSize, @RequestParam("categoryId") Long categoryId);
+
+    @RequestMapping("/article/person/getList")
+    ResultView getArticleListByPerson(@RequestParam("userId") Long userId, @RequestParam("pageNum") Integer pageNum, @RequestParam("pageSize") Integer size);
+
+    @RequestMapping("/article/person/operate")
+    ResultView operateArticleByPerson(@RequestParam("userId") Long userId, @RequestParam("articleId") Long articleId, @RequestParam("operate") Byte operate);
 }
 

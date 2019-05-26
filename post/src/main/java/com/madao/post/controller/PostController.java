@@ -1,11 +1,9 @@
 package com.madao.post.controller;
 
 import com.github.pagehelper.PageInfo;
+import com.madao.api.Exception.ResultException;
 import com.madao.api.dto.*;
-import com.madao.api.entity.Post;
-import com.madao.api.entity.PostCategory;
-import com.madao.api.entity.PostSegment;
-import com.madao.api.entity.SegmentContent;
+import com.madao.api.entity.*;
 import com.madao.api.form.BaseForm;
 import com.madao.api.form.PostForm;
 import com.madao.api.form.PostGetForm;
@@ -59,7 +57,7 @@ public class PostController {
         }
     }
 
-    //分页获取某类型的帖子
+    //分页获取某类型可见状态的帖子
     @RequestMapping("/post/getList")
     public ResultView getPostListByCategoryId(@RequestBody BaseForm form){
         try {
@@ -71,11 +69,35 @@ public class PostController {
         }
     }
 
-    //分页获取所有类型的帖子
+    //分页获取某类型所有状态的帖子,
+    @RequestMapping("/post/getList/allState")
+    public ResultView getPostListByCategoryIdInAllState(@RequestBody BaseForm form){
+        try {
+            PageInfo<PostDTO> pageInfo = postService.getPostListByCategoryId(form);
+            return ResultUtil.returnSuccess(pageInfo);
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.returnFail();
+        }
+    }
+
+    //分页获取所有类型的可见状态下的帖子
     @RequestMapping("/post/getList/all")
     ResultView getPostList(@RequestParam("pageNum") Integer pageNum, @RequestParam("pageSize") Integer pageSize){
         try {
             PageInfo<PostDTO> pageInfo = postService.getPostList(pageNum, pageSize);
+            return ResultUtil.returnSuccess(pageInfo);
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.returnFail();
+        }
+    }
+
+    //分页获取所有类型所有状态的帖子
+    @RequestMapping("/post/getList/all/allState")
+    ResultView getPostListInAllState(@RequestParam("pageNum") Integer pageNum, @RequestParam("pageSize") Integer pageSize){
+        try {
+            PageInfo<PostDTO> pageInfo = postService.getPostListInAllState(pageNum, pageSize);
             return ResultUtil.returnSuccess(pageInfo);
         }catch (Exception e){
             e.printStackTrace();
@@ -113,6 +135,18 @@ public class PostController {
         System.out.println(commentContent);
         try{
             postCommentService.addComment(segmentId, userId, commentContent);
+            return ResultUtil.returnSuccess();
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.returnFail();
+        }
+    }
+
+    //禁用
+    @RequestMapping("/post/disable")
+    ResultView disablePost(@RequestParam("postId") Long postId){
+        try{
+            postService.disablePost(postId);
             return ResultUtil.returnSuccess();
         }catch (Exception e){
             e.printStackTrace();
@@ -202,4 +236,58 @@ public class PostController {
 
     }
 
+
+    //通过类别名获取类别
+    @RequestMapping("/post/category/name")
+    ResultView getCategoryByName(@RequestParam("categoryName") String categoryName){
+        try {
+            PostCategory postCategory = postService.getCategoryByName(categoryName);
+            System.out.println(postCategory);
+            return ResultUtil.returnSuccess(postCategory);
+        }catch (ResultException e){
+            e.printStackTrace();
+            return ResultUtil.returnFail(e.getMessage());
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.returnFail();
+        }
+    }
+
+    @RequestMapping("/post/getList/person")
+    ResultView getPostListByUser(@RequestParam("userId") Long userId, @RequestParam("pageNum") Integer pageNum, @RequestParam("pageSize") Integer pageSize){
+        try {
+            PageInfo<PostDTO> resultPage = postService.getPostListByUserId(userId, pageNum, pageSize);
+            return ResultUtil.returnSuccess(resultPage);
+        }catch (Exception e){
+            return ResultUtil.returnFail();
+        }
+    }
+
+    @RequestMapping("/post/person/operate")
+    ResultView operatePostByUser(@RequestParam("userId") Long userId, @RequestParam("postId") Long postId, @RequestParam("operate") Byte operate){
+        try {
+            postService.operatePost(userId, postId, operate);
+            return ResultUtil.returnSuccess();
+        }catch (ResultException e){
+            System.out.println(e.getMessage());
+            return ResultUtil.returnFail(e.getMessage());
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.returnFail();
+        }
+    }
+
+    @RequestMapping("/post/person/collect")
+    ResultView getPostListByUserCollected(@RequestParam("userId")Long userId, @RequestParam("pageNum")Integer pageNum, @RequestParam("pageSize")Integer pageSize){
+        try {
+            PageInfo<PostDTO> resultPage = postService.getPostListByUserCollected(userId, pageNum, pageSize);
+            return ResultUtil.returnSuccess(resultPage);
+        }catch (ResultException e){
+            System.out.println(e.getMessage());
+            return ResultUtil.returnFail(e.getMessage());
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.returnFail();
+        }
+    }
 }

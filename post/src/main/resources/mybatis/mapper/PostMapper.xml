@@ -8,6 +8,7 @@
     <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
     <result column="category_id" property="categoryId" jdbcType="BIGINT" />
     <result column="segment_count" property="segmentCount" jdbcType="INTEGER" />
+    <result column="state" property="state" jdbcType="TINYINT" />
   </resultMap>
   <sql id="Example_Where_Clause" >
     <where >
@@ -68,7 +69,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    post_id, user_id, create_time, update_time, category_id, segment_count
+    post_id, user_id, create_time, update_time, category_id, segment_count, state
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.madao.post.bean.PostExample" >
     select
@@ -102,11 +103,11 @@
   </delete>
   <insert id="insert" parameterType="com.madao.api.entity.Post" >
     insert into post (post_id, user_id, create_time, 
-      update_time, category_id, segment_count
-      )
+      update_time, category_id, segment_count, 
+      state)
     values (#{postId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{updateTime,jdbcType=TIMESTAMP}, #{categoryId,jdbcType=BIGINT}, #{segmentCount,jdbcType=INTEGER}
-      )
+      #{updateTime,jdbcType=TIMESTAMP}, #{categoryId,jdbcType=BIGINT}, #{segmentCount,jdbcType=INTEGER}, 
+      #{state,jdbcType=TINYINT})
   </insert>
   <insert id="insertSelective" parameterType="com.madao.api.entity.Post" >
     insert into post
@@ -129,6 +130,9 @@
       <if test="segmentCount != null" >
         segment_count,
       </if>
+      <if test="state != null" >
+        state,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="postId != null" >
@@ -148,6 +152,9 @@
       </if>
       <if test="segmentCount != null" >
         #{segmentCount,jdbcType=INTEGER},
+      </if>
+      <if test="state != null" >
+        #{state,jdbcType=TINYINT},
       </if>
     </trim>
   </insert>
@@ -178,6 +185,9 @@
       <if test="record.segmentCount != null" >
         segment_count = #{record.segmentCount,jdbcType=INTEGER},
       </if>
+      <if test="record.state != null" >
+        state = #{record.state,jdbcType=TINYINT},
+      </if>
     </set>
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
@@ -190,7 +200,8 @@
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       update_time = #{record.updateTime,jdbcType=TIMESTAMP},
       category_id = #{record.categoryId,jdbcType=BIGINT},
-      segment_count = #{record.segmentCount,jdbcType=INTEGER}
+      segment_count = #{record.segmentCount,jdbcType=INTEGER},
+      state = #{record.state,jdbcType=TINYINT}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -213,6 +224,9 @@
       <if test="segmentCount != null" >
         segment_count = #{segmentCount,jdbcType=INTEGER},
       </if>
+      <if test="state != null" >
+        state = #{state,jdbcType=TINYINT},
+      </if>
     </set>
     where post_id = #{postId,jdbcType=BIGINT}
   </update>
@@ -222,7 +236,8 @@
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       category_id = #{categoryId,jdbcType=BIGINT},
-      segment_count = #{segmentCount,jdbcType=INTEGER}
+      segment_count = #{segmentCount,jdbcType=INTEGER},
+      state = #{state,jdbcType=TINYINT}
     where post_id = #{postId,jdbcType=BIGINT}
   </update>
 </mapper>

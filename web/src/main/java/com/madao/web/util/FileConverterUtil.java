@@ -109,6 +109,9 @@ public class FileConverterUtil {
         options.setFragment(true);
 
         try {
+            System.out.println("document...." + document);
+            System.out.println("out...." + out);
+            System.out.println("options...." + options);
             XHTMLConverter.getInstance().convert(document, out, options);
         } catch (XWPFConverterException e) {
             e.printStackTrace();

@@ -1,5 +1,6 @@
 package com.madao.question.controller;
 
+import com.github.pagehelper.PageInfo;
 import com.madao.api.dto.AnswerDTO;
 import com.madao.api.dto.QuestionDTO;
 import com.madao.api.entity.Answer;
@@ -12,6 +13,7 @@ import com.madao.api.utils.ResultUtil;
 import com.madao.api.utils.ResultView;
 import com.madao.question.service.QuestionService;
 import org.apache.catalina.Session;
+import org.hibernate.validator.constraints.pl.REGON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,6 +28,7 @@ public class QuestionController {
     @Autowired
     private QuestionService questionService;
 
+    //添加问题
     @ResponseBody
     @PostMapping("/question")
     public ResultView addQuestion(@RequestBody QuestionForm form){
@@ -40,23 +43,40 @@ public class QuestionController {
         return ResultUtil.returnSuccess(question);
     }
 
+    //获取可见状态的回答
+    @GetMapping("/getAnswer/visible")
+    public ResultView getQuestion(@RequestParam("pageNum") Integer pageNum, @RequestParam("pageSize") Integer pageSize){
+        try {
+            PageInfo<AnswerDTO> resultPage = questionService.getQuestionPageVisible(pageNum, pageSize);
+            return ResultUtil.returnSuccess(resultPage);
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.returnFail();
+        }
+    }
+
+    //获取下一条回答
     @ResponseBody
-    @GetMapping("/testSession")
-    public User testSession(HttpServletRequest request){
-        HttpSession session = request.getSession();
-        Object user =  session.getAttribute("user");
-        System.out.println(user);
-        return null;
+    @RequestMapping("/question/answer/next")
+    ResultView getNextAnswer(@RequestParam("answerIdList") List<Long> answerIdList, @RequestParam("questionId") Long questionId, @RequestParam(value = "userId", required = false) Long userId){
+        try {
+            AnswerDTO answerDTO = questionService.getNextAnswer(questionId, answerIdList);
+            if(userId!=null){
+                questionService.addAnswerState(answerDTO, userId);
+            }
+            System.out.println(answerDTO);
+            if(answerDTO==null){
+                return ResultUtil.returnFail("没有更多内容了");
+            }
+            return ResultUtil.returnSuccess(answerDTO);
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.returnFail();
+        }
 
     }
 
-    @GetMapping("/getAnswer")
-    public List<AnswerDTO> getQuestion(){
-        List<AnswerDTO> answerDTO =  questionService.getQuestion();
-        return answerDTO;
-    }
-
-    //
+    //获取问题的详细信息，即问题的信息和一个回答的信息
     @RequestMapping("/question/info")
     ResultView getQuestionDTOById(@RequestParam("questionId") Long questionId, @RequestParam(value="answerId", required = false) Long answerId){
         try {
@@ -94,6 +114,30 @@ public class QuestionController {
         }catch (Exception e){
             e.printStackTrace();
             return ResultUtil.returnFail(e.getMessage());
+        }
+    }
+
+    //用户获取个人发布的问题回答
+    @RequestMapping("/question/person/getList")
+    ResultView getQuestionDTOByPerson(@RequestParam("userId") Long userId, @RequestParam("pageNum") Integer pageNum, @RequestParam("pageSize") Integer pageSize){
+        try {
+            PageInfo<AnswerDTO> answerDTOPageInfo = questionService.getQuestionByPerson(userId, pageNum, pageSize);
+            return ResultUtil.returnSuccess(answerDTOPageInfo);
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.returnFail();
+        }
+    }
+
+    //用户获取收藏的回答
+    @RequestMapping("/answer/getList/person/collected")
+    ResultView getQuestionDTOByPersonCollected(@RequestParam("userId") Long userId, @RequestParam("pageNum")Integer pageNum, @RequestParam("pageSize") Integer pageSize){
+        try {
+            PageInfo<AnswerDTO> answerDTOPageInfo = questionService.getQuestionByPersonCollected(userId, pageNum, pageSize);
+            return ResultUtil.returnSuccess(answerDTOPageInfo);
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.returnFail();
         }
     }
 }

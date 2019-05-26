@@ -1,6 +1,7 @@
 package com.madao.user.controller;
 
 import com.madao.api.Exception.ResultException;
+import com.madao.api.entity.PostCategory;
 import com.madao.api.entity.User;
 import com.madao.api.enums.ResultEnum;
 import com.madao.api.form.UserLoginForm;
@@ -44,6 +45,13 @@ public class UserController {
             ResultView resultView = ResultUtil.returnException(e);
             return  resultView;
         }
+
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/user")
+    public User getUserById(@RequestParam("userId") Long userId){
+        return userService.getUserInfoById(userId);
 
     }
 

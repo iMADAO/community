@@ -32,4 +32,8 @@ public interface QuestionMapper {
     List<AnswerDTO> getAnswer();
 
     AnswerDTO getAnswerDTOById(Long answerId);
+
+    List<AnswerDTO> getAnswerByUserId(Long userId);
+
+    List<AnswerDTO> getAnswerByState(Byte code);
 }

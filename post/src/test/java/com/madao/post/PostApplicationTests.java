@@ -4,6 +4,7 @@ import com.github.pagehelper.PageInfo;
 import com.madao.api.dto.PostCommentDTO;
 import com.madao.api.entity.*;
 import com.madao.api.enums.ContentTypeEnum;
+import com.madao.api.service.UserService;
 import com.madao.api.utils.KeyUtil;
 import com.madao.post.bean.SegmentContentExample;
 import com.madao.post.mapper.*;
@@ -40,6 +41,9 @@ public class PostApplicationTests {
 
 	@Autowired
 	private PostCommentService postCommentService;
+
+	@Autowired
+	private UserService userService;
 
 	@Test
 	public void testPostCommentService(){
@@ -134,5 +138,12 @@ public class PostApplicationTests {
 		list.add("str");
 		System.out.println(list.size());
 	}
+
+	@Test
+	public void testGetUser(){
+		User user = userService.getUserById(1L);
+		System.out.println(user);
+	}
+
 
 }

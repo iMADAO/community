@@ -19,8 +19,8 @@ public interface QuestionService {
     @GetMapping("/testSession")
     public User testSession();
 
-    @GetMapping("/getAnswer")
-    public List<AnswerDTO> getQuestion();
+    @GetMapping("/getAnswer/visible")
+    public ResultView getQuestion(@RequestParam("pageNum") Integer pageNum, @RequestParam("pageSize") Integer pageSize);
 
     @RequestMapping(value = "/getAnswerContent")
     public ResultView getAnswerContentByQuestionId(Long answerId);
@@ -63,4 +63,16 @@ public interface QuestionService {
 
     @RequestMapping("/question/collect/state")
     public ResultView getQuestionCollectState(@PathParam("questionId") Long questionId, @RequestParam("userId")Long userId);
+
+    @RequestMapping("/question/answer/next")
+    ResultView getNextAnswer(@RequestParam("answerIdList") List<Long> answerIdList, @RequestParam("questionId") Long questionId, @RequestParam(value = "userId", required = false) Long userId);
+
+    @RequestMapping("/question/person/getList")
+    ResultView getQuestionDTOByPerson(@RequestParam("userId") Long userId, @RequestParam("pageNum") Integer pageNum, @RequestParam("pageSize") Integer pageSize);
+
+    @RequestMapping("/question/person/operate")
+    ResultView operateAnswer(@RequestParam("userId")Long userId, @RequestParam("answerId")Long answerId, @RequestParam("operate")Byte operate);
+
+    @RequestMapping("/answer/getList/person/collected")
+    ResultView getQuestionDTOByPersonCollected(@RequestParam("userId") Long userId, @RequestParam("pageNum")Integer pageNum, @RequestParam("pageSize") Integer pageSize);
 }
