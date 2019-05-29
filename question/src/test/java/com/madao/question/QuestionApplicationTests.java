@@ -1,11 +1,17 @@
 package com.madao.question;
 
+import com.madao.api.dto.ReportDTO;
 import com.madao.api.entity.Answer;
+import com.madao.api.entity.Question;
 import com.madao.api.entity.User;
 import com.madao.api.enums.AgreeEnum;
+import com.madao.api.service.QuestionService;
 import com.madao.api.service.UserService;
+import com.madao.api.utils.ResultView;
+import com.madao.question.bean.QuestionExample;
 import com.madao.question.mapper.AnswerMapper;
 import com.madao.question.mapper.QuestionMapper;
+import com.madao.question.mapper.ReportMapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +40,12 @@ public class QuestionApplicationTests {
 
 	@Autowired
 	private AnswerMapper answerMapper;
+
+	@Autowired
+	private ReportMapper reportMapper;
+
+	@Autowired
+	private QuestionService questionService;
 	@Test
 	public void contextLoads() {
 //		Question question = mapper.selectByPrimaryKey(1L);
@@ -69,6 +81,22 @@ public class QuestionApplicationTests {
 //		System.out.println(user);
 		Answer answer = answerMapper.selectByPrimaryKey(1558341914119102247L);
 		System.out.println(answer);
+	}
+
+	@Autowired
+	QuestionMapper questionMapper;
+	@Test
+	public void test5(){
+//		List<ReportDTO> reportDTOList = reportMapper.getReportDTOList();
+//		reportDTOList.stream().forEach(System.out::println);
+//		ResultView resultView = questionService.searchByQuestion("iphone", 1, 1);
+//		System.out.println(resultView);
+
+		QuestionExample example = new QuestionExample();
+		QuestionExample.Criteria criteria = example.createCriteria();
+		criteria.andQuestionTitleLike("%iphone%");
+		List<Question> questionList = questionMapper.selectByExample(example);
+		questionList.stream().forEach(System.out::println);
 	}
 
 }

@@ -876,9 +876,48 @@
             //
             // })
 
+            $("#submitReportBtn").click(function(){
+                var reasonNode = $("#reportReason")
+                var reason = $.trim($(reasonNode).val())
+                $(reasonNode).val(reason)
+                var questionId = $(this).attr("questionId")
+                if(reason=="") {
+                    alert("举报原因不能为空")
+                    return false;
+                }
+                console.log("reason..." + reason)
+                $.ajax({
+                    url: '/post/report/question/' + questionId,
+                    type: 'post',
+                    dataType: 'json',
+                    data: {
+                        'reason': reason
+                    },
+                    success: function(data){
+                        console.log(data)
+                        if(data.code==0){
+                            alert("举报完成,将交由后台审核处理")
+                            //todo将举报按钮设置为不可用
+                            $("#reportQuestion").attr("disabled", "disabled")
+                        }else{
+                            if(data.hint){
+                                alert(data.hint)
+                            }
+                        }
 
+                    }
+                })
 
+            })
 
+            $("#searchQuestion").click(function(){
+                var searchContentNode = $("#searchContent");
+                var searchContent = $.trim($(searchContentNode).val())
+                $(searchContentNode).val(searchContent)
+                if(searchContent==""){
+                    return false;
+                }
+            })
         })
     </script>
 </head>
@@ -900,11 +939,11 @@
                             <li><a href="/toQuestion" style="color: #2e6da4" target="_blank">问答</a></li>
                         </ul>
                     </div>
-                    <form class="navbar-form navbar-left" role="search">
+                    <form class="navbar-form navbar-left" role="search"  action="/question/search" target="_blank">
                         <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Search">
+                            <input type="text" class="form-control" placeholder="Search" name="searchContent" id="searchContent">
                         </div>
-                        <button type="submit" class="btn btn-default">搜问题</button>
+                        <button type="submit" class="btn btn-default" id="searchQuestion">搜问题</button>
                         <!--<button class="btn btn-default" data-toggle="modal" data-target="#myModal">我要提问</button>-->
 
                     </form>
@@ -940,8 +979,27 @@
                 <br/><br/>
                 <button id="collectQuestion" class="btn-default" collect="0">关注问题</button>
                 <button class="btn-default" id="addAnswer" data-toggle="modal" data-target="#addAnswerModal">写回答</button>
-                <button class="btn-default report">举报</button>
+                <button class="btn-default" id="reportQuestion" data-toggle="modal" data-target="#reportModal">举报</button>
             </div>
+
+            <div class="modal fade" id="reportModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title" id="reportModalLabel">举报问题</h4>
+                        </div>
+                        <div class="modal-body">
+                            <textarea id="reportReason" placeholder="举报原因" style="height: 100px; width: 100%;"></textarea>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                            <button type="button" class="btn btn-primary" id="submitReportBtn" th:questionId="${resultView.data.questionId}">提交</button>
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal -->
+            </div>
+
 
             <div class="modal fade" id="addAnswerModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
@@ -965,7 +1023,7 @@
             </div>
 
             <br/>
-            <div class="panel panel-default answerNode" style="word-wrap:break-word;word-break:break-all; padding: 50px; width: 90%" type="answerNode">
+            <div class="panel panel-default answerNode" style="word-wrap:break-word;word-break:break-all; padding: 50px; width: 90%" type="answerNode" th:if="${resultView.data.answerDTO}">
                 <div style="margin: 20px" class="answerUserInfo">
                     <img width="30px" th:src="@{${resultView.data.answerDTO.userPic}}" alt="图片" />
                     <span style="text-align: center" th:text="${resultView.data.answerDTO.userName}">许我半世繁华</span><br/>
@@ -1005,7 +1063,6 @@
                     <!--<button style="position: relative; left:10px" class="btn btn-primary submitComment">提交</button>-->
                 </div>
             </div>
-            <div>
             <btn style="width: 80%;margin: 15px" class="btn btn-primary" id="nextAnswer">下一条回答</btn>
             <br/>
             <br/>

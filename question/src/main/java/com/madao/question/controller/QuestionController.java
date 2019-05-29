@@ -1,25 +1,20 @@
 package com.madao.question.controller;
 
 import com.github.pagehelper.PageInfo;
+import com.madao.api.Exception.ResultException;
 import com.madao.api.dto.AnswerDTO;
 import com.madao.api.dto.QuestionDTO;
-import com.madao.api.entity.Answer;
+import com.madao.api.dto.ReportDTO;
 import com.madao.api.entity.Question;
-import com.madao.api.entity.User;
-import com.madao.api.enums.ErrorEnum;
-import com.madao.api.enums.ResultEnum;
 import com.madao.api.form.QuestionForm;
 import com.madao.api.utils.ResultUtil;
 import com.madao.api.utils.ResultView;
 import com.madao.question.service.QuestionService;
-import org.apache.catalina.Session;
-import org.hibernate.validator.constraints.pl.REGON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.websocket.server.PathParam;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -58,7 +53,10 @@ public class QuestionController {
     //获取下一条回答
     @ResponseBody
     @RequestMapping("/question/answer/next")
-    ResultView getNextAnswer(@RequestParam("answerIdList") List<Long> answerIdList, @RequestParam("questionId") Long questionId, @RequestParam(value = "userId", required = false) Long userId){
+    ResultView getNextAnswer(@RequestParam(value = "answerIdList", required = false) List<Long> answerIdList, @RequestParam("questionId") Long questionId, @RequestParam(value = "userId", required = false) Long userId){
+        if(answerIdList==null){
+            answerIdList = new ArrayList<>();
+        }
         try {
             AnswerDTO answerDTO = questionService.getNextAnswer(questionId, answerIdList);
             if(userId!=null){
@@ -140,4 +138,53 @@ public class QuestionController {
             return ResultUtil.returnFail();
         }
     }
+
+    @RequestMapping("/answer/getList/allState")
+    ResultView getQuestionDTOInAllState(@RequestParam("pageNum")Integer pageNum, @RequestParam("pageSize") Integer pageSize){
+        try {
+            PageInfo<AnswerDTO> answerDTOPageInfo = questionService.getQuestionInAllState(pageNum, pageSize);
+            return ResultUtil.returnSuccess(answerDTOPageInfo);
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.returnFail();
+        }
+    }
+
+    @RequestMapping("/report/getList")
+    ResultView getReportList(@RequestParam("pageNum") Integer pageNum, @RequestParam("pageSize") Integer pageSize){
+        try {
+            PageInfo<ReportDTO> reportDTOPageInfo = questionService.getReportDTOList(pageNum, pageSize);
+            return ResultUtil.returnSuccess(reportDTOPageInfo);
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.returnFail();
+        }
+    }
+
+    @RequestMapping("/report/question")
+    ResultView reportQuestion(@RequestParam("userId") Long userId, @RequestParam("questionId") Long questionId, @RequestParam("reason") String reason){
+        try{
+            questionService.reportQuestion(userId, questionId, reason);
+            return ResultUtil.returnSuccess();
+        }catch (ResultException e){
+            System.out.println(e.getMessage());
+            return  ResultUtil.returnFail(e.getMessage());
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.returnFail();
+        }
+    }
+
+    //根据问题标题搜索问题，获取该问题点赞数最多的回答
+    @RequestMapping("/question/search/byTitle")
+    ResultView searchByQuestion(@RequestParam("searchContent") String searchContent, @RequestParam("pageNum") Integer pageNum, @RequestParam("pageSize") Integer pageSize){
+        try{
+            PageInfo<AnswerDTO> questionDTOList = questionService.getQuestionDTOLikeQuestionTitle(searchContent, pageNum, pageSize);
+            return ResultUtil.returnSuccess(questionDTOList);
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.returnFail();
+        }
+    }
+
 }

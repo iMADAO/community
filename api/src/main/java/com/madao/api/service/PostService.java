@@ -78,4 +78,10 @@ public interface PostService {
 
     @RequestMapping("/post/person/collect")
     ResultView getPostListByUserCollected(@RequestParam("userId")Long userId, @RequestParam("pageNum")Integer pageNum, @RequestParam("pageSize")Integer pageSize);
+
+    @RequestMapping("/post/operate/ban")
+    ResultView operateBanPost(@RequestParam("postId") Long postId, @RequestParam("operate") Byte operate);
+
+    @RequestMapping("/post/report")
+    ResultView reportPost(@RequestParam("userId") Long userId, @RequestParam("postId") Long postId, @RequestParam("reaseon") String reason);
 }

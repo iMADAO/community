@@ -156,8 +156,15 @@
                 parent.prepend(collectNode)
             })
 
+            var postCollectNode = $("#postCollect")
+            var articleCollectNode = $("#articleCollect")
+            var questionCollectNode = $("#questionCollect")
+
             //帖子收藏
             $("#postCollect").click(function(){
+                $(articleCollectNode).parent().removeClass("active")
+                $(questionCollectNode).parent().removeClass("active")
+                $(this).parent().addClass("active")
                 var divNode = $(this).parent().parent().parent().find(".contentPlace");
                 var pageSize = 5
                 $.ajax({
@@ -175,7 +182,7 @@
                                 var imgNode2 = ""
                                 var imgNode3 = ""
 
-                                btn='<button class="btn btn-warning">取消收藏</button>'
+                                btn='<button class="btn btn-warning collectBtn" postId="'+ post.postId+'" state=1>取消收藏</button>'
                                 if(post.contentList[1]!=null){
                                     imgNode1 += '<img class="imgContent" width="100%" src="'+ post.contentList[1]+'"/>'
                                 }
@@ -211,27 +218,29 @@
                             $(divNode).append('<div id="pageNavNode"></div>')
 
                             //为节点的按钮添加点击事件
-                            $(".postBtn").click(function(){
+                            $(".collectBtn").click(function(){
                                 var postId = $(this).attr("postId")
                                 var thisNode = $(this)
                                 var postNode = $(this).parent().parent().parent().parent().parent()
+                                var state = $(this).attr("state")
+                                var operate = state==1 ? 0 : 1
                                 $.ajax({
-                                    url: '/post/person/visible/' + postId + '/' + operate,
+                                    url: '/post/collect/operate/' + postId + "/" + operate,
                                     type: 'put',
                                     dataType: 'json',
                                     success: function(data){
                                         console.log(data)
                                         if(data.code==0){
-                                            $(thisNode).attr("state", operate)
-                                            if(operate==0){
-                                                $(thisNode).attr("class", "btn btn-warning postBtn")
-                                                $(thisNode).text("不发表")
-                                                $(postNode).css("background-color", "")
-                                            }else if(operate==1){
-                                                $(thisNode).attr("class", "btn btn-primary postBtn")
-                                                $(thisNode).text("发表")
-                                                $(postNode).css("background-color", "#d5d5d5")
+                                            if(operate==0) {
+                                                $(thisNode).attr("class", "btn btn-default collectBtn")
+                                                $(thisNode).attr("state", "0")
+                                                $(thisNode).text("恢复收藏")
+                                            }else{
+                                                $(thisNode).attr("class", "btn btn-warning collectBtn")
+                                                $(thisNode).attr("state", "1")
+                                                $(thisNode).text("取消收藏")
                                             }
+
                                         }else{
                                             if(data.hint){
                                                 alert(data.hint)
@@ -254,20 +263,184 @@
 
             //问答收藏
             $("#questionCollect").click(function(){
+                $(articleCollectNode).parent().removeClass("active")
+                $(postCollectNode).parent().removeClass("active")
+                $(this).parent().addClass("active")
                 var divNode = $(this).parent().parent().parent().find(".contentPlace");
                 var pageSize = 5;
+                $.ajax({
+                    url: '/answer/person/collected/1/' + pageSize,
+                    type: 'get',
+                    success: function(data){
+                        console.log(data)
+                        if(data.code==0) {
+                            var questionNode = ""
+                            $.each(data.data.list, function (index, answerDTO) {
+                                var btn='<button class="btn btn-warning questionCollectBtn" answerId="'+ answerDTO.answerId+'" state=1>取消收藏</button>'
+                                var content = answerDTO.content;
+                                if (content!=null && content.length > 20)
+                                    content = content.substr(0, 20);
+                                questionNode += '<div type="answerNode" th:each="answerDTO:${data.data.list}" class="panel panel-default" style="word-wrap:break-word;word-break:break-all; padding: 10px;">\n' +
+                                    '                <div style="height: 100%; " class="panel-body">\n' +
+                                    '                    <span class="answerId" style="visibility: hidden">' + answerDTO.answerId + '</span>\n' +
+                                    '                    <div ><a href="/toQuestionInfo/' + answerDTO.questionId + '?answerId=' + answerDTO.answerId + '" style="color: black; font-size: larger;" target="_blank">' + answerDTO.questionTitle + '</a> <span style="color: darkgray">' + answerDTO.answerCount + ' 个回答</span>'+btn+'</div>\n' +
+
+                                    '                    <br/>\n' +
+                                    '                    <img class="img-thumbnail" width="50px" src="' + answerDTO.userPic + '">\n' +
+                                    '                    <a href="#">' + answerDTO.userName + '</a>\n' +
+                                    '                    <div><br/><a class="readAll"  href="#" style="color: black;">' + content + '</a><a class="readAll">阅读全文</a></div>\n' +
+
+                                    '                </div>\n' +
+                                    '                <br/>\n' +
+                                    '                <div  style="position:relative; left: 30px;">\n' +
+                                    '                    <span class="btn btn-default agree">赞同 ' + answerDTO.agreeCount + '</span>\n' +
+                                    '                    <span class="btn btn-default disagree">不赞同' + answerDTO.disagreeCount + '</span>\n' +
+                                    '                    <span class="toComment"><a class="getComment"  href="#">' + answerDTO.commentCount + '条评论</a></span>\n' +
+                                    '                    <span><input type="hidden" class="commentCount" value=' + answerDTO.commentCount + '"></span></span>\n' +
+                                    '                </div>\n' +
+                                    '\n' +
+                                    '                <div class="commentNode">\n' +
+                                    '\n' +
+                                    '                </div>\n' +
+                                    '                <div class="commentNavNode">\n' +
+                                    '\n' +
+                                    '                </div>\n' +
+                                    '                <div style="width: 100%; position: relative; left: 20px" class="toAddComment">\n' +
+                                    '                    <!--<textarea style="width: 70%" class="inputComment" placeholder="我的评论"/>-->\n' +
+                                    '                    <!--<button style="position: relative; left:10px" class="btn btn-primary submitComment">提交</button>-->\n' +
+                                    '                </div>\n' +
+                                    '            </div>'
+                            })
+                            $(divNode).empty()
+                            $(divNode).append(questionNode)
+
+
+                            //为节点的按钮添加点击事件
+                            $(".questionCollectBtn").click(function(){
+                                var answerId = $(this).attr("answerId")
+                                var state = $(this).attr("state")
+                                var operate = state==0 ? 1 : 0
+                                var thisNode = $(this)
+                                var postNode = $(this).parent().parent()
+                                $.ajax({
+                                    url: '/answer/collect/' + answerId + '/' + operate,
+                                    type: 'put',
+                                    dataType: 'json',
+                                    success: function(data){
+                                        console.log(data)
+                                        if(data.code==0){
+                                            $(thisNode).attr("state", operate)
+                                            if(operate==0) {
+                                                $(thisNode).attr("class", "btn btn-default collectBtn")
+                                                $(thisNode).text("恢复收藏")
+                                            }else{
+                                                $(thisNode).attr("class", "btn btn-warning collectBtn")
+                                                $(thisNode).text("取消收藏")
+                                            }
+
+                                        }else{
+                                            if(data.hint){
+                                                alert(data.hint)
+                                            }
+                                        }
+                                    }
+                                })
+
+                            })
+                        }else{
+                            if(data.hint){
+                                alert(data.hint)
+                            }
+                        }
+                    }
+                })
 
             })
 
             //文章收藏
             $("#articleCollect").click(function(){
+                $(postCollectNode).parent().removeClass("active")
+                $(questionCollectNode).parent().removeClass("active")
+                $(this).parent().addClass("active")
                 var divNode = $(this).parent().parent().parent().find(".contentPlace");
-                $(divNode).empty();
-                $(divNode).append('')
+                var pageSize = 5;
+                $.ajax({
+                    url: '/article/person/collected/1/' + pageSize,
+                    type: 'get',
+                    dataType: 'json',
+                    success: function(data){
+                        console.log(data)
+                        if(data.code==0){
+                            var articleNode = ""
+                            $.each(data.data.list, function(index, article){
+
+                                btn = '<button class="btn btn-warning articleBtn" state="1" articleId="'+ article.articleId+'">取消收藏</button>'
+                                articleNode+='<div class="articleNode">\n' +
+                                    '                    <span style="visibility: hidden" class="articleId">'+article.articleId+'</span>\n' +
+                                    '                    <div>\n' +
+                                    '                        <span>'+article.title+'</span><br/><br/> <a href="'+article.accessUrl+'" target="_blank">预览</a> <a href="/file/download/'+article.articleId+'" target="_blank">下载</a>\n' +
+                                    '                        <span>'+article.downloadCount+'次下载</span>\n' +
+                                    '                        <div style="float: right">\n' +
+                                    '                            <span>由<a>'+article.userName+'</a> 于</span> <span>'+article.createTime+'</span> 上传\n' +
+                                    btn+
+                                    '                        </div>\n' +
+                                    '                    </div>\n' +
+                                    '                </div>'
+                            })
+                            $(divNode).empty();
+                            $(divNode).append(articleNode);
+
+                            //为节点的按钮添加点击事件
+                            $(".articleBtn").click(function(){
+                                var articleId = $(this).attr("articleId")
+                                var state = $(this).attr("state")
+                                if(state==-1)
+                                    return;
+                                var operate = state==0 ? 1 : 0
+                                console.log(operate)
+                                var thisNode = $(this)
+                                var postNode = $(this).parent().parent()
+                                $.ajax({
+                                    url: '/article/person/collect/' + articleId + '/' + operate,
+                                    type: 'put',
+                                    dataType: 'json',
+                                    success: function(data){
+                                        console.log(data)
+                                        if(data.code==0){
+                                            $(thisNode).attr("state", operate)
+                                            if(operate==0){
+                                                $(thisNode).attr("class", "btn btn-default postBtn")
+                                                $(thisNode).text("恢复收藏")
+                                            }else if(operate==1){
+                                                $(thisNode).attr("class", "btn btn-warning postBtn")
+                                                $(thisNode).text("取消收藏")
+                                            }
+                                        }else{
+                                            if(data.hint){
+                                                alert(data.hint)
+                                            }
+                                        }
+                                    }
+                                })
+
+                            })
+
+                        }else{
+                            if(data.hint)
+                                alert(data.hint)
+                        }
+                    }
+                })
             })
 
+            var postPublishNode = $("#postPublish")
+            var questionPublishNode = $("#questionPublish")
+            var articlePublishNode = $("#articlePublish")
             //帖子发表
             $("#postPublish").click(function(){
+                $(questionPublishNode).parent().removeClass("active")
+                $(articlePublishNode).parent().removeClass("active")
+                $(this).parent().addClass("active")
                 var pageSize = 2;
                 var divNode = $(this).parent().parent().parent().find(".contentPlace");
                 //请求个人帖子的数据
@@ -384,6 +557,9 @@
 
             //问答发表
             $("#questionPublish").click(function(){
+                $(postPublishNode).parent().removeClass("active")
+                $(articlePublishNode).parent().removeClass("active")
+                $(this).parent().addClass("active")
                 var pageSize = 5
                 var divNode = $(this).parent().parent().parent().find(".contentPlace");
                 $.ajax({
@@ -491,6 +667,9 @@
 
             //文章发表
             $("#articlePublish").click(function(){
+                $(postPublishNode).parent().removeClass("active")
+                $(questionPublishNode).parent().removeClass("active")
+                $(this).parent().addClass("active")
                 var divNode = $(this).parent().parent().parent().find(".contentPlace");
                 var pageSize = 5;
                 $.ajax({
@@ -507,10 +686,10 @@
 
                                 if(article.state==0){
                                     btn = '<button class="btn btn-warning articleBtn" state="0" articleId="'+ article.articleId+'">不发表</button>'
-                                }else if(answerDTO.state==1){
+                                }else if(article.state==1){
                                     backgroud = "#d5d5d5"
                                     btn = '<button class="btn btn-primary articleBtn" state="1" articleId="'+ article.articleId+'" >发表</button>'
-                                }else if(answerDTO.state==-1){
+                                }else if(article.state==-1){
                                     backgroud = "#d5d5d5"
                                     btn = '<button class="btn btn-danger articleBtn" state="-1" articleId="'+ article.articleId+'" >已被管理员禁用</button>'
                                 }
@@ -572,6 +751,70 @@
                     }
                 })
 
+            })
+
+
+            $("#passwordChangeBtn").click(function(){
+                var passwordNode = $("#password")
+                var newPasswordNode = $("#newPassword")
+                var newPasswordNode2 = $("#newPassword2")
+                var password = $.trim($("#password").val())
+                var newPassword = $.trim($("#newPassword").val())
+                var newPassword2 = $.trim($("#newPassword2").val())
+                $(passwordNode).val(password)
+                $(newPasswordNode).val(newPassword)
+                $(newPasswordNode2).val(newPassword2)
+                $("#changPasswordTip1").text("")
+                $("#changPasswordTip2").text("")
+                $("#changPasswordTip3").text("")
+                var flag = true;
+                if(password=="") {
+                    $("#changPasswordTip1").text("密码不能为空")
+                    flag = false
+                }
+                if(newPassword=="") {
+                    $("#changPasswordTip2").text("新密码不能为空")
+                    flag = false
+                }
+                if(newPassword2=="") {
+                    $("#changPasswordTip3").text("确认密码不能为空")
+                    flag = false
+                }
+                else if(newPassword!=newPassword2){
+                    $("#changPasswordTip3").text("前后密码不一致")
+                    flag = false
+                }
+                if(flag==false)
+                    return false;
+                var closeBtn = $("#passwordChangeClose");
+                $.ajax({
+                    url: '/user/change/password',
+                    type: 'post',
+                    data:{
+                        'password': password,
+                        'newPassword': newPassword
+                    },
+                    success: function(data){
+                        console.log(data)
+                        if(data.code==0){
+                            alert("修改成功")
+
+                            $(closeBtn).click()
+                            $(passwordNode).val("")
+                            $(newPasswordNode).val("")
+                            $(newPasswordNode2).val("")
+                            // closeBtn.click
+
+                            return;
+                        }else{
+                            if(data.hint){
+                                alert(data.hint)
+                            }
+                            return false;
+                        }
+                    }
+                })
+                return false;
             })
 
 
@@ -697,7 +940,31 @@
                     <tr>
                         <td>密码</td>
                         <td>已设置</td>
-                        <td><a href="#">修改</a></td>
+                        <td><a href="#" data-toggle="modal" data-target="#userPasswordModel">修改</a></td>
+                        <div class="modal fade" id="userPasswordModel" tabindex="-1" role="dialog" aria-labelledby="passwordModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                        <h4 class="modal-title" id="changePasswordLabel">修改密码</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div>
+                                            <input name="password" class="form-control" type="password" placeholder="请输入原密码" id="password">
+                                            <span id="changPasswordTip1" style="color: red"></span><br/>
+                                            <input name="password" class="form-control" type="password" placeholder="请输入新密码" id="newPassword">
+                                            <span id="changPasswordTip2" style="color: red"></span><br/>
+                                            <input name="password" class="form-control" type="password" placeholder="请再次输入新密码" id="newPassword2">
+                                            <span id="changPasswordTip3" style="color: red"></span><br/>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal" id="passwordChangeClose">关闭</button>
+                                        <button type="button" class="btn btn-primary" data-dismiss="modal" id="passwordChangeBtn" >提交更改</button>
+                                    </div>
+                                </div><!-- /.modal-content -->
+                            </div><!-- /.modal -->
+                        </div>
                     </tr>
                     <tr>
                         <td>绑定手机</td>

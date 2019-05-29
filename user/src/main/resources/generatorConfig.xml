@@ -30,6 +30,6 @@
             <property name="enableSubPackages" value="true" />
         </javaClientGenerator>
         <!-- 表名 -->
-        <table tableName="user" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="true" />
+        <table tableName="authority" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="true" />
     </context>
 </generatorConfiguration>

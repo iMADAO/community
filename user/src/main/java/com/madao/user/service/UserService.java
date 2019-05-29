@@ -1,6 +1,7 @@
 package com.madao.user.service;
 
 import com.madao.api.Exception.ResultException;
+import com.madao.api.dto.UserDTO;
 import com.madao.api.entity.PostCategory;
 import com.madao.api.entity.User;
 import com.madao.api.enums.ErrorEnum;
@@ -10,7 +11,11 @@ import com.madao.api.form.UserRegisterForm;
 import com.madao.api.form.UserRegisterForm2;
 import com.madao.api.utils.KeyUtil;
 import com.madao.api.utils.MD5Encoder;
+import com.madao.user.bean.Role;
+import com.madao.user.bean.RoleExample;
 import com.madao.user.bean.UserExample;
+import com.madao.user.mapper.AuthorityMapper;
+import com.madao.user.mapper.RoleMapper;
 import com.madao.user.mapper.UserMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +59,14 @@ public class UserService {
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
 
+    @Autowired
+    private RoleMapper roleMapper;
+
+    @Autowired
+    private AuthorityMapper authorityMapper;
+
+    private Long userDefaultRoleId = 1559117637452359280L;
+
     @Value("${userPrefix}")
     private String USER_PREFIX;
 
@@ -61,13 +74,15 @@ public class UserService {
 
     public static final String REGEX_EMAIL = "^([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
 
+    //获取用户个人信息
     public User getUserInfoById(Long userId){
         User user =  userMapper.selectByPrimaryKey(userId);
         user.setPassword("");
         return user;
     }
 
-    public User loginValidate(UserLoginForm form){
+    //用户登录，返回带有权限信息的用户对象
+    public UserDTO loginValidate(UserLoginForm form){
         List<User> userList = null;
         //通过手机号或者邮箱
         int type = testUserAccountType(form.getAccount());
@@ -98,7 +113,12 @@ public class UserService {
         if(!password.equals(userList.get(0).getPassword()))
             throw new ResultException(ErrorEnum.PASSWORDERROR);
         user.setPassword(null);
-        return user;
+        UserDTO userDTO = new UserDTO();
+        BeanUtils.copyProperties(user, userDTO);
+
+        List<String> authorityList = authorityMapper.getAuthorityListByRoleId(user.getRoleId());
+        userDTO.setAuthorityList(authorityList);
+        return userDTO;
 
     }
 
@@ -130,6 +150,7 @@ public class UserService {
         user.setUserId(KeyUtil.genUniquKeyOnLong());
         user.setPassword(MD5Encoder.getEncryptedWithSalt(user.getPassword(), user.getUserId().toString()));
         user.setState(UserStateEnum.ACTIVE.getCode());
+        user.setRoleId(userDefaultRoleId);
         userMapper.insertSelective(user);
         user.setPassword("");
         return user;
@@ -159,12 +180,14 @@ public class UserService {
         user.setUserId(userId);
         user.setPassword(password);
         user.setUserName(KeyUtil.genStringCode(6));
+        user.setRoleId(userDefaultRoleId);
         userMapper.insertSelective(user);
         user.setPassword("");
         return  user;
 
     }
 
+    //发送邮件
     public void sendEmail(Long userId, String toEmail){
         SimpleMailMessage message = new SimpleMailMessage();
         //邮件设置
@@ -181,6 +204,7 @@ public class UserService {
         mailSender.send(message);
     }
 
+    //检查用户名是否已被使用
     public boolean checkUserName(String userName){
         UserExample example = new UserExample();
         UserExample.Criteria criteria = example.createCriteria();
@@ -192,6 +216,7 @@ public class UserService {
         return false;
     }
 
+    //用户验证
     public boolean userRegisterValidate(Long userId, String path) {
         //根据传入的路径在redis中查找
         String pathStr = stringRedisTemplate.opsForValue().get(userId.toString());
@@ -205,6 +230,7 @@ public class UserService {
         return false;
     }
 
+    //发送手机验证码
     public void sendPhoneCode(String account) {
         System.out.println(account);
         //检查是否到达重发短信的时间
@@ -226,6 +252,7 @@ public class UserService {
 
     }
 
+    //设置用户名
     public void setNewUserName(Long userId, String userName) {
         boolean checkResult = checkUserName(userName);
         if(!checkResult){
@@ -241,6 +268,7 @@ public class UserService {
         redisTemplate.delete(USER_PREFIX + userId);
     }
 
+    //设置用户头像
     public void setNewUserPic(Long userId, String picPath) {
         User user = userMapper.selectByPrimaryKey(userId);
         if(user==null){
@@ -249,5 +277,21 @@ public class UserService {
         user.setUserPic(picPath);
         userMapper.updateByPrimaryKeySelective(user);
         redisTemplate.delete(USER_PREFIX + userId);
+    }
+
+    //校对密码
+    public void changeUserPassword(Long userId, String password, String newPassword) {
+        User user = userMapper.selectByPrimaryKey(userId);
+        if(user==null){
+            throw new ResultException("用户不存在");
+        }
+        String encodePassword = MD5Encoder.getEncryptedWithSalt(password, userId.toString());
+        if(!encodePassword.equals(user.getPassword())){
+            throw new ResultException("密码错误");
+        }
+        String newEncodePassword = MD5Encoder.getEncryptedWithSalt(newPassword, userId.toString());
+
+        user.setPassword(newEncodePassword);
+        userMapper.updateByPrimaryKeySelective(user);
     }
 }

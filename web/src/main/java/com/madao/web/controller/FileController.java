@@ -39,7 +39,6 @@ public class FileController {
         if (user == null) {
             return ResultUtil.returnFail("用户未登录,请登录后重试");
         }
-        Long userId = user.getUserId();
         if (docFile.isEmpty()) {
             return ResultUtil.returnFail("未选择文件");
         }

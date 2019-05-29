@@ -25,6 +25,23 @@ public class Article {
 
     private String title;
 
+    @Override
+    public String toString() {
+        return "Article{" +
+                "articleId=" + articleId +
+                ", userId=" + userId +
+                ", createTime=" + createTime +
+                ", updateTime=" + updateTime +
+                ", categoryId=" + categoryId +
+                ", accessUrl='" + accessUrl + '\'' +
+                ", filePath='" + filePath + '\'' +
+                ", downloadCount=" + downloadCount +
+                ", originName='" + originName + '\'' +
+                ", state=" + state +
+                ", title='" + title + '\'' +
+                '}';
+    }
+
     public Long getArticleId() {
         return articleId;
     }

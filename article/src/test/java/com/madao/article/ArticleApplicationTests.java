@@ -3,10 +3,12 @@ package com.madao.article;
 import com.madao.api.entity.Article;
 import com.madao.api.entity.ArticleCategory;
 import com.madao.api.entity.User;
+import com.madao.api.enums.CollectTypeEnum;
 import com.madao.api.service.UserService;
 import com.madao.api.utils.KeyUtil;
 import com.madao.article.mapper.ArticleCategoryMapper;
 import com.madao.article.mapper.ArticleMapper;
+import com.madao.article.mapper.CollectMapper;
 import com.madao.article.service.ArticleCategoryService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,6 +32,9 @@ public class ArticleApplicationTests {
 
 	@Autowired
 	private ArticleCategoryMapper mapper;
+
+	@Autowired
+	private CollectMapper collectMapper;
 	@Test
 	public void contextLoads() {
 		List<ArticleCategory> categoryList = articleCategoryService.getAllCategory();
@@ -60,6 +65,18 @@ public class ArticleApplicationTests {
 	public void testUserService(){
 		User user = userService.getUserById(1L);
 		System.out.println(user);
+	}
+
+	@Test
+	public void testCollect(){
+		List<Long> list =  collectMapper.getTargetIdByUser(1L, CollectTypeEnum.ARTICLE.getCode());
+		list.stream().forEach(System.out::println);
+	}
+
+	@Test
+	public void test1(){
+		Article article = articleMapper.selectByPrimaryKey(1558314972549912149L);
+		System.out.println(article);
 	}
 
 }

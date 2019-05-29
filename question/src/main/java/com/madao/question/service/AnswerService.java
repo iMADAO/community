@@ -5,17 +5,12 @@ import com.github.pagehelper.PageInfo;
 import com.madao.api.Exception.ResultException;
 import com.madao.api.dto.AnswerCommentDTO;
 import com.madao.api.entity.*;
-import com.madao.api.enums.AgreeEnum;
-import com.madao.api.enums.CommentEnum;
-import com.madao.api.enums.StateEnum;
+import com.madao.api.enums.*;
 import com.madao.api.form.ContentForm;
 import com.madao.api.form.AnswerForm;
 import com.madao.api.service.UserService;
 import com.madao.api.utils.KeyUtil;
-import com.madao.question.bean.AgreeExample;
-import com.madao.question.bean.AnswerCommentExample;
-import com.madao.question.bean.AnswerContentExample;
-import com.madao.question.bean.AnswerExample;
+import com.madao.question.bean.*;
 import com.madao.question.mapper.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +45,10 @@ public class AnswerService {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ReportMapper reportMapper;
+
 
     @Value("${userPrefix}")
     private String USER_PREFIX;
@@ -294,5 +293,41 @@ public class AnswerService {
         answer.setState(operate);
         answerMapper.updateByPrimaryKeySelective(answer);
 
+    }
+
+    public void operateBanAnswer(Long answerId, Byte operate) {
+        Answer answer = answerMapper.selectByPrimaryKey(answerId);
+        if(answer==null)
+            return;
+
+        if(!operate.equals(StateEnum.VISIBLE.getCode()) && !operate.equals(StateEnum.INVISIBLE.getCode())&& !operate.equals(StateEnum.BAN.getCode())){
+            throw new ResultException("操作不正确");
+        }
+
+        if(answer.getState().equals(operate)){
+            return;
+        }
+        answer.setState(operate);
+        answerMapper.updateByPrimaryKeySelective(answer);
+
+    }
+
+    public void reportAnswer(Long userId, Long answerId, String reason) {
+        ReportExample reportExample = new ReportExample();
+        ReportExample.Criteria criteria = reportExample.createCriteria();
+        criteria.andUserIdEqualTo(userId);
+        criteria.andTargetIdEqualTo(answerId);
+        criteria.andTypeEqualTo(TypeEnum.ANSWER.getCode());
+        int count = reportMapper.countByExample(reportExample);
+        if(count>0)
+            throw new ResultException("你已经举报过了");
+        Report report = new Report();
+        report.setReportId(KeyUtil.genUniquKeyOnLong());
+        report.setState(ReportStateEnum.REPORTED.getCode());
+        report.setReason(reason);
+        report.setUserId(userId);
+        report.setTargetId(answerId);
+        report.setType(TypeEnum.ANSWER.getCode());
+        reportMapper.insertSelective(report);
     }
 }

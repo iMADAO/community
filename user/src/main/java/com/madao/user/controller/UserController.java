@@ -1,6 +1,7 @@
 package com.madao.user.controller;
 
 import com.madao.api.Exception.ResultException;
+import com.madao.api.dto.UserDTO;
 import com.madao.api.entity.PostCategory;
 import com.madao.api.entity.User;
 import com.madao.api.enums.ResultEnum;
@@ -31,15 +32,14 @@ public class UserController {
 //    用户登录
     @ResponseBody
     @PostMapping("/user/login")
-    public ResultView<User> login(@RequestBody  UserLoginForm form, HttpSession session, HttpServletResponse response){
-        User user = null;
+    public ResultView<UserDTO> login(@RequestBody  UserLoginForm form, HttpSession session, HttpServletResponse response){
+        UserDTO userDTO = null;
         try {
-            user = userService.loginValidate(form);
-            ResultView<User> resultView = new ResultView<>();
+            userDTO = userService.loginValidate(form);
+            ResultView<UserDTO> resultView = new ResultView<>();
             resultView.setCode(ResultEnum.SUCCESS.getCode());
-            resultView.setData(user);
+            resultView.setData(userDTO);
             return resultView;
-//            return ResultUtil.returnSuccess(user);
         }catch (ResultException e){
             System.out.println("catch");
             ResultView resultView = ResultUtil.returnException(e);
@@ -167,5 +167,18 @@ public class UserController {
         }
 
         return ResultUtil.returnSuccess();
+    }
+
+    //修改密码
+    @ResponseBody
+    @RequestMapping("/user/password/change")
+    ResultView changeUserPassword(@RequestParam("userId") Long userId, @RequestParam("password") String password, @RequestParam("newPassword") String newPassword){
+        try {
+            userService.changeUserPassword(userId, password, newPassword);
+            return ResultUtil.returnSuccess();
+        }catch (ResultException e){
+            System.out.println(e.getMessage());
+            return ResultUtil.returnFail(e.getMessage());
+        }
     }
 }

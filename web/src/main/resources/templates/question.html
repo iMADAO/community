@@ -82,11 +82,6 @@
                 pageNavNode.append(navNode);
             }
 
-
-
-
-
-
             var agree=$(".agree");
             var disagree=$(".disagree")
             var answerIdList = new Array();
@@ -475,7 +470,6 @@
                         }
                     }
                 })
-
             })
 
 
@@ -653,6 +647,51 @@
                     }
                 })
             })
+
+            $(".reportBtn").click(function(){
+                $("#reportSubmit").attr("answerId", $(this).attr("answerId"))
+            })
+
+            $("#reportSubmit").click(function(){
+                var reasonNode = $("#reportReason")
+                var reason = $.trim($(reasonNode).val())
+                $(reasonNode).val(reason)
+                if(reason=="") {
+                    alert("举报原因不能为空")
+                    return false;
+                }
+                var answerId = $(this).attr("answerId")
+                console.log("reason..." + reason)
+                $.ajax({
+                    url: '/question/report/' + answerId,
+                    type: 'post',
+                    dataType: 'json',
+                    data: {
+                        'reason': reason
+                    },
+                    success: function(data){
+                        console.log(data)
+                        if(data.code==0){
+                            alert("举报完成,将交由后台审核处理")
+                            //todo 将举报按钮设置为不可用
+                        }else{
+                            if(data.hint){
+                                alert(data.hint)
+                            }
+                        }
+
+                    }
+                })
+            })
+
+            $("#searchQuestion").click(function(){
+                var searchContentNode = $("#searchContent");
+                var searchContent = $.trim($(searchContentNode).val())
+                $(searchContentNode).val(searchContent)
+                if(searchContent==""){
+                    return false;
+                }
+            })
         })
     </script>
 
@@ -675,12 +714,12 @@
                             <li><a href="/toQuestion" style="color: #2e6da4" target="_blank">问答</a></li>
                         </ul>
                     </div>
-                    <form class="navbar-form navbar-left" role="search">
+                    <form class="navbar-form navbar-left" role="search" action="/question/search" target="_blank">
                         <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Search">
+                            <input th:if=${searchContent==null} th:value="${searchContent}" type="text" class="form-control" placeholder="Search" th:id="searchContent" name="searchContent">
+                            <input th:if=${searchContent!=null} th:value="${searchContent}" type="text" class="form-control" placeholder="Search" th:id="searchContent" name="searchContent">
                         </div>
-                        <button type="submit" class="btn btn-default">搜问题</button>
-                        <!--<button class="btn btn-default" data-toggle="modal" data-target="#myModal">我要提问</button>-->
+                        <button type="submit" class="btn btn-default" id="searchQuestion" href="/question/search">搜问题</button>
 
                     </form>
 
@@ -731,8 +770,8 @@
             <div type="answerNode" th:each="answerDTO:${data.data.list}" class="panel panel-default" style="word-wrap:break-word;word-break:break-all; padding: 10px">
                 <div style="height: 100%; " class="panel-body">
                     <span class="answerId" style="visibility: hidden" th:text="${answerDTO.answerId}"></span>
-                    <div th:if="${answerDTO.userId!=null}"><a th:text="${answerDTO.questionTitle}" th:href="@{'/toQuestionInfo/' + ${answerDTO.questionId}} + '?answerId=' + ${answerDTO.answerId}" style="color: black; font-size: larger;" target="_blank">火影忍者最后初代火影都复活了，自来也为什么不给复活？</a> <span th:text="${answerDTO.answerCount} + '个回答'" style="color: darkgray">142个回答</span></div>
-                    <div th:if="${answerDTO.userId==null}"><a th:text="${answerDTO.questionTitle}" th:href="@{'/toQuestionInfo/' + ${answerDTO.questionId}}" style="color: black; font-size: larger;" target="_blank">火影忍者最后初代火影都复活了，自来也为什么不给复活？</a> <span th:text="${answerDTO.answerCount} + '个回答'" style="color: darkgray">142个回答</span></div>
+                    <div th:if="${answerDTO.userId!=null}"><a th:text="${answerDTO.questionTitle}" th:href="@{'/toQuestionInfo/' + ${answerDTO.questionId}} + '?answerId=' + ${answerDTO.answerId}" style="color: black; font-size: larger;" target="_blank">火影忍者最后初代火影都复活了，自来也为什么不给复活？</a> <span th:text="${answerDTO.answerCount} + '个回答'" style="color: darkgray">142个回答</span><button class="btn btn-default reportBtn" th:answerId="${answerDTO.answerId}" style="float: right" data-toggle="modal" data-target="#reportModal">举报</button></div>
+                    <div th:if="${answerDTO.userId==null}"><a th:text="${answerDTO.questionTitle}" th:href="@{'/toQuestionInfo/' + ${answerDTO.questionId}}" style="color: black; font-size: larger;" target="_blank">火影忍者最后初代火影都复活了，自来也为什么不给复活？</a> <span th:text="${answerDTO.answerCount} + '个回答'" style="color: darkgray">142个回答</span><button class="btn btn-default reportBtn" answerId="${answerDTO.answerId}" style="float: right" data-toggle="modal" data-target="#reportModal">举报</button></div>
                     <br/>
                     <img class="img-thumbnail" width="50px" th:src="@{${answerDTO.userPic}}">
                     <a th:text="${answerDTO.userName}" href="#"></a>
@@ -757,6 +796,24 @@
                     <!--<textarea style="width: 70%" class="inputComment" placeholder="我的评论"/>-->
                     <!--<button style="position: relative; left:10px" class="btn btn-primary submitComment">提交</button>-->
                 </div>
+            </div>
+
+            <div class="modal fade" id="reportModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title" id="reportModalLabel">举报</h4>
+                        </div>
+                        <div class="modal-body">
+                            <textarea id="reportReason" placeholder="举报原因" style="height: 100px; width: 100%;"></textarea>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                            <button type="button" class="btn btn-primary" data-dismiss="modal" id="reportSubmit">提交</button>
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal -->
             </div>
 
             <div id="pageNavNode">

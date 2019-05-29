@@ -15,6 +15,83 @@
     <script type="text/javascript" src="../static/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
     <script type="text/javascript">
         $(function(){
+
+            //根据当前页码和总页数生成分页导航
+            var pageNavNode = $("#pageNavNode");
+            var totalPage = $("#totalPageNum").text()
+            var pageNum = $("#pageNum").text()
+            totalPage = parseInt(totalPage)
+            var pageSize = $("#pageSize").text()
+            var categoryId = $("#articleContent").attr("categoryId")
+            var target = "/toArticle"
+            if(categoryId){
+                console.log("categoryId=====" + categoryId)
+                target += ("/" + categoryId);
+            }
+            console.log(totalPage)
+            console.log(pageNum)
+            console.log(pageSize)
+            pageSize = parseInt(pageSize)
+            if(totalPage > 1){
+                var pageNum = $("#pageNum").text()
+                pageNum = parseInt(pageNum)
+                console.log(totalPage + "---------" + pageNum)
+                var navNode = '<ul class="pagination" style="position: relative; left: 50px;">'
+                var leftCount
+                var rightCount
+                if(pageNum > 2){
+                    leftCount = 2;
+                }else if(pageNum==2){
+                    leftCount = 1;
+                }else{
+                    leftCount = 0;
+                }
+
+                rightCount = 5 - leftCount - 1;
+                var maxNum = rightCount + pageNum;
+                console.log("max: " + maxNum);
+                console.log(maxNum > totalPage)
+                if(maxNum > totalPage){
+                    rightCount = parseInt(totalPage) - pageNum
+                }
+                // rightCount = rightCount+pageNum > data.data.pages ? data.data.pages - pageNum: rightCount
+
+                console.log("left: " + leftCount)
+                console.log("right: " + rightCount)
+
+                var lastPageNum = parseInt(pageNum) - 1;
+                console.log("lastPageNum: " + lastPageNum)
+                if(pageNum > 1){
+                    navNode += ' <li><a pageNum=1 type="navlink" href="'+target+'?pageNum=1&pageSize=' + pageSize + '">首页</a></li>';
+                    navNode += ' <li><a pageNum='+lastPageNum+' type="navlink" href="'+target+'?pageNum=' + lastPageNum+'&pageSize=' + pageSize + '">上一页</a></li>';
+                }else{
+                    navNode += ' <li class="disabled"><a pageNum=1 type="navlink" href="#">首页</a></li>';
+                    navNode += ' <li class="disabled"><a pageNum=1 type="navlink" href="#">上一页</a></li>';
+
+                }
+                for(var i=pageNum-leftCount; i<pageNum; i++){
+                    navNode += ' <li><a pageNum='+i+' type="navlink" href="'+target+'?pageNum=' + i + '&pageSize=' + pageSize + '">' + i + '</a></li>';
+                }
+                navNode += ' <li class="active"><a pageNum='+pageNum+' type="navlink" href="'+target+'?pageNum=' + pageNum + '&pageSize=' + pageSize + '">' + pageNum + '</a></li>';
+                for(var i=parseInt(pageNum)+1; i<=parseInt(pageNum)+rightCount; i++){
+                    navNode += ' <li><a pageNum='+i+' type="navlink" href="'+target+'?pageNum=' + i + '&pageSize=' + pageSize + '">' + i + '</a></li>';
+                }
+
+                var nextPage = parseInt(pageNum)+1
+                console.log("flag--" + pageNum< totalPage)
+                if(pageNum < totalPage){
+                    navNode += ' <li><a pageNum='+nextPage+' type="navlink" href="'+target+'?pageNum=' + nextPage + '&pageSize=' + pageSize + '">下一页</a></li>';
+                    navNode += ' <li><a order="last" pageNum='+totalPage+' type="navlink" href="'+target+'?pageNum=' + totalPage + '&pageSize=' + pageSize + '">末页</a></li>';
+                }else{
+                    navNode += ' <li class="disabled"><a pageNum='+pageNum+' type="navlink" href="#">下一页</a></li>';
+                    navNode += ' <li class="disabled"><a order="last" pageNum='+totalPage+' type="navlink" href="#">末页</a></li>';
+                }
+                navNode+='<li class="disabled"><a>共'+ totalPage +'页</a></li>'
+                navNode+='</ul>';
+                // alert(navNode)
+                pageNavNode.append(navNode);
+            }
+
             var categoryBtn = $(".categoryBtn")
             var categoryId = $("#articleContent").attr("categoryId");
             console.log(categoryId)
@@ -107,6 +184,89 @@
                     }
                 })
             })
+
+            $(".collectBtn").click(function(){
+                var articleId = $(this).attr("articleId");
+                console.log(articleId)
+                var thisNode = $(this)
+                var state = $(this).attr("state")
+                var operate = state==0 ? 1: 0
+                $.ajax({
+                    url: '/article/person/collect/' + articleId + "/" + operate,
+                    type: 'put',
+                    success: function(data){
+                        console.log(data)
+                        if(data.code==0){
+                            $(thisNode).attr("state", operate)
+                            if(operate==0){
+                                $(thisNode).attr("class", "btn btn-default collectBtn")
+                                $(thisNode).text("收藏")
+                            }else{
+                                $(thisNode).attr("class", "btn btn-primary collectBtn")
+                                $(thisNode).attr("已收藏")
+                            }
+                        }else{
+                            if(data.hint){
+                                alert(data.hint)
+                            }
+                        }
+                    }
+                })
+            })
+
+            $(".reportBtn").click(function(){
+                var articleId = $(this).attr("articleId")
+                $("#submitReport").attr("articleId", articleId)
+            })
+
+            $("#submitReport").click(function(){
+                var reasonNode = $("#reportReason")
+                var reason = $.trim($(reasonNode).val())
+                $(reasonNode).val(reason)
+                var articleId = $(this).attr("articleId")
+                if(reason=="") {
+                    alert("举报原因不能为空")
+                    return false;
+                }
+                console.log("reason..." + reason)
+                $.ajax({
+                    url: '/article/report/' + articleId,
+                    type: 'post',
+                    dataType: 'json',
+                    data: {
+                        'reason': reason
+                    },
+                    success: function(data){
+                        console.log(data)
+                        if(data.code==0){
+                            alert("举报完成,将交由后台审核处理")
+                            //todo将举报按钮设置为不可用
+                            var target =  ".reportBtn [articleId='" + articleId+"']"
+                            console.log(target)
+                            var aa = $(".reportBtn [articleId='" + articleId+"']")
+                            console.log(aa)
+                            console.log(aa.innerHTML)
+                            // $(".reportBtn [articleId='" + articleId+"']").attr("disabled", "disabled")
+                        }else{
+                            if(data.hint){
+                                alert(data.hint)
+                            }
+                        }
+
+                    }
+                })
+
+            })
+
+            $("#searchArticle").click(function(){
+                var searchContentNode = $("#searchContent");
+                var searchContent = $.trim($(searchContentNode).val())
+                $(searchContentNode).val(searchContent)
+                if(searchContent==""){
+                    return false;
+                }
+            })
+
         })
     </script>
 
@@ -129,11 +289,12 @@
                             <li><a href="/toQuestion" target="_blank">问答</a></li>
                         </ul>
                     </div>
-                    <form class="navbar-form navbar-left" role="search">
+                    <form class="navbar-form navbar-left" role="search" action="/article/search" method="get" target="_blank">
                         <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Search">
+                            <input th:if="${searchContent==null}" type="text" class="form-control" placeholder="Search" name="searchContent"  th:id="searchContent">
+                            <input th:if="${searchContent!=null}" th:value="${searchContent}" type="text" class="form-control" placeholder="Search" name="searchContent"  th:id="searchContent">
                         </div>
-                        <button type="submit" class="btn btn-default">搜文章</button>
+                        <button type="submit" class="btn btn-default" id="searchArticle">搜文章</button>
                     </form>
                     <div>
                         <ul class="nav navbar-nav navbar-right" id="userNav">
@@ -158,7 +319,10 @@
                 </div>
             </nav>
 
-            <div class="panel panel-default" style="word-wrap:break-word;word-break:break-all; width: 90%; padding: 20px">
+            <span id="totalPageNum" th:text="${data.data.articlePageInfo.pages}" style="visibility: hidden"></span>
+            <span id="pageNum" th:text="${data.data.articlePageInfo.pageNum}" style="visibility: hidden"></span>
+            <span id="pageSize" th:text="${data.data.articlePageInfo.pageSize}" style="visibility: hidden"></span>
+            <div class="panel panel-default" style="word-wrap:break-word;word-break:break-all; width: 90%; padding: 20px" th:if="${data.data.categoryList}">
                 分类:
                 <a th:if="${data.data.categoryList}" th:href="'/toArticle/' + @{${category.categoryId}}" style="margin: 5px" th:each="category:${data.data.categoryList}" class="btn btn-default categoryBtn" th:text="${category.categoryName}" th:categoryId="${category.categoryId}"></a>
             </div>
@@ -196,6 +360,11 @@
                     <div>
                         <span th:text="${article.title}"></span><br/><br/> <a th:href="@{${article.accessUrl}}" target="_blank">预览</a> <a th:href="@{'/file/download/' + ${article.articleId}}" target="_blank">下载</a>
                         <span th:text="${'下载数:' + article.downloadCount}"></span>
+                        <span th:if="${article.collectState==1}"><button class="btn btn-primary collectBtn" th:articleId="${article.articleId}" state="1">已收藏</button></span>
+                        <span th:if="${article.collectState==0}"><button class="btn btn-default collectBtn" th:articleId="${article.articleId}" state="0">收藏</button></span>
+                        <span><button class="btn btn-default reportBtn" th:articleId="${article.articleId}" data-toggle="modal" data-target="#reportModal">举报</button></span>
+
+
                         <div style="float: right">
                             <span th:if="${article.userName!=null}">由 <a  th:text="${article.userName}"></a> 于</span> <span th:text="${article.createTime}"></span> 上传
                         </div>
@@ -203,6 +372,25 @@
                 </div>
                 <!--</div>-->
             </div>
+            <div class="modal fade" id="reportModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title" id="reportModalLabel">举报</h4>
+                        </div>
+                        <div class="modal-body">
+                            <textarea id="reportReason" placeholder="举报原因" style="height: 100px; width: 100%;"></textarea>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                            <button type="button" class="btn btn-primary" data-dismiss="modal" id="submitReport">提交</button>
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal -->
+            </div>
+            <div id="pageNavNode"></div>
         </div>
         <div class="col-sm-1"></div>
     </div>

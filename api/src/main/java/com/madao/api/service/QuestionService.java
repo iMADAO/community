@@ -75,4 +75,22 @@ public interface QuestionService {
 
     @RequestMapping("/answer/getList/person/collected")
     ResultView getQuestionDTOByPersonCollected(@RequestParam("userId") Long userId, @RequestParam("pageNum")Integer pageNum, @RequestParam("pageSize") Integer pageSize);
+
+    @RequestMapping("/answer/getList/allState")
+    ResultView getQuestionDTOInAllState(@RequestParam("pageNum")Integer pageNum, @RequestParam("pageSize") Integer pageSize);
+
+    @RequestMapping("/answer/admin/operate")
+    ResultView operateBanAnswer(@RequestParam("answerId") Long answerId, @RequestParam("operate") Byte operate);
+
+    @RequestMapping("/answer/report")
+    ResultView reportAnswer(@RequestParam("userId") Long userId, @RequestParam("answerId") Long answerId, @RequestParam("reason") String reason);
+
+    @RequestMapping("/report/getList")
+    ResultView getReportList(@RequestParam("pageNum") Integer pageNum, @RequestParam("pageSize") Integer pageSize);
+
+    @RequestMapping("/report/question")
+    ResultView reportQuestion(@RequestParam("userId") Long userId, @RequestParam("questionId") Long questionId, @RequestParam("reason") String reason);
+
+    @RequestMapping("/question/search/byTitle")
+    ResultView searchByQuestion(@RequestParam("searchContent") String searchContent, @RequestParam("pageNum") Integer pageNum, @RequestParam("pageSize") Integer pageSize);
 }

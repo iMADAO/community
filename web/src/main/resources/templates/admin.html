@@ -13,13 +13,15 @@
     <script type="text/javascript">
         $(function(){
             var pageSize = 10;
-            $("#toAccount").click(function(){
+            $("#toPost").click(function(){
                 var navLink = $(this).parent();
                 var linkNodes = $(navLink).find("li");
                 $.each(linkNodes, function(index, obj){
-                    $(obj).removeAttr("class")
+                    $(obj).removeClass("active")
                 })
-                $(this).attr("class", "active")
+                $(this).addClass("active")
+                $("#content").empty();
+                var commentPageSize = 5
                 $.ajax({
                     url: '/getPost/allState/1/' + pageSize,
                     type: 'get',
@@ -27,20 +29,20 @@
                     success: function(data){
                         console.log(data)
                         if(data.code==0){
-                            $("#content").empty();
+
                             $.each(data.data.list, function(index, post){
                                 var btnCotent = "";
                                 if(post.state==0){
-                                    btnCotent = "<td><button class='btn btn-default toDisable' postId="+post.postId+">禁用</button></td>"
+                                    btnCotent = "<td><button class='btn btn-default postBtn' state=-1 postId="+post.postId+">禁用</button></td>"
                                 }else if(post.state==1){
-                                    btnCotent = "<td><button class='btn btn-danger toEnable'"+post.postId+">解禁</button></td>"
+                                    btnCotent = "<td><button class='btn btn-default postBtn' state="+ post.state +" postId="+post.postId+">禁用</button></td>"
                                 }
                                 $("#content").append('<div class="panel panel-default postNode" style="height: 250px; padding: 5px; margin: 10px">\n' +
                                     '                    <span class="postId" style="visibility: hidden;">' + post.postId +'</span>\n' +
                                     '                    <table style="height: 20%; width: 100%;">\n' +
                                     '                        <tr>\n' +
                                     '                            <td  width="7%" style="color: darkgray;">共 '+ post.segmentCount +'楼</td>\n' +
-                                    '                            <td width="80%"><a postId="'+ post.postId +'" class="postInfoLink"  target="_blank"  href="#" >'+post.contentList[0]+'</a></td>\n' +
+                                    '                            <td width="80%"><a postId="'+ post.postId +'" class="postInfoLink"  target="_blank"  href="/post/info/'+ post.postId+'/1/'+ pageSize + '/'+ commentPageSize+'" >'+post.contentList[0]+'</a></td>\n' +
                                     '                            <td width="10%" align="center"style="color: darkgray"><span>'+ post.userName +'</span> <br/><br/><span style="color: darkgray" >'+ post.createTime +'</span></td>\n'+
                                     btnCotent +
                                     '                        </tr>\n' +
@@ -59,69 +61,245 @@
                                     '                </div>');
                             })
 
-                            $(".toDisable").click(function(){
+                            $(".postBtn").click(function(){
                                 var postId = $(this).attr("postId")
                                 var thisNode = $(this)
+                                var state = $(this).attr("state")
+                                var operate = state==-1 ? 1 : -1;
+                                console.log("operate......" + operate)
                                 $.ajax({
-                                    url: '/post/disable/' + postId,
+                                    url: '/post/admin/ban/' + postId + "/" + operate,
                                     type: 'put',
                                     success: function(data){
                                         console.log(data)
                                         if(data.code==0){
-                                            $(thisNode).attr("class", "btn btn-danger")
-                                            $(thisNode).text("解禁")
+                                            $(thisNode).attr("state", operate)
+                                            if(operate==-1) {
+                                                $(thisNode).attr("class", "btn btn-danger postBtn")
+                                                $(thisNode).text("解禁")
+                                            }else{
+                                                $(thisNode).attr("class", "btn btn-default postBtn")
+                                                $(thisNode).text("禁用")
+                                            }
                                         }
                                     }
                                 })
 
                             })
+                        }else{
+                            if(data.hint)
+                                alert(data.hint)
+                        }
+                    }
+                })
+            })
 
-                            $(".toEnable").click(function(){
-                                alert("toEnable")
+            $("#toQuestion").click(function(){
+                var navLink = $(this).parent();
+                var linkNodes = $(navLink).find("li");
+                $.each(linkNodes, function(index, obj){
+                    $(obj).removeClass("active")
+                })
+                $(this).addClass("active")
+                $("#content").empty();
+                var pageSize = 5;
+                $.ajax({
+                    url: '/answer/admin/getList/1/' + pageSize,
+                    type: 'get',
+                    dataType: 'json',
+                    success: function(data){
+                        console.log(data)
+                        if(data.code==0){
+                            var questionNode = ""
+                            $.each(data.data.list, function (index, answerDTO) {
+
+                                if(answerDTO.state==-1){
+                                    btn = '<button class="btn btn-danger answerBtn" state="-1" answerId="'+ answerDTO.answerId+'">解禁</button>'
+                                }else{
+                                    btn = '<button class="btn btn-default answerBtn" state="'+ answerDTO.state+'" answerId="'+ answerDTO.answerId+'" >禁用</button>'
+                                }
+                                console.log(btn)
+                                var content = answerDTO.content;
+                                if (content!=null && content.length > 20)
+                                    content = content.substr(0, 20);
+                                questionNode += '<div type="answerNode" th:each="answerDTO:${data.data.list}" class="panel panel-default" style="word-wrap:break-word;word-break:break-all; padding: 10px;">\n' +
+                                    '                <div style="height: 100%; " class="panel-body">\n' +
+                                    '                    <span class="answerId" style="visibility: hidden">' + answerDTO.answerId + '</span>\n' +
+                                    '                    <div ><a href="/toQuestionInfo/' + answerDTO.questionId + '?answerId=' + answerDTO.answerId + '" style="color: black; font-size: larger;" target="_blank">' + answerDTO.questionTitle + '</a> <span style="color: darkgray">' + answerDTO.answerCount + ' 个回答</span>'+btn+'</div>\n' +
+
+                                    '                    <br/>\n' +
+                                    '                    <img class="img-thumbnail" width="50px" src="' + answerDTO.userPic + '">\n' +
+                                    '                    <a href="#">' + answerDTO.userName + '</a>\n' +
+                                    '                    <div><br/><a class="readAll"  href="#" style="color: black;">' + content + '</a><a class="readAll">阅读全文</a></div>\n' +
+
+                                    '                </div>\n' +
+                                    '                <br/>\n' +
+                                    '                <div  style="position:relative; left: 30px;">\n' +
+                                    '                    <span class="btn btn-default agree">赞同 ' + answerDTO.agreeCount + '</span>\n' +
+                                    '                    <span class="btn btn-default disagree">不赞同' + answerDTO.disagreeCount + '</span>\n' +
+                                    '                    <span class="toComment"><a class="getComment"  href="#">' + answerDTO.commentCount + '条评论</a></span>\n' +
+                                    '                    <span><input type="hidden" class="commentCount" value=' + answerDTO.commentCount + '"></span></span>\n' +
+                                    '                </div>\n' +
+                                    '\n' +
+                                    '                <div class="commentNode">\n' +
+                                    '\n' +
+                                    '                </div>\n' +
+                                    '                <div class="commentNavNode">\n' +
+                                    '\n' +
+                                    '                </div>\n' +
+                                    '                <div style="width: 100%; position: relative; left: 20px" class="toAddComment">\n' +
+                                    '                    <!--<textarea style="width: 70%" class="inputComment" placeholder="我的评论"/>-->\n' +
+                                    '                    <!--<button style="position: relative; left:10px" class="btn btn-primary submitComment">提交</button>-->\n' +
+                                    '                </div>\n' +
+                                    '            </div>'
                             })
 
+                            $("#content").append(questionNode)
+
+                            $(".answerBtn").click(function(){
+                                var answerId = $(this).attr("answerId")
+                                var state = $(this).attr("state")
+                                var operate = state==-1 ? 1 : -1
+                                var thisNode = $(this)
+                                $.ajax({
+                                    url: '/answer/admin/ban/' + answerId + "/" + operate,
+                                    type: 'put',
+                                    success: function(data){
+                                        console.log(data)
+                                        if(data.code==0){
+                                            $(thisNode).attr("state", operate)
+                                            if(operate==-1){
+                                                $(thisNode).attr("class", "btn btn-danger answerBtn")
+                                                $(thisNode).text("禁用")
+                                            }else{
+                                                $(thisNode).attr("class", "btn btn-default answerBtn")
+                                                $(thisNode).text("解禁")
+                                            }
+                                        }else{
+                                            if(data.hint){
+                                                alert(data.hint)
+                                            }
+                                        }
+                                    }
+                                })
+                            })
+                        }else{
+                            if(data.hint)
+                                alert(data.hint)
                         }
                     }
                 })
             })
 
-            $("#toPublish").click(function(){
+            $("#toArticle").click(function(){
+                var pageSize = 5;
                 var navLink = $(this).parent();
                 var linkNodes = $(navLink).find("li");
                 $.each(linkNodes, function(index, obj){
-                    $(obj).removeAttr("class")
+                    $(obj).removeClass("active")
                 })
-                $(this).attr("class", "active")
+                $(this).addClass("active")
+                $("#content").empty();
                 $.ajax({
-                    url: '',
-                    type: '',
+                    url: '/article/admin/getAllState/1/' + pageSize,
+                    type: 'get',
                     dataType: 'json',
                     success: function(data){
                         console.log(data)
                         if(data.code==0){
-                            $("#content").empty();
-                            $("#content").append();
+                            var articleNode = ""
+                            $.each(data.data.list, function(index, article){
+                                var btn = ""
+                                if(article.state==-1){
+                                    btn = '<button class="btn btn-danger articleBtn" state="-1" articleId="'+ article.articleId+'" >解禁</button>'
+                                }else{
+                                    btn = '<button class="btn btn-default articleBtn" state="'+ article.state+'" articleId="'+ article.articleId+'" >禁用</button>'
+                                }
+                                articleNode+='<div class="articleNode">\n' +
+                                    '                    <span style="visibility: hidden" class="articleId">'+article.articleId+'</span>\n' +
+                                    '                    <div>\n' +
+                                    '                        <span>'+article.title+'</span><br/><br/> <a href="'+article.accessUrl+'" target="_blank">预览</a> <a href="/file/download/'+article.articleId+'" target="_blank">下载</a>\n' +
+                                    '                        <span>'+article.downloadCount+'次下载</span>\n' +
+                                    '                        <div style="float: right">\n' +
+                                    '                            <span>由<a>'+article.userName+'</a> 于</span> <span>'+article.createTime+'</span> 上传\n' +
+                                    btn+
+                                    '                        </div>\n' +
+                                    '                    </div>\n' +
+                                    '                </div>'
+                            })
+
+                            $("#content").append(articleNode);
+
+                            $(".articleBtn").click(function(){
+                                var articleId = $(this).attr("articleId")
+                                var state = $(this).attr("state")
+                                var operate = state==-1 ? 1 : -1
+                                var thisNode = $(this)
+                                $.ajax({
+                                    url: '/article/admin/ban/' + articleId + '/' + operate,
+                                    type: 'put',
+                                    success: function(data){
+                                        console.log(data)
+                                        if(data.code==0){
+                                            $(thisNode).attr("state", operate)
+                                            if(operate==-1){
+                                                $(thisNode).attr("class", "btn btn-danger articleBtn")
+                                                $(thisNode).text("解禁")
+                                            }else{
+                                                $(thisNode).attr("class", "btn btn-default articleBtn")
+                                                $(thisNode).text("禁用")
+                                            }
+                                        }
+                                    }
+
+                                })
+
+                            })
+                        }else{
+                            if(data.hint){
+                                alert(data.hint)
+                            }
                         }
                     }
                 })
+
+
             })
 
-            $("#toCollect").click(function(){
+            $("#toReport").click(function(){
                 var navLink = $(this).parent();
                 var linkNodes = $(navLink).find("li");
                 $.each(linkNodes, function(index, obj){
-                    $(obj).removeAttr("class")
+                    $(obj).removeClass("active")
                 })
-                $(this).attr("class", "active")
+                $("#content").empty();
+                $(this).addClass("active")
+                $("#content").empty();
                 $.ajax({
-                    url: '',
-                    type: '',
+                    url: '/admin/report/getList',
+                    type: 'get',
                     dataType: 'json',
                     success: function(data){
                         console.log(data)
+                        var reportNode = ""
                         if(data.code==0){
-                            $("#content").empty();
-                            $("#content").append();
+                            console.log(data)
+                            $.each(data.data.list, function(index, report){
+                                reportNode += '<div type="reportNode"  class="panel panel-default" style="word-wrap:break-word;word-break:break-all; padding: 10px">\n' +
+                                    '    <div style="height: 100%; " class="panel-body">\n' +
+                                    '        <div>\n' +
+                                    '            发起用户:<span>'+ report.userName+'</span>\n' +
+                                    '            <span style="float: right"><button class="btn btn-warning">同意举报</button><button class="btn btn-default">不同意举报</button></span>\n' +
+                                    '        </div>\n' +
+                                    '        <div>举报原因： '+ report.reason +'</div>\n' +
+                                    '        <div><a href="'+ report.accessUrl+'" target="_blank">查看详情</a></div>\n' +
+                                    '    </div>\n' +
+                                    '</div>'
+                            })
+                            $("#content").append(reportNode);
+                        }else{
+                            if(data.hint)
+                                alert(data.hint)
                         }
                     }
                 })
@@ -138,22 +316,15 @@
             <nav class="navbar navbar-default" role="navigation">
                 <div class="container-fluid">
                     <div class="navbar-header">
-                        <a class="navbar-brand" href="#" style="text-align: center; color: #2e6da4; font-weight:bold;">网络社区</a>
+                        <a class="navbar-brand" href="#" style="text-align: center; color: #2e6da4; font-weight:bold;">管理社区</a>
                     </div>
                     <div>
                         <ul class="nav navbar-nav">
-                            <li class="dropdown"><a href="#" style="color: #2e6da4;">社区首页</a></li>
+                            <li class="dropdown"><a href="/toPost" style="color: #2e6da4;" target="_blank">社区首页</a></li>
                             <li><a href="/toArticle" target="_blank">文库</a></li>
                             <li><a href="/toQuestion" target="_blank">问答</a></li>
                         </ul>
                     </div>
-                    <form class="navbar-form navbar-left" role="search">
-                        <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Search" id="searchContent">
-                        </div>
-                        <button type="submit"  class="btn btn-default" id="entryCategory">进入社区</button>
-                        <!--<button class="btn btn-default">我要发帖</button>-->
-                    </form>
                     <div>
                         <ul class="nav navbar-nav navbar-right" id="userNav">
                             <li th:if="${session.user}">
@@ -179,10 +350,10 @@
             </nav>
             <div class="col-sm-2">
                 <ul class="nav nav-pills nav-stacked" role="tablist" id="selectBtn">
-                    <li id="toAccount"><a href="#" >帖子</a></li>
-                    <li id="toPublish"><a href="#" >问答</a></li>
-                    <li id="toCollect"><a href="#" >文库</a></li>
-                    <li id="report"><a href="#">举报</a></li>
+                    <li id="toPost"><a href="#" >帖子</a></li>
+                    <li id="toQuestion"><a href="#" >问答</a></li>
+                    <li id="toArticle"><a href="#" >文库</a></li>
+                    <li id="toReport"><a href="#">举报</a></li>
                 </ul>
             </div>
             <div id="content" class="col-sm-10">

@@ -15,6 +15,12 @@
   <select id="getAnswerIdListByQuestionIdOrderbyAgree" resultType="java.lang.Long">
     select answer_id from answer where question_id = #{param1} and state=0 order by agree_count desc limit #{param2}, #{param3}
   </select>
+  <select id="getQuestionIdByAnswerId" parameterType="java.lang.Long" resultType="java.lang.Long">
+    select question_id from answer where answer_id = #{param1}
+  </select>
+  <select id="getAnswerIdByQuestionWithMaxAgree" parameterType="java.lang.Long" resultType="java.lang.Long">
+    select answer_id from answer where question_id = #{param1} and state=0 order by agree_count desc limit 1
+  </select>
   <sql id="Example_Where_Clause" >
     <where >
       <foreach collection="oredCriteria" item="criteria" separator="or" >

@@ -1,9 +1,11 @@
 package com.madao.web.controller;
 
 import com.madao.api.Exception.ResultException;
+import com.madao.api.dto.UserDTO;
 import com.madao.api.entity.User;
 import com.madao.api.enums.ErrorEnum;
 import com.madao.api.enums.ResultEnum;
+import com.madao.api.form.PaswordChangeForm;
 import com.madao.api.form.UserLoginForm;
 import com.madao.api.form.UserRegisterForm;
 import com.madao.api.form.UserRegisterForm2;
@@ -23,19 +25,11 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.rmi.registry.Registry;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
 
 @Controller
 public class UserController {
     @Autowired
     private UserService userService;
-
-
 
     @GetMapping("/checkUserName/{userName}")
     @ResponseBody
@@ -48,39 +42,37 @@ public class UserController {
             e.printStackTrace();
             return ResultUtil.returnFail();
         }
-
     }
 
     @PostMapping("/user/userName/change")
     @ResponseBody
     public ResultView changeUserName(@RequestParam("userName") String userName, HttpServletRequest request){
-        User user = (User) request.getSession().getAttribute("user");
-        if (user == null) {
-            return ResultUtil.returnFail("用户未登录,请登录后重试");
-        }
-        Long userId = user.getUserId();
-        ResultView resultView =  userService.changeUserName(userId, userName);
-        //更新session中的用户信息
-        if(resultView.getCode().equals(ResultEnum.SUCCESS.getCode())){
-            user = userService.getUserById(userId);
-            if(user!=null){
-                request.getSession().setAttribute("user", user);
-            }
+        try {
+            UserDTO userDTO = checkUserLogin(request);
+            Long userId = userDTO.getUserId();
+            ResultView resultView = userService.changeUserName(userId, userName);
+            //更新session中的用户信息
+            if (resultView.getCode().equals(ResultEnum.SUCCESS.getCode())) {
+                User user = userService.getUserById(userId);
+                if (user != null) {
+                    BeanUtils.copyProperties(user, userDTO);
+                    request.getSession().setAttribute("user", userDTO);
+                }
 
+            }
+            return resultView;
+        }catch (ResultException e){
+            System.out.println(e.getMessage());
+            return ResultUtil.returnFail();
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.returnFail();
         }
-        return resultView;
     }
 
     @GetMapping("/index")
     public String toIndex(HttpServletRequest request){
-        System.out.println(request.getSession().getAttribute("user"));
         return "post";
-    }
-
-    @ResponseBody
-    @GetMapping("/getSession")
-    public void testSession(HttpServletRequest request){
-        System.out.println(request.getSession().getAttribute("user"));
     }
 
     @GetMapping("/toLogin")
@@ -91,21 +83,26 @@ public class UserController {
         return "login";
     }
 
+    //登录
     @ResponseBody
     @PostMapping("/login")
     public ResultView login(@Validated  UserLoginForm form, BindingResult bindingResult, HttpServletRequest request, HttpServletResponse response){
-        System.out.println("user...login.......................");
-        HttpSession session = request.getSession();
+        try {
+            HttpSession session = request.getSession();
 
-        ResultView<User> resultView  = userService.login(form);
-        User user = (User) resultView.getData();
-        session.setAttribute("user", user);
+            ResultView<UserDTO> resultView = userService.login(form);
+            UserDTO userDTO = (UserDTO) resultView.getData();
+            session.setAttribute("user", userDTO);
 
-        String token = KeyUtil.genUniquKey();
-        session.setAttribute("token", token);
-        Cookie cookie = new Cookie("token", token);
-        response.addCookie(cookie);
-        return resultView;
+            String token = KeyUtil.genUniquKey();
+            session.setAttribute("token", token);
+            Cookie cookie = new Cookie("token", token);
+            response.addCookie(cookie);
+            return resultView;
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.returnFail();
+        }
     }
 
     @GetMapping("/toRetrieve")
@@ -118,61 +115,42 @@ public class UserController {
         return "register";
     }
 
-    @GetMapping("/toTest1")
-    public String toTest(){
-        return "test1";
-    }
-
     @ResponseBody
     @PostMapping("/user/register/email")
     public ResultView registerByEmail(UserRegisterForm2 form, BindingResult bindingResult){
-        if(bindingResult.hasErrors()){
-            throw new ResultException(ErrorEnum.PARAM_ERROR, FormErrorUtil.getFormErrors(bindingResult));
+        try {
+            ResultView resultView = userService.registerByEmail(form);
+            System.out.println(resultView);
+            return resultView;
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.returnFail();
         }
-        System.out.println("email............................");
-        ResultView resultView =  userService.registerByEmail(form);
-        System.out.println(resultView);
-        return resultView;
     }
 
     @ResponseBody
     @PostMapping("/user/register/phone")
     public ResultView registerByPhone(UserRegisterForm form, BindingResult bindingResult){
-        if(bindingResult.hasErrors()){
-            throw new ResultException(ErrorEnum.PARAM_ERROR, FormErrorUtil.getFormErrors(bindingResult));
+        try {
+            return userService.registerByPhone(form);
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.returnFail();
         }
-        return userService.registerByPhone(form);
-    }
-
-    @ResponseBody
-    @PostMapping("/test123")
-    public ResultView test(String account, String password){
-        System.out.println("####################################");
-        System.out.println(account + "-------" + password);
-        return ResultUtil.returnSuccess();
-    }
-
-    @ResponseBody
-    @PostMapping("/test/post")
-    public ResultView testPost(){
-
-        return ResultUtil.returnSuccess();
-    }
-
-    @ResponseBody
-    @PostMapping("/test/getUser")
-    public User test(String userName){
-        return userService.testUser(userName);
     }
 
     @ResponseBody
     @PostMapping("/validateCode")
     public ResultView validateCode(String account){
-        System.out.println(account);
         if(account==null || account==""){
-            throw new ResultException(ErrorEnum.PARAM_ERROR);
+            return ResultUtil.returnFail("参数错误");
         }
-        return userService.sendValidateCode(account);
+        try {
+            return userService.sendValidateCode(account);
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.returnFail();
+        }
     }
 
     @GetMapping(value = "/user/validate/{userId}/{path}")
@@ -198,7 +176,7 @@ public class UserController {
     @PostMapping("/user/pic/change")
     public ResultView changeUserPic(@RequestParam("picPath") String picPath, HttpServletRequest request){
         try {
-            User user = (User) request.getSession().getAttribute("user");
+            UserDTO user = (UserDTO) request.getSession().getAttribute("user");
             if (user == null) {
                 return ResultUtil.returnFail("用户未登录,请登录后重试");
             }
@@ -211,6 +189,9 @@ public class UserController {
                 }
             }
             return resultView;
+        }catch (ResultException e){
+            System.out.println(e.getMessage());
+            return ResultUtil.returnFail();
         }catch (Exception e){
             e.printStackTrace();
             return ResultUtil.returnFail();
@@ -222,33 +203,33 @@ public class UserController {
         return "admin";
     }
 
-    @RequestMapping("toAdminLogin")
-    public String toAdminLogin(){
-        return "adminLogin";
+    @ResponseBody
+    @RequestMapping("/user/change/password")
+    public ResultView changePassword(PaswordChangeForm form, HttpServletRequest request){
+        try {
+            UserDTO user = checkUserLogin(request);
+            ResultView resultView = userService.changeUserPassword(user.getUserId(), form.getPassword(), form.getNewPassword());
+            return resultView;
+        }catch (ResultException e){
+            System.out.println(e.getMessage());
+            return ResultUtil.returnFail();
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.returnFail();
+        }
     }
 
-    @RequestMapping("/toTestAjax")
-    public String testAjax(){
-        return "testAjax";
+    //检查用户是否登录
+    private UserDTO checkUserLogin(HttpServletRequest request){
+        UserDTO user = (UserDTO) request.getSession().getAttribute("user");
+        if(user==null){
+            throw new ResultException("用户未登录");
+        }
+        return user;
     }
 
-//    @ResponseBody
-//    @GetMapping(value="/user/logout2")
-//    public ResultView logout2(HttpServletRequest request){
-//        request.getSession().removeAttribute("user");
-//        return ResultUtil.returnSuccess();
-//    }
-
-//    @GetMapping("/test")
-//    @ResponseBody
-//    public User getUser(){
-//        System.out.println("调用.............");
-//        return userService.getUserById(1L);
-//    }
-
-    @RequestMapping("/testAjax")
-    public void testAjax(@RequestParam("data") List<Integer> data){
-        data.stream().forEach(System.out::println);
+    //检查管理员权限
+    private void checkAdminAuthority(UserDTO user){
+        // todo 检查管理员权限
     }
-
 }

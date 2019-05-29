@@ -2,11 +2,14 @@ package com.madao.question.service;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.madao.api.Exception.ResultException;
 import com.madao.api.dto.AnswerDTO;
 import com.madao.api.dto.QuestionDTO;
+import com.madao.api.dto.ReportDTO;
 import com.madao.api.entity.*;
 import com.madao.api.enums.*;
 import com.madao.api.form.QuestionForm;
+import com.madao.api.service.ArticleService;
 import com.madao.api.service.UserService;
 import com.madao.api.utils.KeyUtil;
 import com.madao.question.bean.*;
@@ -48,8 +51,22 @@ public class QuestionService {
     @Autowired
     private AgreeMapper agreeMapper;
 
+    @Autowired
+    private ReportMapper reportMapper;
+
+
     @Value("${userPrefix}")
     private String USER_PREFIX;
+
+    private String postUrl = "/post/info";
+
+    private String answerUrl = "/toQuestionInfo";
+
+    private String articleUrl = "/toArticleInfo";
+
+    private Integer defaultPageSize = 5;
+
+    private Integer defaultCommentPageSize = 5;
 
     public Question addQuestion(QuestionForm form){
         //添加问题
@@ -244,6 +261,9 @@ public class QuestionService {
 
     //检查用户是否点赞、收藏回答，并添加结果
     public void addAnswerState(AnswerDTO answerDTO, Long userId) {
+        if(answerDTO==null || userId==null){
+            return;
+        }
         List<Byte> resultList = new ArrayList<>();
 
         AgreeExample agreeExample = new AgreeExample();
@@ -316,12 +336,104 @@ public class QuestionService {
         List<Collect> collectList = collectMapper.selectByExample(collectExample);
         PageInfo<Collect> pageInfo = new PageInfo<>(collectList);
 
-        List<AnswerDTO> answerDTOList = new ArrayList<>();
+        List<AnswerDTO> answerDTOList = new ArrayList<>(collectList.size());
         for(Collect collect: collectList){
             AnswerDTO answerDTO = questionMapper.getAnswerDTOById(collect.getTargetId());
+            if(answerDTO!=null) {
+                User user = getUserFromCache(answerDTO.getUserId());
+                answerDTO.setUserName(user.getUserName());
+                answerDTO.setUserPic(user.getUserPic());
+                answerDTOList.add(answerDTO);
+            }
         }
         PageInfo<AnswerDTO> answerDTOPageInfo = new PageInfo<>();
-        BeanUtils.copyProperties(collectList, answerDTOList);
+        BeanUtils.copyProperties(pageInfo, answerDTOPageInfo);
+        answerDTOPageInfo.setList(answerDTOList);
+        return answerDTOPageInfo;
+    }
+
+    public PageInfo<AnswerDTO> getQuestionInAllState(Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<AnswerDTO> answerDTOList = questionMapper.getAnswer();
+        setAnswerContentByAnswerDTOList(answerDTOList);
+        PageInfo<AnswerDTO> pageInfo = new PageInfo<>(answerDTOList);
+        return pageInfo;
+    }
+
+    public PageInfo<ReportDTO> getReportDTOList(Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        ReportExample example = new ReportExample();
+        example.setOrderByClause("create_time desc");
+        List<Report> reportList = reportMapper.selectByExample(example);
+        PageInfo<Report> pageInfo = new PageInfo<>(reportList);
+
+        List<ReportDTO> reportDTOList = new ArrayList<>(reportList.size());
+        for(Report report: reportList){
+            ReportDTO reportDTO = new ReportDTO();
+            BeanUtils.copyProperties(report, reportDTO);
+            User user = getUserFromCache(report.getUserId());
+            reportDTO.setUserName(user.getUserName());
+            reportDTO.setUserPic(user.getUserPic());
+            String accessUrl = "";
+            if(report.getType().equals(TypeEnum.POST.getCode())){
+                accessUrl = postUrl + "/" + report.getTargetId() + "/1/" + defaultPageSize + "/" + defaultCommentPageSize;
+            }else if(report.getType().equals(TypeEnum.ANSWER.getCode())){
+                Long questionId =  answerMapper.getQuestionIdByAnswerId(report.getTargetId());
+                accessUrl = answerUrl + "/" + questionId + "?answerId=" + report.getTargetId();
+            }else if(report.getType().equals(TypeEnum.ARTICLE.getCode())){
+                accessUrl = articleUrl + "/" + report.getTargetId();
+            }else if(report.getType().equals(TypeEnum.QUESTION.getCode())){
+                accessUrl = answerUrl + "/" + report.getTargetId();
+            }
+            reportDTO.setAccessUrl(accessUrl);
+            reportDTOList.add(reportDTO);
+        }
+        PageInfo<ReportDTO> reportDTOPageInfo = new PageInfo<>();
+        BeanUtils.copyProperties(pageInfo, reportDTOPageInfo);
+        reportDTOPageInfo.setList(reportDTOList);
+        return reportDTOPageInfo;
+    }
+
+    public void reportQuestion(Long userId, Long questionId, String reason) {
+        ReportExample reportExample = new ReportExample();
+        ReportExample.Criteria criteria = reportExample.createCriteria();
+        criteria.andUserIdEqualTo(userId);
+        criteria.andTargetIdEqualTo(questionId);
+        criteria.andTypeEqualTo(TypeEnum.QUESTION.getCode());
+        int count = reportMapper.countByExample(reportExample);
+        if(count>0)
+            throw new ResultException("你已经举报过了");
+        Report report = new Report();
+        report.setReportId(KeyUtil.genUniquKeyOnLong());
+        report.setState(ReportStateEnum.REPORTED.getCode());
+        report.setReason(reason);
+        report.setUserId(userId);
+            report.setTargetId(questionId);
+        report.setType(TypeEnum.QUESTION.getCode());
+        reportMapper.insertSelective(report);
+    }
+
+    public PageInfo<AnswerDTO> getQuestionDTOLikeQuestionTitle(String searchContent, Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        QuestionExample example = new QuestionExample();
+        QuestionExample.Criteria criteria = example.createCriteria();
+        criteria.andQuestionTitleLike("%" + searchContent + "%");
+        List<Question> questionList = questionMapper.selectByExample(example);
+        PageInfo<Question> questionPageInfo = new PageInfo<>(questionList);
+
+        List<AnswerDTO> answerDTOList = new ArrayList<>();
+        for(Question question: questionList){
+            Long answerId = answerMapper.getAnswerIdByQuestionWithMaxAgree(question.getQuestionId());
+            AnswerDTO answerDTO = questionMapper.getAnswerDTOById(answerId);
+            User user = getUserFromCache(answerDTO.getUserId());
+            if(user!=null){
+                answerDTO.setUserName(user.getUserName());
+                answerDTO.setUserPic(user.getUserPic());
+            }
+            answerDTOList.add(answerDTO);
+        }
+        PageInfo<AnswerDTO> answerDTOPageInfo = new PageInfo<>();
+        BeanUtils.copyProperties(questionList, answerDTOList);
         answerDTOPageInfo.setList(answerDTOList);
         return answerDTOPageInfo;
     }

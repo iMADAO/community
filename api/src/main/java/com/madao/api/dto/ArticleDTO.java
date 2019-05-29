@@ -36,4 +36,6 @@ public class ArticleDTO {
     private String title;
 
     private Byte state;
+
+    private Byte collectState = 0;
 }

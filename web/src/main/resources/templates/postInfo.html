@@ -415,6 +415,40 @@
                 })
             })
 
+            $("#submitReport").click(function(){
+                var reasonNode = $("#reportReason")
+                var reason = $.trim($(reasonNode).val())
+                $(reasonNode).val(reason)
+                var postId = $("#postId").text()
+                if(reason=="") {
+                    alert("举报原因不能为空")
+                    return false;
+                }
+                console.log("reason..." + reason)
+                $.ajax({
+                    url: '/post/report/' + postId,
+                    type: 'post',
+                    dataType: 'json',
+                    data: {
+                        'reason': reason
+                    },
+                    success: function(data){
+                        console.log(data)
+                        if(data.code==0){
+                            alert("举报完成,将交由后台审核处理")
+                            //todo将举报按钮设置为不可用
+                            $("#report").attr("disabled", "disabled")
+                        }else{
+                            if(data.hint){
+                                alert(data.hint)
+                            }
+                        }
+
+                    }
+                })
+
+            })
+
         })
     </script>
 </head>
@@ -466,8 +500,10 @@
 
             </nav>
 
-            <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#addSegmentModal">我要发表</button>
+            <button class="btn btn-primary" data-toggle="modal" data-target="#addSegmentModal">我要发表</button>
             <button class="btn btn-default" id="collectBtn">收藏</button>
+            <button class="btn btn-default" id="report" questionId="${data.data.questionId}" data-toggle="modal" data-target="#reportModal">举报</button>
+
             <br/>
             <div class="modal fade" id="addSegmentModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
@@ -485,6 +521,23 @@
                             <br/>
                             <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
                             <button type="button" class="btn btn-primary" id="submitBtn" data-dismiss="modal">提交</button>
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal -->
+            </div>
+
+            <div class="modal fade" id="reportModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title" id="reportModalLabel">举报</h4>
+                        </div>
+                        <textarea id="reportReason" placeholder="举报原因" style="height: 100px; width: 100%;"></textarea>
+                        <div class="modal-footer">
+                            <br/>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                            <button type="button" class="btn btn-primary" id="submitReport" data-dismiss="modal" >提交</button>
                         </div>
                     </div><!-- /.modal-content -->
                 </div><!-- /.modal -->

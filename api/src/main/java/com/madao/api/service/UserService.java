@@ -1,5 +1,6 @@
 package com.madao.api.service;
 
+import com.madao.api.dto.UserDTO;
 import com.madao.api.entity.User;
 import com.madao.api.form.UserLoginForm;
 import com.madao.api.form.UserRegisterForm;
@@ -23,7 +24,7 @@ public interface UserService {
     public ResultView checkIfUserNameExist(@RequestParam(value = "userName") String userName);
 
     @PostMapping(value="/user/login")
-    public ResultView<User> login(UserLoginForm form);
+    public ResultView<UserDTO> login(UserLoginForm form);
 
     @PostMapping(value = "/test/aa")
     public User testUser(String userName);
@@ -48,4 +49,8 @@ public interface UserService {
 
     @RequestMapping("/user/pic/change")
     ResultView changeUserPic(@RequestParam("userId") Long userId, @RequestParam("picPath") String picPath);
+
+    @RequestMapping("/user/password/change")
+    ResultView changeUserPassword(@RequestParam("userId") Long userId, @RequestParam("password") String password, @RequestParam("newPassword") String newPassword);
+
 }

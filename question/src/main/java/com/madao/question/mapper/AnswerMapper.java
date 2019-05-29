@@ -29,4 +29,8 @@ public interface AnswerMapper {
     int updateByPrimaryKey(Answer record);
 
     List<Long> getAnswerIdListByQuestionIdOrderbyAgree(Long questionId, Integer startRow, Integer size);
+
+    Long getQuestionIdByAnswerId(Long targetId);
+
+    Long getAnswerIdByQuestionWithMaxAgree(Long questionId);
 }

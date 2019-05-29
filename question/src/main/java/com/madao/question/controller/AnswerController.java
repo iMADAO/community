@@ -180,6 +180,37 @@ public class AnswerController {
         try {
             answerService.operateAnswer(userId, answerId, operate);
             return ResultUtil.returnSuccess();
+        }catch(ResultException e){
+            System.out.println(e.getMessage());
+            return ResultUtil.returnFail(e.getMessage());
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.returnFail();
+        }
+    }
+
+    @RequestMapping("/answer/admin/operate")
+    ResultView operateBanAnswer(@RequestParam("answerId") Long answerId, @RequestParam("operate") Byte operate){
+        try {
+            answerService.operateBanAnswer(answerId, operate);
+            return ResultUtil.returnSuccess();
+        }catch(ResultException e){
+            System.out.println(e.getMessage());
+            return ResultUtil.returnFail(e.getMessage());
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.returnFail();
+        }
+    }
+
+    @RequestMapping("/answer/report")
+    ResultView reportAnswer(@RequestParam("userId") Long userId, @RequestParam("answerId") Long answerId, @RequestParam("reason") String reason){
+        try {
+            answerService.reportAnswer(userId, answerId, reason);
+            return ResultUtil.returnSuccess();
+        }catch(ResultException e){
+            System.out.println(e.getMessage());
+            return ResultUtil.returnFail(e.getMessage());
         }catch (Exception e){
             e.printStackTrace();
             return ResultUtil.returnFail();

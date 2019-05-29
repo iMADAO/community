@@ -5,9 +5,7 @@ import com.github.pagehelper.PageInfo;
 import com.madao.api.Exception.ResultException;
 import com.madao.api.dto.*;
 import com.madao.api.entity.*;
-import com.madao.api.enums.CollectTypeEnum;
-import com.madao.api.enums.OperateEnum;
-import com.madao.api.enums.StateEnum;
+import com.madao.api.enums.*;
 import com.madao.api.form.BaseForm;
 import com.madao.api.form.ContentForm;
 import com.madao.api.form.PostForm;
@@ -21,6 +19,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -53,6 +52,9 @@ public class PostService {
 
     @Autowired
     private RedisTemplate redisTemplate;
+
+    @Autowired
+    private ReportMapper reportMapper;
 
     @Autowired
     private PostCommentService postCommentService;
@@ -457,6 +459,9 @@ public class PostService {
 
     private void populatePostDTO(List<Post> postList, List<PostDTO> postDTOList){
         for(Post post: postList){
+            if(post==null){
+                continue;
+            }
             PostDTO postDTO = new PostDTO();
             User user = getUserInfoInCache(post.getUserId());
             BeanUtils.copyProperties(user, postDTO);
@@ -509,5 +514,38 @@ public class PostService {
         postDTOPageInfo.setList(postDTOList);
 
         return postDTOPageInfo;
+    }
+
+    //禁用或者启用帖子
+    public void operateBanPost(Long postId, Byte operate) {
+        Post post = postMapper.selectByPrimaryKey(postId);
+        if(post==null)
+            return;
+        if(!operate.equals(StateEnum.VISIBLE.getCode()) && !operate.equals(StateEnum.INVISIBLE.getCode()) && !operate.equals(StateEnum.BAN.getCode())){
+            throw new ResultException("操作不合法");
+        }
+        if(post.getState().equals(operate))
+            return;
+        post.setState(operate);
+        postMapper.updateByPrimaryKeySelective(post);
+    }
+
+    public void reportPost(Long userId, Long postId, String reason) {
+        ReportExample reportExample = new ReportExample();
+        ReportExample.Criteria criteria = reportExample.createCriteria();
+        criteria.andUserIdEqualTo(userId);
+        criteria.andTargetIdEqualTo(postId);
+        criteria.andTypeEqualTo(TypeEnum.POST.getCode());
+        int count = reportMapper.countByExample(reportExample);
+        if(count>0)
+            throw new ResultException("你已经举报过了");
+        Report report = new Report();
+        report.setReportId(KeyUtil.genUniquKeyOnLong());
+        report.setState(ReportStateEnum.REPORTED.getCode());
+        report.setReason(reason);
+        report.setUserId(userId);
+        report.setTargetId(postId);
+        report.setType(TypeEnum.POST.getCode());
+        reportMapper.insertSelective(report);
     }
 }

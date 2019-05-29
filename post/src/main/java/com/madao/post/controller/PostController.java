@@ -290,4 +290,34 @@ public class PostController {
             return ResultUtil.returnFail();
         }
     }
+
+    @RequestMapping("/post/operate/ban")
+    ResultView operateBanPost(@RequestParam("postId") Long postId, @RequestParam("operate") Byte operate) {
+        try {
+            postService.operateBanPost(postId, operate);
+            return ResultUtil.returnSuccess();
+        }catch (ResultException e){
+            System.out.println(e.getMessage());
+            return ResultUtil.returnFail(e.getMessage());
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.returnFail();
+        }
+    }
+
+    //用户举报
+    @RequestMapping("/post/report")
+    ResultView reportPost(@RequestParam("userId") Long userId, @RequestParam("postId") Long postId, @RequestParam("reaseon") String reason){
+        try {
+            postService.reportPost(userId, postId, reason);
+            return ResultUtil.returnSuccess();
+        }catch(ResultException e){
+            System.out.println(e.getMessage());
+            return ResultUtil.returnFail(e.getMessage());
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.returnFail();
+        }
+
+    }
 }
