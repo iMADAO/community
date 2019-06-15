@@ -81,6 +81,124 @@
                 password.parent().next().text("");
                 return true;
             }
+
+            $("[type=phone]").click(function(){
+                $(this).attr("class", "btn btn-primary")
+                $("[type=email]").attr("class", "btn btn-default")
+                $("#changePasswordContent").empty()
+                $("#changePasswordContent").append('<br/><input type="text" class="form-control" placeholder="请输入电话号码" id="phoneNum"/><span id="phoneMessage" style="color: red; float: left;"></span><br/>' +
+                    '<input type="text" id="phoneCode" class="form-control" placeholder="请输入验证码" style="width: 50%; float: left;"/> <span id="codeMessage" style="color: red; float: left;"></span><button class="btn btn-primary" style="float: right;" id="sendPhoneCode">发送验证码</button><br/><br/>' +
+                    '<input type="password" id="newPasswd" class="form-control" placeholder="请输入新密码"/><span id="passwdMessage" style="color: red; float: left;"></span><br/>' +
+                    '<input type="password" id="newPasswd2" class="form-control" placeholder="请输入确认密码"/><span id="passwd2Message" style="color: red; float: left;"></span><br/>' )
+
+                $("#phoneNum").blur(function(){
+                    var phoneNum = $.trim($(this).val())
+                    $(this).val(phoneNum);
+                    if(phoneNum=="")
+                        $("#phoneMessage").text("电话号码不能为空")
+                    else if(!isPhoneNo(phoneNum)){
+                        $("#phoneMessage").text("电话号码格式不正确")
+                    }
+                })
+
+                $("#phoneNum").focus(function(){
+                    $("#phoneMessage").text("")
+                })
+
+                $("#newPasswd").blur(function(){
+                    var newPasswdVal = $.trim($(this).val())
+                    $(this).val(newPasswdVal);
+                    if(newPasswdVal=="")
+                        $("#passwdMessage").text("密码不能为空")
+                })
+
+                $("#newPasswd").focus(function(){
+                    $("#passwdMessage").text("")
+                })
+
+                $("#newPasswd2").blur(function(){
+                    var newPasswd2Val = $.trim($(this).val())
+                    var newPasswdVal = $.trim($("#newPasswd").val())
+                    $(this).val(newPasswd2Val);
+                    if(newPasswd2Val=="")
+                        $("#passwd2Message").text("密码不能为空")
+                    else{
+                        if(newPasswdVal!=newPasswd2Val){
+                            $("#passwd2Message").text("前后密码不一致")
+                        }
+                    }
+                })
+
+                $("#newPasswd2").focus(function(){
+                    $("#passwd2Message").text("")
+                })
+
+                $("#submitChangePwd").click(function(){
+                    checkInputData()
+                    var phoneNum = $("#phoneNum").val()
+                    var password = $("#newPassword").val()
+                    var code = $("#phoneCode")
+                    $.ajax({
+                        url: '/user/password/change/byCode',
+                        type: 'put',
+                        dataType: 'json',
+                        success: function(data){
+                            if(data.code==0){
+                                alert('密码修改成功')
+                                $("#closeModal").click()
+                            }else if(data.hint){
+                                alert(data.hint)
+                            }
+                        }
+                    })
+                })
+
+                //todo 检查输入数据
+                function checkInputData(){
+
+                }
+            })
+
+            $("#passwordModal").on("click", "#sendPhoneCode", function(e){
+                var phoneNode = $("#phoneNum")
+                var phoneNum = $(phoneNode).val()
+                if(!isPhoneNo(phoneNum)){
+                    $("#phoneMessage").text("电话号码格式不正确")
+                    return;
+                }
+                $.ajax({
+                    url: '/validateCode',
+                    type: 'post',
+                    data:{
+                        account: phoneNum,
+                    },
+                    datatype: 'json',
+                    success: function(data){
+                        console.log(data)
+                        if(data.code==0){
+                            alert("验证码已发送到手机,十分钟内有效,请注意查收");
+                        }else{
+                            if(data.hint)
+                                alert(data.hint)
+                        }
+                    }
+                })
+                return false;
+            })
+
+
+            $("#passwordModal").on("click", "#submitChangePwd", function(e){
+
+            })
+
+            $("[type=email]").click(function(){
+                $(this).attr("class", "btn btn-primary")
+                $("[type=phone]").attr("class", "btn btn-default")
+                $("#changePasswordContent").empty()
+                $("#changePasswordContent").append('<br/><input type="text" class="form-control" placeholder="请输入邮箱"/>' +
+                    '<button class="btn btn-primary" style="float: right">发送验证链接</button><br/><br/>')
+            })
+
         })
 
 
@@ -95,7 +213,6 @@
             var pattern = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
             return pattern.test(email);
         }
-
     </script>
 </head>
 <!--<body>-->
@@ -109,7 +226,7 @@
 <body style="background-color: #F7F8FA">
 ​
 <div class="container">
-
+<input type="checkbox" checked="checked" id="123">
     <div class="row" >
         <div class="col-sm-4">
         </div>
@@ -133,7 +250,31 @@
                        </tr>
                        <tr>
                            <td>&nbsp</td>
-                           <td><a href="/toRetrieve" >忘记密码?</a></td>
+                           <td><a href="#" id="retrievePassword" data-toggle="modal" data-target="#passwordModal">忘记密码?</a></td>
+
+                           <div class="modal fade" id="passwordModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                               <div class="modal-dialog">
+                                   <div class="modal-content">
+                                       <div class="modal-header">
+                                           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                           <h4 class="modal-title" id="myModalLabel">修改密码</h4>
+                                       </div>
+                                       <div class="modal-body">
+                                           <div>
+                                               <span class="btn btn-default" type="phone">电话帐号</span>
+                                               <span class="btn btn-default" type="email">邮箱帐号</span>
+                                               <div id="changePasswordContent"></div>
+                                           </div>
+
+                                       </div>
+                                       <div class="modal-footer">
+                                           <button type="button" class="btn btn-default" data-dismiss="modal" id="closePassModal">关闭</button>
+                                           <button type="button" class="btn btn-primary" id="submitChangePwd">提交更改</button>
+                                       </div>
+                                   </div><!-- /.modal-content -->
+                               </div><!-- /.modal -->
+                           </div>
+
                        </tr>
                        <tr>
                            <td ><input type="submit" value="提交" id="submit" class="btn btn-primary" style="width: 100%"></td>
@@ -143,9 +284,10 @@
                        </tr>
                    </table>
                </form>
+            </div>
         </div>
     </div>
 </div>
-​
+
 </body>
 </html>

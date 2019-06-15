@@ -34,6 +34,9 @@ hystrix:
 
 PIC_PREFIX: http://localhost:8080/pic
 PICLOCAL_PATH: /pic
+
+
+AUTHORITY_RESULT: authorityResult
 #hystrix:
 #  threadpool:
 #    default:

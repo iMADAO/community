@@ -85,7 +85,7 @@
             var agree=$(".agree");
             var disagree=$(".disagree")
             var answerIdList = new Array();
-            var pageSize=1
+            var pageSize=5
             //获取页面上的所有回答
             $.each(agree, function(index, obj){
                 var answerId = $(obj).parent().parent().find($(".answerId")).text();
@@ -434,7 +434,6 @@
                                     '                    <br/>\n' +
                                     '                    <div style="padding: 10px">\n' +
                                     '                    <span>'+ obj.commentContent +'</span><br/>\n' +
-                                    '                        <span class="commentReport"><a>举报</a></span>\n' +
                                     '                    </div>\n' +
                                     '                </div>';
                                 commentNode.append(commentDetailNode)
@@ -443,7 +442,7 @@
                             // commentNode.append("<p>哈哈</p>")
                             //更新评论数量
                             $(commentCount).val(data.data.total);
-                            thisNode.innerHTML="<a class='hideComment' href='#'>收起评论</a>"
+                            thisNode.innerHTML="<a class='hideComment' href='###'>收起评论</a>"
 
                             if(data.data.pages > 1){
                                 var navPageNum = data.data.pages > 5 ? 5 : data.data.pages
@@ -539,7 +538,6 @@
                                         '                    <br/>\n' +
                                         '                    <div style="padding: 10px">\n' +
                                         '                    <span>'+ obj.commentContent +'</span><br/>\n' +
-                                        '                        <span class="commentReport"><a>举报</a></span>\n' +
                                         '                    </div>\n' +
                                         '                </div>');
 
@@ -692,6 +690,30 @@
                     return false;
                 }
             })
+
+            $("#logoutNode").click(function(){
+                $.ajax({
+                    url: '/user/logout',
+                    type: 'get',
+                    success: function(data){
+                        if(data.code==0){
+                            alert("退出登录成功")
+                            $("#userNav").empty();
+                            $("#userNav").append('<li ><a href="/toRegister" target="_blank"><span class="glyphicon glyphicon-user"></span> 注册</a></li>\n' +
+                                '<li ><a href="/toLogin" target="_blank"><span class="glyphicon glyphicon-log-in"></span> 登录</a></li>');
+                        }else{
+                            alert("请稍后重试")
+                        }
+                        return false;
+                    },
+                    error: function(){
+                        alert("请稍后重试")
+                        return false;
+                    }
+                })
+                return false;
+            })
+
         })
     </script>
 
@@ -733,7 +755,7 @@
                                         </span>
                                         <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
                                             <li role="presentation"><a role="menuitem" tabindex="-1" href="/toHomePage" target="_blank">个人中心</a></li>
-                                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#" id="logout">退出登录</a></li>
+                                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#" id="logoutNode">退出登录</a></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -781,7 +803,7 @@
                 <div th:if="${answerDTO.userId!=null}" style="position:relative; left: 30px;">
                     <span th:text=" '赞同' + ${answerDTO.agreeCount}" class="btn btn-default agree">赞同1.1k</span>
                     <span th:text="'不赞同' + ${answerDTO.disagreeCount}" class="btn btn-default disagree">不赞同0.2k</span>
-                    <span class="toComment"><a class="getComment" th:text="${answerDTO.commentCount} + '条评论'"  href="#">120条评论</a></span>
+                    <span class="toComment"><a class="getComment" th:text="${answerDTO.commentCount} + '条评论'"  href="###">120条评论</a></span>
                     <span class="btn btn-default collect" collect="0">收藏</span>
                     <span><input type="hidden" class="commentCount" th:attr="value=${answerDTO.commentCount}"></span></span>
                 </div>

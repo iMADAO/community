@@ -23,7 +23,7 @@
                 $("#content").empty();
                 var commentPageSize = 5
                 $.ajax({
-                    url: '/getPost/allState/1/' + pageSize,
+                    url: '/admin/get/getPost/allState/1/' + pageSize,
                     type: 'get',
                     dataType: 'json',
                     success: function(data){
@@ -104,7 +104,7 @@
                 $("#content").empty();
                 var pageSize = 5;
                 $.ajax({
-                    url: '/answer/admin/getList/1/' + pageSize,
+                    url: '/answer/admin/get/getList/1/' + pageSize,
                     type: 'get',
                     dataType: 'json',
                     success: function(data){
@@ -201,7 +201,7 @@
                 $(this).addClass("active")
                 $("#content").empty();
                 $.ajax({
-                    url: '/article/admin/getAllState/1/' + pageSize,
+                    url: '/article/admin/get/getAllState/1/' + pageSize,
                     type: 'get',
                     dataType: 'json',
                     success: function(data){
@@ -276,7 +276,7 @@
                 $(this).addClass("active")
                 $("#content").empty();
                 $.ajax({
-                    url: '/admin/report/getList',
+                    url: '/admin/get/report/getList',
                     type: 'get',
                     dataType: 'json',
                     success: function(data){
@@ -285,11 +285,19 @@
                         if(data.code==0){
                             console.log(data)
                             $.each(data.data.list, function(index, report){
+                                var reportBtn = ""
+                                if(report.state==0){
+                                    reportBtn = '<span style="float: right"><button class="btn btn-warning agreeReport" type="'+ report.type+'" targetId="'+report.targetId+'">同意举报</button><button class="btn btn-default disagreeReport" type="'+ report.type+'" targetId="'+report.targetId+'">不同意举报</button></span>\n'
+                                }else if(report.state==1){
+                                    reportBtn = '<span style="float: right"><button class="btn btn-default disabled finished" type="'+ report.type+'" targetId="'+report.targetId+'">已完成</button></span>\n'
+                                }else if(report.state=-1){
+                                    reportBtn = '<span style="float: right"><button class="btn btn-default disabled finished" type="'+ report.type+'" targetId="'+report.targetId+'">已取消</button></span>\n'
+                                }
                                 reportNode += '<div type="reportNode"  class="panel panel-default" style="word-wrap:break-word;word-break:break-all; padding: 10px">\n' +
                                     '    <div style="height: 100%; " class="panel-body">\n' +
                                     '        <div>\n' +
                                     '            发起用户:<span>'+ report.userName+'</span>\n' +
-                                    '            <span style="float: right"><button class="btn btn-warning">同意举报</button><button class="btn btn-default">不同意举报</button></span>\n' +
+                                            reportBtn +
                                     '        </div>\n' +
                                     '        <div>举报原因： '+ report.reason +'</div>\n' +
                                     '        <div><a href="'+ report.accessUrl+'" target="_blank">查看详情</a></div>\n' +
@@ -297,6 +305,74 @@
                                     '</div>'
                             })
                             $("#content").append(reportNode);
+
+                            $(".agreeReport").click(function(){
+                                var flag = confirm("是否禁用该内容?")
+                                if(!flag)
+                                    return
+                                var type = $(this).attr("type")
+                                var targetId = $(this).attr("targetId")
+                                var thisNode = $(this)
+                                $.ajax({
+                                    url: '/admin/ban/operate/toBan',
+                                    dataType: 'json',
+                                    data:{
+                                        'type': type,
+                                        'targetId': targetId
+                                    },
+                                    type: 'put',
+                                    success: function(data){
+                                        console.log(data)
+                                        if(data.code==0){
+                                            //修改按钮
+                                            var parentNode = $(thisNode).parent()
+                                            $(parentNode).empty();
+                                            var newReportBtn = '<span style="float: right"><button class="btn btn-default disabled finished" type="'+ type+'" targetId="'+targetId+'">已完成</button></span>\n'
+                                            $(parentNode).append(newReportBtn)
+                                        }else{
+                                            if(data.hint)
+                                                alert(data.hint)
+                                        }
+                                    }
+
+                                })
+                            })
+
+
+                            $(".disagreeReport").click(function(){
+                                var flag = confirm("是否忽略该举报?")
+                                if(!flag)
+                                    return
+                                var type = $(this).attr("type")
+                                var targetId = $(this).attr("targetId")
+                                var thisNode = $(this)
+                                $.ajax({
+                                    url: '/admin/ban/operate/toCancel',
+                                    dataType: 'json',
+                                    data:{
+                                        'type': type,
+                                        'targetId': targetId
+                                    },
+                                    type: 'put',
+                                    success: function(data){
+                                        console.log(data)
+                                        if(data.code==0){
+                                            //修改按钮
+                                            var parentNode = $(thisNode).parent()
+                                            $(parentNode).empty();
+                                            var newReportBtn = '<span style="float: right"><button class="btn btn-default disabled finished" type="'+ type+'" targetId="'+targetId+'">已取消</button></span>\n'
+                                            $(parentNode).append(newReportBtn)
+                                        }else{
+                                            if(data.hint)
+                                                alert(data.hint)
+                                        }
+                                    }
+
+                                })
+                            })
+
+
+
                         }else{
                             if(data.hint)
                                 alert(data.hint)
@@ -304,6 +380,30 @@
                     }
                 })
             })
+
+            $("#logoutNode").click(function(){
+                $.ajax({
+                    url: '/user/logout',
+                    type: 'get',
+                    success: function(data){
+                        if(data.code==0){
+                            alert("退出登录成功")
+                            $("#userNav").empty();
+                            $("#userNav").append('<li ><a href="/toRegister" target="_blank"><span class="glyphicon glyphicon-user"></span> 注册</a></li>\n' +
+                                '<li ><a href="/toLogin" target="_blank"><span class="glyphicon glyphicon-log-in"></span> 登录</a></li>');
+                        }else{
+                            alert("请稍后重试")
+                        }
+                        return false;
+                    },
+                    error: function(){
+                        alert("请稍后重试")
+                        return false;
+                    }
+                })
+                return false;
+            })
+
         })
     </script>
 </head>

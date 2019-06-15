@@ -11,12 +11,14 @@ import com.madao.api.form.UserRegisterForm;
 import com.madao.api.form.UserRegisterForm2;
 import com.madao.api.utils.KeyUtil;
 import com.madao.api.utils.MD5Encoder;
+import com.madao.api.utils.ResultUtil;
 import com.madao.user.bean.Role;
 import com.madao.user.bean.RoleExample;
 import com.madao.user.bean.UserExample;
 import com.madao.user.mapper.AuthorityMapper;
 import com.madao.user.mapper.RoleMapper;
 import com.madao.user.mapper.UserMapper;
+import com.madao.user.utils.PhoneCodeUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -231,7 +233,7 @@ public class UserService {
     }
 
     //发送手机验证码
-    public void sendPhoneCode(String account) {
+    public String sendPhoneCode(String account) {
         System.out.println(account);
         //检查是否到达重发短信的时间
         Long expire = stringRedisTemplate.getExpire(account + "-" + intervalPrefix);
@@ -243,13 +245,17 @@ public class UserService {
         System.out.println("验证码:------------------" + code);
         System.out.println(effectiveTime);
         System.out.println(interval);
-        //todo 发送验证码到手机
+        //发送验证码
+//        boolean result = PhoneCodeUtils.sendMessage(account, code);
+//        if(result==false){
+//            throw new ResultException("发送未成功，请稍后重试");
+//        }
 
         //将验证码放到redis中， 10分钟内有效
         stringRedisTemplate.opsForValue().set(account + "-" + codePrefix, code, Integer.parseInt(effectiveTime), TimeUnit.SECONDS);
         //设置两次发送短信的间隔
         stringRedisTemplate.opsForValue().set(account + "-" + intervalPrefix, code, Integer.parseInt(interval), TimeUnit.SECONDS);
-
+        return code;
     }
 
     //设置用户名
@@ -292,6 +298,16 @@ public class UserService {
         String newEncodePassword = MD5Encoder.getEncryptedWithSalt(newPassword, userId.toString());
 
         user.setPassword(newEncodePassword);
+        userMapper.updateByPrimaryKeySelective(user);
+    }
+
+    public void changeUserPassword(Long userId, String newPassword) {
+        User user = userMapper.selectByPrimaryKey(userId);
+        if(user==null){
+            throw new ResultException("用户不存在");
+        }
+        String encodePassword = MD5Encoder.getEncryptedWithSalt(newPassword, userId.toString());
+        user.setPassword(encodePassword);
         userMapper.updateByPrimaryKeySelective(user);
     }
 }

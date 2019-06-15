@@ -175,6 +175,19 @@ public class QuestionController {
         }
     }
 
+    @RequestMapping("/report/operate")
+    ResultView reportOperate(@RequestParam("targetId") Long targetId, @RequestParam("type") Byte type, @RequestParam("operate") Byte operate){
+        try {
+            questionService.operateReport(targetId, type, operate);
+            return ResultUtil.returnSuccess();
+        }catch(ResultException e){
+            return ResultUtil.returnFail(e.getMessage());
+        } catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.returnFail();
+        }
+    }
+
     //根据问题标题搜索问题，获取该问题点赞数最多的回答
     @RequestMapping("/question/search/byTitle")
     ResultView searchByQuestion(@RequestParam("searchContent") String searchContent, @RequestParam("pageNum") Integer pageNum, @RequestParam("pageSize") Integer pageSize){

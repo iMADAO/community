@@ -185,6 +185,20 @@ public class PostController {
         }
     }
 
+    //获取某层最后一页的评论
+    @ResponseBody
+    @RequestMapping("/post/comment/lastPage")
+    ResultView getLastPageComment(@RequestParam("segmentId") Long segmentId, @RequestParam("pageSize") Integer pageSize){
+        try {
+            PageInfo<PostCommentDTO> pageInfo = postCommentService.getLastPageComment(segmentId, pageSize);
+            return ResultUtil.returnSuccess(pageInfo);
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.returnFail();
+        }
+
+    }
+
 
     @ResponseBody
     @RequestMapping("/post/content/abstract")

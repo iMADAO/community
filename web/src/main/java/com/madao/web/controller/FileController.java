@@ -1,5 +1,6 @@
 package com.madao.web.controller;
 
+import com.madao.api.dto.UserDTO;
 import com.madao.api.entity.Article;
 import com.madao.api.entity.FileUploadResult;
 import com.madao.api.entity.User;
@@ -35,7 +36,7 @@ public class FileController {
     @ResponseBody
     @RequestMapping("/docfile/upload")
     public ResultView upload(@RequestParam("file") MultipartFile docFile, HttpServletRequest request) {
-        User user = (User) request.getSession().getAttribute("user");
+        UserDTO user = (UserDTO) request.getSession().getAttribute("user");
         if (user == null) {
             return ResultUtil.returnFail("用户未登录,请登录后重试");
         }

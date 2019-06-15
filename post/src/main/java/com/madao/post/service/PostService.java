@@ -128,6 +128,9 @@ public class PostService {
 
     //尝试从缓存中获取用户信息，如果没有，从数据库获取，并缓存
     public User getUserInfoInCache(Long userId){
+        System.out.println(userId);
+        if(userId==null)
+            return new User();
         User user = null;
         try {
            user  = (User) redisTemplate.opsForValue().get(USER_PREFIX + userId);
@@ -301,7 +304,12 @@ public class PostService {
             segmentContentMapper.insertSelective(segmentContent);
             i++;
         }
-        return postSegment;
+
+        //更性更新帖子的楼数
+        Post post =  postMapper.selectByPrimaryKey(postForm.getPostId());
+        post.setSegmentCount(post.getSegmentCount()+1);
+        postMapper.updateByPrimaryKeySelective(post);
+      return postSegment;
     }
 
     public List<List<String>> getContentByPostIdList(List<Long> postIdList) {

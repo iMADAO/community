@@ -2,36 +2,81 @@
 <project version="4">
   <component name="BookmarkManager">
     <bookmark url="file://$PROJECT_DIR$/web/src/main/resources/templates/login.html" line="24" mnemonic="3" />
-    <bookmark url="file://$PROJECT_DIR$/question/src/main/java/com/madao/question/controller/QuestionController.java" line="89" mnemonic="2" />
+    <bookmark url="file://$PROJECT_DIR$/api/src/main/java/com/madao/api/service/PostService.java" line="61" mnemonic="2" />
+    <bookmark url="file://$PROJECT_DIR$/web/src/main/resources/templates/admin.html" line="362" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b913e38f-8c0d-478a-a736-fb2e35420f75" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/api/src/main/java/com/madao/api/dto/PostDTO.java" afterPath="$PROJECT_DIR$/api/src/main/java/com/madao/api/dto/PostDTO.java" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/api/src/main/java/com/madao/api/utils/SmsSendRequest.java" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/api/src/main/java/com/madao/api/utils/SmsSendResponse.java" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" afterPath="$PROJECT_DIR$/.idea/compiler.xml" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" afterPath="$PROJECT_DIR$/.idea/encodings.xml" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" afterPath="$PROJECT_DIR$/.idea/modules.xml" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change beforePath="$PROJECT_DIR$/api/src/main/java/com/madao/api/dto/ReportDTO.java" afterPath="$PROJECT_DIR$/api/src/main/java/com/madao/api/dto/ReportDTO.java" />
+      <change beforePath="$PROJECT_DIR$/api/src/main/java/com/madao/api/entity/Report.java" afterPath="$PROJECT_DIR$/api/src/main/java/com/madao/api/entity/Report.java" />
+      <change beforePath="$PROJECT_DIR$/api/src/main/java/com/madao/api/form/PaswordChangeForm.java" afterPath="$PROJECT_DIR$/api/src/main/java/com/madao/api/form/PasswordChangeForm.java" />
       <change beforePath="$PROJECT_DIR$/api/src/main/java/com/madao/api/service/PostService.java" afterPath="$PROJECT_DIR$/api/src/main/java/com/madao/api/service/PostService.java" />
       <change beforePath="$PROJECT_DIR$/api/src/main/java/com/madao/api/service/QuestionService.java" afterPath="$PROJECT_DIR$/api/src/main/java/com/madao/api/service/QuestionService.java" />
       <change beforePath="$PROJECT_DIR$/api/src/main/java/com/madao/api/service/UserService.java" afterPath="$PROJECT_DIR$/api/src/main/java/com/madao/api/service/UserService.java" />
-      <change beforePath="$PROJECT_DIR$/api/src/main/java/com/madao/api/utils/ResultView.java" afterPath="$PROJECT_DIR$/api/src/main/java/com/madao/api/utils/ResultView.java" />
+      <change beforePath="$PROJECT_DIR$/article/src/main/java/com/madao/article/service/ArticleService.java" afterPath="$PROJECT_DIR$/article/src/main/java/com/madao/article/service/ArticleService.java" />
+      <change beforePath="$PROJECT_DIR$/article/src/test/java/com/madao/article/ArticleApplicationTests.java" afterPath="$PROJECT_DIR$/article/src/test/java/com/madao/article/ArticleApplicationTests.java" />
+      <change beforePath="$PROJECT_DIR$/common/common.iml" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/common/pom.xml" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/madao/common/Exception/ResultException.java" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/madao/common/Exception/ResultExceptionHandler.java" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/madao/common/enums/ErrorEnum.java" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/madao/common/enums/ResultEnum.java" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/madao/common/form/UserLoginForm.java" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/madao/common/utils/FormErrorUtil.java" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/madao/common/utils/KeyUtil.java" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/madao/common/utils/MD5Encoder.java" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/madao/common/utils/ResultUtil.java" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/common/src/main/java/com/madao/common/utils/ResultView.java" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/common/target/classes/com/madao/common/form/UserLoginForm.class" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/common/target/common-1.0-SNAPSHOT.jar" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/common/target/maven-archiver/pom.properties" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/common/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/common/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/common/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/demo/.gitignore" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/demo/.mvn/wrapper/MavenWrapperDownloader.java" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/demo/.mvn/wrapper/maven-wrapper.jar" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/demo/.mvn/wrapper/maven-wrapper.properties" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/demo/mvnw" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/demo/mvnw.cmd" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/demo/pom.xml" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/demo/src/main/java/com/madao/demo/DemoApplication.java" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/demo/src/main/java/com/madao/demo/controller/TestController.java" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/demo/src/main/resources/application.yml" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/demo/src/test/java/com/madao/demo/DemoApplicationTests.java" afterPath="" />
       <change beforePath="$PROJECT_DIR$/post/src/main/java/com/madao/post/controller/PostController.java" afterPath="$PROJECT_DIR$/post/src/main/java/com/madao/post/controller/PostController.java" />
+      <change beforePath="$PROJECT_DIR$/post/src/main/java/com/madao/post/service/PostCommentService.java" afterPath="$PROJECT_DIR$/post/src/main/java/com/madao/post/service/PostCommentService.java" />
       <change beforePath="$PROJECT_DIR$/post/src/main/java/com/madao/post/service/PostService.java" afterPath="$PROJECT_DIR$/post/src/main/java/com/madao/post/service/PostService.java" />
-      <change beforePath="$PROJECT_DIR$/post/src/main/resources/mybatis/mapper/PostSegmentMapper.xml" afterPath="$PROJECT_DIR$/post/src/main/resources/mybatis/mapper/PostSegmentMapper.xml" />
-      <change beforePath="$PROJECT_DIR$/post/src/test/java/com/madao/post/service/PostServiceTest.java" afterPath="$PROJECT_DIR$/post/src/test/java/com/madao/post/service/PostServiceTest.java" />
-      <change beforePath="$PROJECT_DIR$/question/src/main/java/com/madao/question/controller/AnswerController.java" afterPath="$PROJECT_DIR$/question/src/main/java/com/madao/question/controller/AnswerController.java" />
       <change beforePath="$PROJECT_DIR$/question/src/main/java/com/madao/question/controller/QuestionController.java" afterPath="$PROJECT_DIR$/question/src/main/java/com/madao/question/controller/QuestionController.java" />
-      <change beforePath="$PROJECT_DIR$/question/src/main/java/com/madao/question/service/AnswerService.java" afterPath="$PROJECT_DIR$/question/src/main/java/com/madao/question/service/AnswerService.java" />
       <change beforePath="$PROJECT_DIR$/question/src/main/java/com/madao/question/service/QuestionService.java" afterPath="$PROJECT_DIR$/question/src/main/java/com/madao/question/service/QuestionService.java" />
+      <change beforePath="$PROJECT_DIR$/user/pom.xml" afterPath="$PROJECT_DIR$/user/pom.xml" />
       <change beforePath="$PROJECT_DIR$/user/src/main/java/com/madao/user/controller/UserController.java" afterPath="$PROJECT_DIR$/user/src/main/java/com/madao/user/controller/UserController.java" />
       <change beforePath="$PROJECT_DIR$/user/src/main/java/com/madao/user/service/UserService.java" afterPath="$PROJECT_DIR$/user/src/main/java/com/madao/user/service/UserService.java" />
-      <change beforePath="$PROJECT_DIR$/user/src/main/resources/application.yml" afterPath="$PROJECT_DIR$/user/src/main/resources/application.yml" />
+      <change beforePath="$PROJECT_DIR$/user/src/test/java/com/madao/user/UserApplicationTests.java" afterPath="$PROJECT_DIR$/user/src/test/java/com/madao/user/UserApplicationTests.java" />
+      <change beforePath="$PROJECT_DIR$/web/src/main/java/com/madao/web/controller/ArticleController.java" afterPath="$PROJECT_DIR$/web/src/main/java/com/madao/web/controller/ArticleController.java" />
+      <change beforePath="$PROJECT_DIR$/web/src/main/java/com/madao/web/controller/CollectController.java" afterPath="$PROJECT_DIR$/web/src/main/java/com/madao/web/controller/CollectController.java" />
+      <change beforePath="$PROJECT_DIR$/web/src/main/java/com/madao/web/controller/FileController.java" afterPath="$PROJECT_DIR$/web/src/main/java/com/madao/web/controller/FileController.java" />
       <change beforePath="$PROJECT_DIR$/web/src/main/java/com/madao/web/controller/PostController.java" afterPath="$PROJECT_DIR$/web/src/main/java/com/madao/web/controller/PostController.java" />
       <change beforePath="$PROJECT_DIR$/web/src/main/java/com/madao/web/controller/QuestionController.java" afterPath="$PROJECT_DIR$/web/src/main/java/com/madao/web/controller/QuestionController.java" />
       <change beforePath="$PROJECT_DIR$/web/src/main/java/com/madao/web/controller/UserController.java" afterPath="$PROJECT_DIR$/web/src/main/java/com/madao/web/controller/UserController.java" />
-      <change beforePath="$PROJECT_DIR$/web/src/main/resources/templates/homePage.html" afterPath="$PROJECT_DIR$/web/src/main/resources/templates/homePage.html" />
+      <change beforePath="$PROJECT_DIR$/web/src/main/resources/application.yml" afterPath="$PROJECT_DIR$/web/src/main/resources/application.yml" />
+      <change beforePath="$PROJECT_DIR$/web/src/main/resources/templates/admin.html" afterPath="$PROJECT_DIR$/web/src/main/resources/templates/admin.html" />
+      <change beforePath="$PROJECT_DIR$/web/src/main/resources/templates/adminLogin.html" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/web/src/main/resources/templates/article.html" afterPath="$PROJECT_DIR$/web/src/main/resources/templates/article.html" />
       <change beforePath="$PROJECT_DIR$/web/src/main/resources/templates/login.html" afterPath="$PROJECT_DIR$/web/src/main/resources/templates/login.html" />
       <change beforePath="$PROJECT_DIR$/web/src/main/resources/templates/post.html" afterPath="$PROJECT_DIR$/web/src/main/resources/templates/post.html" />
       <change beforePath="$PROJECT_DIR$/web/src/main/resources/templates/postInfo.html" afterPath="$PROJECT_DIR$/web/src/main/resources/templates/postInfo.html" />
       <change beforePath="$PROJECT_DIR$/web/src/main/resources/templates/question.html" afterPath="$PROJECT_DIR$/web/src/main/resources/templates/question.html" />
       <change beforePath="$PROJECT_DIR$/web/src/main/resources/templates/questionInfo.html" afterPath="$PROJECT_DIR$/web/src/main/resources/templates/questionInfo.html" />
-      <change beforePath="$PROJECT_DIR$/web/src/main/resources/templates/test1.html" afterPath="$PROJECT_DIR$/web/src/main/resources/templates/test1.html" />
+      <change beforePath="$PROJECT_DIR$/web/src/main/resources/templates/retrieve.html" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/web/src/main/resources/templates/validate.html" afterPath="" />
       <change beforePath="$PROJECT_DIR$/web/src/test/java/com/madao/web/WebApplicationTests.java" afterPath="$PROJECT_DIR$/web/src/test/java/com/madao/web/WebApplicationTests.java" />
     </list>
     <ignored path="$PROJECT_DIR$/eureka-server/target/" />
@@ -42,6 +87,7 @@
     <ignored path="$PROJECT_DIR$/web/target/" />
     <ignored path="$PROJECT_DIR$/question/target/" />
     <ignored path="$PROJECT_DIR$/post/target/" />
+    <ignored path="$PROJECT_DIR$/article/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -71,168 +117,33 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="questionInfo.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/web/src/main/resources/templates/questionInfo.html">
+      <file leaf-file-name="UserController.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/web/src/main/java/com/madao/web/controller/UserController.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="101">
-              <caret line="555" column="0" lean-forward="true" selection-start-line="453" selection-start-column="11" selection-end-line="555" selection-end-column="0" />
+            <state relative-caret-position="239">
+              <caret line="166" column="41" lean-forward="false" selection-start-line="166" selection-start-column="41" selection-end-line="166" selection-end-column="41" />
               <folding>
-                <element signature="e#1361#2436#0" expanded="false" />
-                <element signature="e#2589#3710#0" expanded="false" />
-                <element signature="e#3901#4734#0" expanded="false" />
-                <element signature="e#4808#6296#0" expanded="false" />
-                <element signature="e#6357#13213#0" expanded="false" />
-                <element signature="e#13261#16602#0" expanded="false" />
-                <element signature="e#29191#30488#0" expanded="false" />
-                <element signature="e#30584#32391#0" expanded="false" />
-                <element signature="e#33896#34713#0" expanded="false" />
-                <marker date="1558173823457" expanded="true" signature="18037:18067" ph="..." />
-                <marker date="1558173823457" expanded="true" signature="18555:18597" ph="..." />
-                <marker date="1558173823457" expanded="true" signature="18813:18843" ph="..." />
-                <marker date="1558173823457" expanded="true" signature="19014:19027" ph="..." />
-                <marker date="1558173823457" expanded="true" signature="19962:19993" ph="..." />
-                <marker date="1558173823457" expanded="true" signature="21362:21405" ph="..." />
-                <marker date="1558173823457" expanded="true" signature="21442:21452" ph="..." />
-                <marker date="1558173823457" expanded="true" signature="21510:21554" ph="..." />
-                <marker date="1558173823457" expanded="true" signature="34963:34996" ph="..." />
-                <marker date="1558173823457" expanded="true" signature="35039:35855" ph="..." />
-                <marker date="1558173823457" expanded="true" signature="35296:35308" ph="..." />
-                <marker date="1558173823457" expanded="true" signature="35320:35801" ph="..." />
-                <marker date="1558173823457" expanded="true" signature="35403:35429" ph="..." />
-                <marker date="1558173823457" expanded="true" signature="36544:36555" ph="..." />
+                <element signature="imports" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="postInfo.html" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/web/src/main/resources/templates/postInfo.html">
+      <file leaf-file-name="ArticleCategoryExample.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/article/src/main/java/com/madao/article/bean/ArticleCategoryExample.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1009">
-              <caret line="67" column="50" lean-forward="false" selection-start-line="67" selection-start-column="36" selection-end-line="67" selection-end-column="50" />
-              <folding>
-                <element signature="e#9573#10521#0" expanded="false" />
-                <element signature="e#10571#11782#0" expanded="false" />
-                <element signature="e#11849#12540#0" expanded="false" />
-                <element signature="e#12588#14405#0" expanded="false" />
-                <element signature="e#14500#15023#0" expanded="false" />
-                <element signature="e#15089#16624#0" expanded="false" />
-                <element signature="n#style#0;n#div#1;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-                <element signature="e#19995#20002#1" expanded="true" />
-                <element signature="n#style#0;n#span#0;n#div#1;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#div#0;n#div#1;n#div#1;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#img#0;n#div#0;n#div#1;n#div#1;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#div#1;n#div#1;n#div#1;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#div#0;n#div#1;n#div#1;n#div#1;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#img#0;n#div#0;n#div#1;n#div#1;n#div#1;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#div#1;n#div#1;n#div#1;n#div#1;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#div#0;n#div#2;n#div#1;n#div#1;n#div#1;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#div#1;n#div#2;n#div#1;n#div#1;n#div#1;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-                <marker date="1558199326734" expanded="true" signature="1405:1436" ph="..." />
-                <marker date="1558199326734" expanded="true" signature="3631:3673" ph="..." />
-                <marker date="1558199326734" expanded="true" signature="3897:3927" ph="..." />
-                <marker date="1558199326734" expanded="true" signature="4106:4119" ph="..." />
-                <marker date="1558199326734" expanded="true" signature="4834:4865" ph="..." />
-                <marker date="1558199326734" expanded="true" signature="12315:12327" ph="..." />
-                <marker date="1558199326734" expanded="true" signature="12383:12409" ph="..." />
-                <marker date="1558199326734" expanded="true" signature="12786:12819" ph="..." />
-                <marker date="1558199326734" expanded="true" signature="13071:13083" ph="..." />
-                <marker date="1558199326734" expanded="true" signature="13150:13176" ph="..." />
-                <marker date="1558199326734" expanded="true" signature="14214:14225" ph="..." />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="PostController.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/web/src/main/java/com/madao/web/controller/PostController.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="54">
-              <caret line="194" column="17" lean-forward="true" selection-start-line="194" selection-start-column="17" selection-end-line="194" selection-end-column="17" />
-              <folding>
-                <element signature="e#2262#2263#0" expanded="true" />
-                <element signature="e#2315#2316#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="PostService.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/api/src/main/java/com/madao/api/service/PostService.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="126">
-              <caret line="48" column="162" lean-forward="true" selection-start-line="47" selection-start-column="3" selection-end-line="48" selection-end-column="162" />
+            <state relative-caret-position="72">
+              <caret line="5" column="13" lean-forward="false" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="question.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/web/src/main/resources/templates/question.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="192">
-              <caret line="704" column="40" lean-forward="false" selection-start-line="704" selection-start-column="40" selection-end-line="704" selection-end-column="40" />
-              <folding>
-                <element signature="e#947#1095#0" expanded="false" />
-                <element signature="e#1164#2239#0" expanded="false" />
-                <element signature="e#2340#3457#0" expanded="false" />
-                <element signature="e#3522#4323#0" expanded="false" />
-                <element signature="e#4397#6476#0" expanded="false" />
-                <element signature="e#6555#7524#0" expanded="false" />
-                <element signature="e#7587#10845#0" expanded="false" />
-                <element signature="e#10893#14326#0" expanded="false" />
-                <element signature="e#21005#31529#0" expanded="false" />
-                <element signature="e#31629#33216#0" expanded="false" />
-                <element signature="n#style#0;n#a#0;n#div#2;n#div#0;n#div#1;n#div#1;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#div#1;n#div#1;n#div#1;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-                <marker date="1558189739257" expanded="true" signature="15760:15790" ph="..." />
-                <marker date="1558189739257" expanded="true" signature="16278:16320" ph="..." />
-                <marker date="1558189739257" expanded="true" signature="16536:16566" ph="..." />
-                <marker date="1558189739257" expanded="true" signature="16737:16750" ph="..." />
-                <marker date="1558189739257" expanded="true" signature="17685:17716" ph="..." />
-                <marker date="1558189739257" expanded="true" signature="19121:19164" ph="..." />
-                <marker date="1558189739257" expanded="true" signature="19201:19211" ph="..." />
-                <marker date="1558189739257" expanded="true" signature="19269:19313" ph="..." />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="PostController.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/post/src/main/java/com/madao/post/controller/PostController.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="36">
-              <caret line="101" column="56" lean-forward="true" selection-start-line="101" selection-start-column="56" selection-end-line="101" selection-end-column="56" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="PostService.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/post/src/main/java/com/madao/post/service/PostService.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="288">
-              <caret line="59" column="49" lean-forward="false" selection-start-line="59" selection-start-column="49" selection-end-line="59" selection-end-column="49" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="PostCommentService.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/post/src/main/java/com/madao/post/service/PostCommentService.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="123">
-              <caret line="35" column="36" lean-forward="false" selection-start-line="35" selection-start-column="36" selection-end-line="35" selection-end-column="36" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="PostCommentDTO.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/api/src/main/java/com/madao/api/dto/PostCommentDTO.java">
+      <file leaf-file-name="ArticleController.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/article/src/main/java/com/madao/article/controller/ArticleController.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="90">
-              <caret line="9" column="13" lean-forward="false" selection-start-line="9" selection-start-column="13" selection-end-line="9" selection-end-column="13" />
+              <caret line="23" column="13" lean-forward="false" selection-start-line="23" selection-start-column="13" selection-end-line="23" selection-end-column="13" />
               <folding />
             </state>
           </provider>
@@ -243,8 +154,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Enum" />
         <option value="JUnit4 Test Class" />
+        <option value="Enum" />
         <option value="HTML File" />
         <option value="Class" />
       </list>
@@ -252,37 +163,40 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>commentCount</find>
-      <find>type=answerNode</find>
-      <find>answerNode</find>
-      <find>末页</find>
-      <find>/answer/comment</find>
-      <find>disagreeAnswer</find>
-      <find>百度</find>
-      <find>addAnswerComment</find>
-      <find>addQuestion</find>
-      <find>collectQuestion</find>
-      <find>list</find>
-      <find>toQuestion</find>
-      <find>collect</find>
-      <find>answer/collect/getList</find>
-      <find>首页</find>
-      <find>answer/collect</find>
-      <find>hr</find>
-      <find>border</find>
-      <find>color</find>
-      <find>评论</find>
-      <find>getPostListByCategoryId</find>
-      <find>each</find>
-      <find>getPostSegmentByPostId</find>
-      <find>commentNav</find>
-      <find>ul</find>
-      <find>userPic</find>
+      <find>default</find>
+      <find>commentPageSize</find>
       <find>toPostInfo</find>
-      <find>comment</find>
-      <find>answer</find>
-      <find>commentNavNode</find>
+      <find>post/info/{postID}</find>
+      <find>绑定手机</find>
+      <find>size</find>
+      <find>cache</find>
+      <find>info</find>
+      <find>pageSize</find>
+      <find>add</find>
+      <find>addPostSegment</find>
+      <find>aa</find>
+      <find>请输入</find>
+      <find>druid</find>
+      <find>ise</find>
+      <find>file</find>
+      <find>DirectoryStream</find>
+      <find>uploadForm</find>
+      <find>each</find>
+      <find>redis</find>
+      <find>click</find>
+      <find>dev</find>
+      <find>logout</find>
+      <find>pageNavNode</find>
+      <find>checkif</find>
+      <find>upload</find>
+      <find>pic</find>
+      <find>pass</find>
+      <find>password</find>
+      <find>userMapper</find>
     </findStrings>
+    <replaceStrings>
+      <replace>&quot;</replace>
+    </replaceStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -295,57 +209,57 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/api/src/main/java/com/madao/api/dto/QuestionDTO.java" />
-        <option value="$PROJECT_DIR$/api/src/main/java/com/madao/api/dto/PostSegmentDTO.java" />
-        <option value="$PROJECT_DIR$/api/src/main/java/com/madao/api/dto/PostCommentDTO.java" />
-        <option value="$PROJECT_DIR$/api/src/main/java/com/madao/api/dto/AnswerDTO.java" />
-        <option value="$PROJECT_DIR$/api/src/main/java/com/madao/api/dto/AnswerCommentDTO.java" />
-        <option value="$PROJECT_DIR$/api/src/main/java/com/madao/api/entity/Agree.java" />
-        <option value="$PROJECT_DIR$/api/src/main/java/com/madao/api/entity/Answer.java" />
-        <option value="$PROJECT_DIR$/api/src/main/java/com/madao/api/entity/AnswerComment.java" />
-        <option value="$PROJECT_DIR$/api/src/main/java/com/madao/api/entity/AnswerContent.java" />
-        <option value="$PROJECT_DIR$/api/src/main/java/com/madao/api/entity/Collect.java" />
-        <option value="$PROJECT_DIR$/api/src/main/java/com/madao/api/entity/SegmentContent.java" />
-        <option value="$PROJECT_DIR$/api/src/main/java/com/madao/api/entity/PostComment.java" />
-        <option value="$PROJECT_DIR$/api/src/main/java/com/madao/api/entity/PostSegment.java" />
-        <option value="$PROJECT_DIR$/api/src/main/java/com/madao/api/entity/Post.java" />
-        <option value="$PROJECT_DIR$/api/src/main/java/com/madao/api/entity/Question.java" />
-        <option value="$PROJECT_DIR$/user/src/main/resources/mybatis/mapper/UserMapper.xml" />
-        <option value="$PROJECT_DIR$/post/src/main/java/com/madao/post/service/PostCommentService.java" />
-        <option value="$PROJECT_DIR$/post/src/main/java/com/madao/post/service/PostCategoryService.java" />
-        <option value="$PROJECT_DIR$/post/src/test/java/com/madao/post/PostApplicationTests.java" />
-        <option value="$PROJECT_DIR$/api/src/main/java/com/madao/api/form/ContentForm.java" />
-        <option value="$PROJECT_DIR$/web/src/main/resources/templates/index.html" />
-        <option value="$PROJECT_DIR$/api/src/main/java/com/madao/api/form/PostForm.java" />
-        <option value="$PROJECT_DIR$/api/src/main/java/com/madao/api/form/PostSegmentForm.java" />
-        <option value="$PROJECT_DIR$/web/src/main/resources/templates/login.html" />
-        <option value="$PROJECT_DIR$/user/src/main/resources/application.yml" />
-        <option value="$PROJECT_DIR$/user/src/main/java/com/madao/user/service/UserService.java" />
-        <option value="$PROJECT_DIR$/web/src/main/resources/templates/homePage.html" />
-        <option value="$PROJECT_DIR$/api/src/main/java/com/madao/api/utils/ResultView.java" />
-        <option value="$PROJECT_DIR$/api/src/main/java/com/madao/api/utils/ResultUtil.java" />
-        <option value="$PROJECT_DIR$/api/src/main/java/com/madao/api/service/UserService.java" />
-        <option value="$PROJECT_DIR$/user/src/main/java/com/madao/user/controller/UserController.java" />
-        <option value="$PROJECT_DIR$/web/src/main/java/com/madao/web/controller/UserController.java" />
-        <option value="$PROJECT_DIR$/web/src/main/resources/templates/test1.html" />
-        <option value="$PROJECT_DIR$/question/src/main/java/com/madao/question/controller/AnswerController.java" />
-        <option value="$PROJECT_DIR$/question/src/main/java/com/madao/question/service/AnswerService.java" />
-        <option value="$PROJECT_DIR$/question/src/main/java/com/madao/question/service/QuestionService.java" />
-        <option value="$PROJECT_DIR$/question/src/main/java/com/madao/question/controller/QuestionController.java" />
-        <option value="$PROJECT_DIR$/api/src/main/java/com/madao/api/service/QuestionService.java" />
-        <option value="$PROJECT_DIR$/web/src/main/java/com/madao/web/controller/QuestionController.java" />
-        <option value="$PROJECT_DIR$/web/src/main/resources/templates/questionInfo.html" />
-        <option value="$PROJECT_DIR$/post/src/main/resources/mybatis/mapper/PostSegmentMapper.xml" />
-        <option value="$PROJECT_DIR$/api/src/main/java/com/madao/api/dto/PostDTO.java" />
-        <option value="$PROJECT_DIR$/web/src/main/resources/templates/post.html" />
+        <option value="$PROJECT_DIR$/question/src/main/java/com/madao/question/mapper/AnswerMapper.java" />
+        <option value="$PROJECT_DIR$/question/src/main/resources/mybatis/mapper/AnswerMapper.xml" />
+        <option value="$PROJECT_DIR$/question/src/test/java/com/madao/question/QuestionApplicationTests.java" />
+        <option value="$PROJECT_DIR$/article/src/main/resources/generatorConfig.xml" />
+        <option value="$PROJECT_DIR$/api/src/main/java/com/madao/api/service/ArticleService.java" />
+        <option value="$PROJECT_DIR$/api/src/main/java/com/madao/api/entity/Article.java" />
+        <option value="$PROJECT_DIR$/article/src/main/resources/mybatis/mapper/ArticleMapper.xml" />
+        <option value="$PROJECT_DIR$/article/src/main/java/com/madao/article/mapper/ArticleMapper.java" />
+        <option value="$PROJECT_DIR$/article/src/main/java/com/madao/article/controller/ArticleController.java" />
+        <option value="$PROJECT_DIR$/api/src/main/java/com/madao/api/utils/SmsSendResponse.java" />
+        <option value="$PROJECT_DIR$/api/src/main/java/com/madao/api/utils/ChuangLanSmsUtil.java" />
+        <option value="$PROJECT_DIR$/user/pom.xml" />
+        <option value="$PROJECT_DIR$/user/src/test/java/com/madao/user/UserApplicationTests.java" />
+        <option value="$PROJECT_DIR$/web/src/main/java/com/madao/web/AuthorityInterceptor.java" />
         <option value="$PROJECT_DIR$/web/src/test/java/com/madao/web/WebApplicationTests.java" />
-        <option value="$PROJECT_DIR$/post/src/test/java/com/madao/post/service/PostServiceTest.java" />
-        <option value="$PROJECT_DIR$/web/src/main/resources/templates/question.html" />
-        <option value="$PROJECT_DIR$/post/src/main/java/com/madao/post/service/PostService.java" />
-        <option value="$PROJECT_DIR$/web/src/main/java/com/madao/web/controller/PostController.java" />
-        <option value="$PROJECT_DIR$/api/src/main/java/com/madao/api/service/PostService.java" />
+        <option value="$PROJECT_DIR$/web/src/test/java/com/madao/web/CheckCode.java" />
+        <option value="$PROJECT_DIR$/web/src/main/java/com/madao/web/interceptor/AuthorityInterceptor.java" />
+        <option value="$PROJECT_DIR$/web/src/main/resources/application.yml" />
+        <option value="$PROJECT_DIR$/web/src/main/java/com/madao/web/interceptor/MyWebConfig.java" />
+        <option value="$PROJECT_DIR$/web/src/main/java/com/madao/web/controller/QuestionController.java" />
         <option value="$PROJECT_DIR$/post/src/main/java/com/madao/post/controller/PostController.java" />
+        <option value="$PROJECT_DIR$/api/src/main/java/com/madao/api/service/PostService.java" />
+        <option value="$PROJECT_DIR$/web/src/main/java/com/madao/web/controller/PostController.java" />
+        <option value="$PROJECT_DIR$/web/src/main/java/com/madao/web/controller/FileController.java" />
+        <option value="$PROJECT_DIR$/web/src/main/java/com/madao/web/controller/ArticleController.java" />
+        <option value="$PROJECT_DIR$/web/src/main/java/com/madao/web/interceptor/AuthorityBanInterceptor.java" />
+        <option value="$PROJECT_DIR$/web/src/main/java/com/madao/web/interceptor/AuthorityGetInterceptor.java" />
+        <option value="$PROJECT_DIR$/api/src/main/java/com/madao/api/service/QuestionService.java" />
+        <option value="$PROJECT_DIR$/question/src/main/java/com/madao/question/controller/QuestionController.java" />
+        <option value="$PROJECT_DIR$/web/src/main/java/com/madao/web/controller/CollectController.java" />
+        <option value="$PROJECT_DIR$/api/src/main/java/com/madao/api/entity/Report.java" />
+        <option value="$PROJECT_DIR$/api/src/main/java/com/madao/api/dto/ReportDTO.java" />
+        <option value="$PROJECT_DIR$/web/src/main/resources/templates/admin.html" />
+        <option value="$PROJECT_DIR$/user/src/main/java/com/madao/user/utils/PhoneCodeUtils.java" />
+        <option value="$PROJECT_DIR$/web/src/main/resources/templates/login.html" />
+        <option value="$PROJECT_DIR$/user/src/main/java/com/madao/user/controller/UserController.java" />
+        <option value="$PROJECT_DIR$/user/src/main/java/com/madao/user/service/UserService.java" />
+        <option value="$PROJECT_DIR$/api/src/main/java/com/madao/api/service/UserService.java" />
+        <option value="$PROJECT_DIR$/article/src/test/java/com/madao/article/ArticleApplicationTests.java" />
+        <option value="$PROJECT_DIR$/web/src/main/resources/templates/question.html" />
+        <option value="$PROJECT_DIR$/web/src/main/resources/templates/questionInfo.html" />
+        <option value="$PROJECT_DIR$/question/src/main/java/com/madao/question/service/QuestionService.java" />
+        <option value="$PROJECT_DIR$/post/src/main/java/com/madao/post/service/PostCommentService.java" />
+        <option value="$PROJECT_DIR$/article/src/main/java/com/madao/article/service/ArticleService.java" />
+        <option value="$PROJECT_DIR$/web/src/main/resources/templates/homePage.html" />
+        <option value="$PROJECT_DIR$/web/src/main/resources/templates/post.html" />
+        <option value="$PROJECT_DIR$/post/src/main/java/com/madao/post/service/PostService.java" />
+        <option value="$PROJECT_DIR$/web/src/main/resources/templates/article.html" />
         <option value="$PROJECT_DIR$/web/src/main/resources/templates/postInfo.html" />
+        <option value="$PROJECT_DIR$/api/src/main/java/com/madao/api/form/PaswordChangeForm.java" />
+        <option value="$PROJECT_DIR$/web/src/main/java/com/madao/web/controller/UserController.java" />
       </list>
     </option>
   </component>
@@ -385,10 +299,10 @@
     </treeState>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="274" />
+    <option name="x" value="66" />
     <option name="y" value="28" />
-    <option name="width" value="1221" />
-    <option name="height" value="706" />
+    <option name="width" value="1195" />
+    <option name="height" value="583" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -406,7 +320,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
+      <pane id="Scratches" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -447,138 +362,71 @@
               <item name="main" type="462c0819:PsiDirectoryNode" />
               <item name="java" type="462c0819:PsiDirectoryNode" />
               <item name="api" type="462c0819:PsiDirectoryNode" />
-              <item name="service" type="462c0819:PsiDirectoryNode" />
+              <item name="entity" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="project" type="b2602c69:ProjectViewProjectNode" />
-              <item name="post" type="462c0819:PsiDirectoryNode" />
+              <item name="article" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="project" type="b2602c69:ProjectViewProjectNode" />
-              <item name="post" type="462c0819:PsiDirectoryNode" />
+              <item name="article" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="project" type="b2602c69:ProjectViewProjectNode" />
-              <item name="post" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="project" type="b2602c69:ProjectViewProjectNode" />
-              <item name="post" type="462c0819:PsiDirectoryNode" />
+              <item name="article" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="project" type="b2602c69:ProjectViewProjectNode" />
-              <item name="post" type="462c0819:PsiDirectoryNode" />
+              <item name="article" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="main" type="462c0819:PsiDirectoryNode" />
               <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="post" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="project" type="b2602c69:ProjectViewProjectNode" />
-              <item name="post" type="462c0819:PsiDirectoryNode" />
+              <item name="article" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="main" type="462c0819:PsiDirectoryNode" />
               <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="post" type="462c0819:PsiDirectoryNode" />
+              <item name="article" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="project" type="b2602c69:ProjectViewProjectNode" />
+              <item name="article" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="article" type="462c0819:PsiDirectoryNode" />
+              <item name="bean" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="project" type="b2602c69:ProjectViewProjectNode" />
+              <item name="article" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="article" type="462c0819:PsiDirectoryNode" />
               <item name="controller" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="project" type="b2602c69:ProjectViewProjectNode" />
-              <item name="post" type="462c0819:PsiDirectoryNode" />
+              <item name="article" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="test" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="project" type="b2602c69:ProjectViewProjectNode" />
-              <item name="post" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="test" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
               <item name="java" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="project" type="b2602c69:ProjectViewProjectNode" />
-              <item name="post" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="test" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="post" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="project" type="b2602c69:ProjectViewProjectNode" />
-              <item name="post" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="test" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="post" type="462c0819:PsiDirectoryNode" />
+              <item name="article" type="462c0819:PsiDirectoryNode" />
               <item name="service" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="project" type="b2602c69:ProjectViewProjectNode" />
-              <item name="web" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="project" type="b2602c69:ProjectViewProjectNode" />
-              <item name="web" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="project" type="b2602c69:ProjectViewProjectNode" />
-              <item name="web" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="project" type="b2602c69:ProjectViewProjectNode" />
-              <item name="web" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="project" type="b2602c69:ProjectViewProjectNode" />
-              <item name="web" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="web" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="project" type="b2602c69:ProjectViewProjectNode" />
-              <item name="web" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="web" type="462c0819:PsiDirectoryNode" />
-              <item name="controller" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="project" type="b2602c69:ProjectViewProjectNode" />
-              <item name="web" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="resources" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="project" type="b2602c69:ProjectViewProjectNode" />
-              <item name="web" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="resources" type="462c0819:PsiDirectoryNode" />
-              <item name="templates" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
       <pane id="AndroidView" />
-      <pane id="Scratches" />
-      <pane id="Scope" />
+      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -596,7 +444,7 @@
     <property name="RequestMappingsPanelOrder1" value="1" />
     <property name="RequestMappingsPanelWidth2" value="75" />
     <property name="RequestMappingsPanelOrder2" value="2" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/post" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/disk" />
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary" value="JUnit4" />
   </component>
@@ -605,21 +453,24 @@
       <recent name="com.madao.post.mapper" />
       <recent name="com.madao.post.service" />
     </key>
-    <key name="CopyClassDialog.RECENTS_KEY">
-      <recent name="com.madao.api.entity" />
-      <recent name="com.madao.common.utils" />
-    </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/web/src/main/resources/templates" />
+    <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/post/src/main/resources/mybatis/mapper" />
-      <recent name="$PROJECT_DIR$/api/src/main/java/com/madao/api/entity" />
-      <recent name="$PROJECT_DIR$/post/src/main/resources/mybatis" />
-      <recent name="$PROJECT_DIR$/post/src/main/resources" />
     </key>
     <key name="CreateTestDialog.Recents.Supers">
       <recent name="" />
     </key>
-    <key name="MoveFile.RECENT_KEYS">
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.madao.api.utils" />
+      <recent name="com.madao.api.entity" />
+      <recent name="com.madao.article.mapper" />
+      <recent name="com.madao.article.bean" />
+      <recent name="com.madao.web" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/api/src/main/java/com/madao/api/utils" />
+      <recent name="$PROJECT_DIR$/article/src/main/resources/mybatis/mapper" />
+      <recent name="$PROJECT_DIR$/user/src/main/resources/mybatis/mapper" />
+      <recent name="$PROJECT_DIR$/question/src/main/resources/mybatis/mapper" />
       <recent name="$PROJECT_DIR$/post/src/main/resources/mybatis/mapper" />
     </key>
   </component>
@@ -635,13 +486,32 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Spring Boot.WebApplication">
+  <component name="RunManager" selected="Spring Boot.QuestionApplication">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="HTML_USED" value="false" />
       <option name="WIDTH" value="400" />
       <option name="HEIGHT" value="300" />
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
       <module />
+    </configuration>
+    <configuration name="CheckCode" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
+        <pattern>
+          <option name="PATTERN" value="com.madao.web.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="MAIN_CLASS_NAME" value="com.madao.web.CheckCode" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <module name="web" />
+      <envs />
     </configuration>
     <configuration default="true" type="Application" factoryName="Application">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
@@ -657,19 +527,19 @@
       <module name="" />
       <envs />
     </configuration>
-    <configuration name="PostApplicationTests.testList" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="ArticleApplicationTests.test1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
         <pattern>
-          <option name="PATTERN" value="com.madao.post.*" />
+          <option name="PATTERN" value="com.madao.article.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <module name="post" />
+      <module name="article" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="PACKAGE_NAME" value="com.madao.post" />
-      <option name="MAIN_CLASS_NAME" value="com.madao.post.PostApplicationTests" />
-      <option name="METHOD_NAME" value="testList" />
+      <option name="PACKAGE_NAME" value="com.madao.article" />
+      <option name="MAIN_CLASS_NAME" value="com.madao.article.ArticleApplicationTests" />
+      <option name="METHOD_NAME" value="test1" />
       <option name="TEST_OBJECT" value="method" />
       <option name="VM_PARAMETERS" value="-ea" />
       <option name="PARAMETERS" />
@@ -682,69 +552,19 @@
       <envs />
       <patterns />
     </configuration>
-    <configuration name="PostServiceTest.test3" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="UserApplicationTests.testSend" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
         <pattern>
-          <option name="PATTERN" value="com.madao.post.service.*" />
+          <option name="PATTERN" value="com.madao.user.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <module name="post" />
+      <module name="user" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="PACKAGE_NAME" value="com.madao.post.service" />
-      <option name="MAIN_CLASS_NAME" value="com.madao.post.service.PostServiceTest" />
-      <option name="METHOD_NAME" value="test3" />
-      <option name="TEST_OBJECT" value="method" />
-      <option name="VM_PARAMETERS" value="-ea" />
-      <option name="PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="singleModule" />
-      </option>
-      <envs />
-      <patterns />
-    </configuration>
-    <configuration name="PostServiceTest.test4" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
-        <pattern>
-          <option name="PATTERN" value="com.madao.post.service.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <module name="post" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="PACKAGE_NAME" value="com.madao.post.service" />
-      <option name="MAIN_CLASS_NAME" value="com.madao.post.service.PostServiceTest" />
-      <option name="METHOD_NAME" value="test4" />
-      <option name="TEST_OBJECT" value="method" />
-      <option name="VM_PARAMETERS" value="-ea" />
-      <option name="PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="singleModule" />
-      </option>
-      <envs />
-      <patterns />
-    </configuration>
-    <configuration name="WebApplicationTests.test3" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
-        <pattern>
-          <option name="PATTERN" value="com.madao.web.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <module name="web" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="PACKAGE_NAME" value="com.madao.web" />
-      <option name="MAIN_CLASS_NAME" value="com.madao.web.WebApplicationTests" />
-      <option name="METHOD_NAME" value="test3" />
+      <option name="PACKAGE_NAME" value="com.madao.user" />
+      <option name="MAIN_CLASS_NAME" value="com.madao.user.UserApplicationTests" />
+      <option name="METHOD_NAME" value="testSend" />
       <option name="TEST_OBJECT" value="method" />
       <option name="VM_PARAMETERS" value="-ea" />
       <option name="PARAMETERS" />
@@ -796,7 +616,7 @@
               <map />
             </option>
             <option name="resolveToWorkspace" value="false" />
-            <option name="workingDirPath" value="$PROJECT_DIR$/post" />
+            <option name="workingDirPath" value="$PROJECT_DIR$/article" />
           </MavenRunnerParameters>
         </option>
       </MavenSettings>
@@ -814,10 +634,15 @@
       <module name="api" />
       <envs />
     </configuration>
-    <configuration name="DemoApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
-      <option name="SPRING_BOOT_MAIN_CLASS" value="com.madao.demo.DemoApplication" />
-      <module name="demo" />
+    <configuration name="ArticleApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
+        <pattern>
+          <option name="PATTERN" value="com.madao.article.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.madao.article.ArticleApplication" />
+      <module name="article" />
       <envs />
     </configuration>
     <configuration name="EurekaServerApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
@@ -847,7 +672,7 @@
     <configuration name="WebApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
         <pattern>
-          <option name="PATTERN" value="com.madao.web.*" />
+          <option name="PATTERN" value="com.madao.web.interceptor.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -888,27 +713,26 @@
       <option name="PROGRAM_PARAMETERS" />
       <predefined_log_file id="idea.log" enabled="true" />
     </configuration>
-    <list size="12">
+    <list size="11">
       <item index="0" class="java.lang.String" itemvalue="Maven.Unnamed" />
       <item index="1" class="java.lang.String" itemvalue="Spring Boot.EurekaServerApplication" />
-      <item index="2" class="java.lang.String" itemvalue="Spring Boot.DemoApplication" />
-      <item index="3" class="java.lang.String" itemvalue="Spring Boot.UserApplication" />
-      <item index="4" class="java.lang.String" itemvalue="Spring Boot.ApiApplication" />
-      <item index="5" class="java.lang.String" itemvalue="Spring Boot.QuestionApplication" />
-      <item index="6" class="java.lang.String" itemvalue="Spring Boot.PostApplication" />
-      <item index="7" class="java.lang.String" itemvalue="Spring Boot.WebApplication" />
-      <item index="8" class="java.lang.String" itemvalue="JUnit.PostApplicationTests.testList" />
-      <item index="9" class="java.lang.String" itemvalue="JUnit.PostServiceTest.test3" />
-      <item index="10" class="java.lang.String" itemvalue="JUnit.WebApplicationTests.test3" />
-      <item index="11" class="java.lang.String" itemvalue="JUnit.PostServiceTest.test4" />
+      <item index="2" class="java.lang.String" itemvalue="Spring Boot.UserApplication" />
+      <item index="3" class="java.lang.String" itemvalue="Spring Boot.QuestionApplication" />
+      <item index="4" class="java.lang.String" itemvalue="Spring Boot.PostApplication" />
+      <item index="5" class="java.lang.String" itemvalue="Spring Boot.WebApplication" />
+      <item index="6" class="java.lang.String" itemvalue="Spring Boot.ArticleApplication" />
+      <item index="7" class="java.lang.String" itemvalue="JUnit.UserApplicationTests.testSend" />
+      <item index="8" class="java.lang.String" itemvalue="Application.CheckCode" />
+      <item index="9" class="java.lang.String" itemvalue="JUnit.ArticleApplicationTests.test1" />
+      <item index="10" class="java.lang.String" itemvalue="Spring Boot.ApiApplication" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Spring Boot.WebApplication" />
-        <item index="1" class="java.lang.String" itemvalue="JUnit.PostServiceTest.test4" />
-        <item index="2" class="java.lang.String" itemvalue="JUnit.WebApplicationTests.test3" />
-        <item index="3" class="java.lang.String" itemvalue="JUnit.PostServiceTest.test3" />
-        <item index="4" class="java.lang.String" itemvalue="JUnit.PostApplicationTests.testList" />
+        <item index="0" class="java.lang.String" itemvalue="JUnit.ArticleApplicationTests.test1" />
+        <item index="1" class="java.lang.String" itemvalue="Spring Boot.WebApplication" />
+        <item index="2" class="java.lang.String" itemvalue="Spring Boot.ArticleApplication" />
+        <item index="3" class="java.lang.String" itemvalue="Application.CheckCode" />
+        <item index="4" class="java.lang.String" itemvalue="JUnit.UserApplicationTests.testSend" />
       </list>
     </recent_temporary>
   </component>
@@ -947,44 +771,49 @@
       <workItem from="1557566835358" duration="60408000" />
       <workItem from="1557713075679" duration="98193000" />
       <workItem from="1557938323669" duration="16888000" />
-      <workItem from="1558019652146" duration="88330000" />
+      <workItem from="1558019652146" duration="125548000" />
+      <workItem from="1558274986083" duration="43375000" />
+      <workItem from="1558619357775" duration="142261000" />
+      <workItem from="1559015448414" duration="107182000" />
+      <workItem from="1559291485889" duration="20583000" />
+      <workItem from="1559649634639" duration="32030000" />
     </task>
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="PostApplicationTests_testPostCommentService - 2019.05.16 at 00h 50m 21s.xml">
-      <configuration name="PostApplicationTests.testPostCommentService" configurationId="JUnit" />
+    <history-entry file="ArticleApplicationTests_test1 - 2019.05.30 at 00h 00m 01s.xml">
+      <configuration name="ArticleApplicationTests.test1" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="PostServiceTest_test3 - 2019.05.18 at 19h 37m 31s.xml">
-      <configuration name="PostServiceTest.test3" configurationId="JUnit" />
+    <history-entry file="ArticleApplicationTests_test1 - 2019.05.31 at 23h 13m 22s.xml">
+      <configuration name="ArticleApplicationTests.test1" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="PostServiceTest_test4 - 2019.05.18 at 20h 11m 24s.xml">
-      <configuration name="PostServiceTest.test4" configurationId="JUnit" />
+    <history-entry file="QuestionApplicationTests_test5 - 2019.05.29 at 21h 17m 34s.xml">
+      <configuration name="QuestionApplicationTests.test5" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="PostServiceTest_test4 - 2019.05.18 at 20h 12m 38s.xml">
-      <configuration name="PostServiceTest.test4" configurationId="JUnit" />
+    <history-entry file="QuestionApplicationTests_test5 - 2019.05.29 at 21h 20m 02s.xml">
+      <configuration name="QuestionApplicationTests.test5" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="PostServiceTest_test4 - 2019.05.18 at 20h 14m 00s.xml">
-      <configuration name="PostServiceTest.test4" configurationId="JUnit" />
+    <history-entry file="QuestionApplicationTests_test5 - 2019.05.29 at 21h 20m 47s.xml">
+      <configuration name="QuestionApplicationTests.test5" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="PostServiceTest_test4 - 2019.05.18 at 20h 14m 25s.xml">
-      <configuration name="PostServiceTest.test4" configurationId="JUnit" />
+    <history-entry file="QuestionApplicationTests_test5 - 2019.05.29 at 21h 23m 34s.xml">
+      <configuration name="QuestionApplicationTests.test5" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="PostServiceTest_test4 - 2019.05.18 at 20h 15m 45s.xml">
-      <configuration name="PostServiceTest.test4" configurationId="JUnit" />
+    <history-entry file="UserApplicationTests_test2 - 2019.05.29 at 16h 32m 53s.xml">
+      <configuration name="UserApplicationTests.test2" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="PostServiceTest_test4 - 2019.05.18 at 20h 18m 52s.xml">
-      <configuration name="PostServiceTest.test4" configurationId="JUnit" />
+    <history-entry file="UserApplicationTests_testSend - 2019.05.30 at 09h 09m 08s.xml">
+      <configuration name="UserApplicationTests.testSend" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="WebApplicationTests_test3 - 2019.05.18 at 20h 01m 25s.xml">
-      <configuration name="WebApplicationTests.test3" configurationId="JUnit" />
+    <history-entry file="UserApplicationTests_testSend - 2019.05.30 at 10h 22m 32s.xml">
+      <configuration name="UserApplicationTests.testSend" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="WebApplicationTests_test3 - 2019.05.18 at 20h 07m 55s.xml">
-      <configuration name="WebApplicationTests.test3" configurationId="JUnit" />
+    <history-entry file="UserApplicationTests_testSendCode2 - 2019.05.30 at 10h 16m 38s.xml">
+      <configuration name="UserApplicationTests.testSendCode2" configurationId="JUnit" />
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="604468000" />
+    <option name="totallyTimeSpent" value="987117000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1000,38 +829,38 @@
     <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.55908287" sideWeight="0.5060698" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4724689" sideWeight="0.5091047" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.10546282" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32852808" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.110015176" sideWeight="0.43035343" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24962063" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24962063" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39858907" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3285968" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3268206" sideWeight="0.4939302" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39786857" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3285968" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Java Enterprise" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.329806" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
+      <window_info id="Java Enterprise" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.329806" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.36412078" sideWeight="0.4939302" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3285968" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Spring" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3285968" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4920071" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.119119875" sideWeight="0.71934605" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Problems" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3285968" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Bean Validation" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.08497724" sideWeight="0.5" order="10" side_tool="true" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.47409326" sideWeight="0.4908953" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3285968" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Spring" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3285968" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.14564832" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.20713201" sideWeight="0.71934605" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Problems" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3285968" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Bean Validation" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.110015176" sideWeight="0.5696466" order="10" side_tool="true" content_ui="tabs" />
       <window_info id="Web" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.30728376" sideWeight="0.28065395" order="5" side_tool="true" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3268206" sideWeight="0.4939302" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Coverage" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32852808" sideWeight="0.5" order="9" side_tool="true" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1050,7 +879,7 @@
           <option name="timeStamp" value="6" />
         </line-breakpoint>
       </breakpoints>
-      <option name="time" value="17" />
+      <option name="time" value="30" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -1059,7 +888,119 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/user/pom.xml">
+    <entry file="file://$PROJECT_DIR$/web/src/main/resources/templates/login.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="125">
+          <caret line="211" column="31" lean-forward="false" selection-start-line="210" selection-start-column="8" selection-end-line="214" selection-end-column="9" />
+          <folding>
+            <element signature="e#6689#7587#0" expanded="false" />
+            <marker date="1559308384691" expanded="true" signature="3413:3437" ph="..." />
+            <marker date="1559308384691" expanded="true" signature="3559:3583" ph="..." />
+            <marker date="1559308384691" expanded="true" signature="3617:3641" ph="..." />
+            <marker date="1559308384691" expanded="true" signature="3689:3702" ph="..." />
+            <marker date="1559308384691" expanded="true" signature="3885:3909" ph="..." />
+            <marker date="1559308384691" expanded="true" signature="4064:4088" ph="..." />
+            <marker date="1559308384691" expanded="true" signature="8091:8103" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/src/test/java/com/madao/web/CheckCode.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="35">
+          <caret line="40" column="73" lean-forward="false" selection-start-line="40" selection-start-column="73" selection-end-line="40" selection-end-column="73" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/user/src/main/java/com/madao/user/UserApplication.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="144">
+          <caret line="14" column="11" lean-forward="false" selection-start-line="14" selection-start-column="1" selection-end-line="14" selection-end-column="11" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/src/main/resources/templates/question.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="234">
+          <caret line="13" column="97" lean-forward="true" selection-start-line="11" selection-start-column="4" selection-end-line="13" selection-end-column="97" />
+          <folding>
+            <element signature="e#8202#10281#0" expanded="false" />
+            <element signature="e#10360#11406#0" expanded="false" />
+            <element signature="e#11469#14727#0" expanded="false" />
+            <element signature="e#23380#24677#0" expanded="false" />
+            <element signature="e#24777#31863#0" expanded="false" />
+            <marker date="1559315938220" expanded="true" signature="1346:1377" ph="..." />
+            <marker date="1559315938220" expanded="true" signature="19642:19672" ph="..." />
+            <marker date="1559315938220" expanded="true" signature="20160:20202" ph="..." />
+            <marker date="1559315938220" expanded="true" signature="20418:20448" ph="..." />
+            <marker date="1559315938220" expanded="true" signature="20619:20632" ph="..." />
+            <marker date="1559315938220" expanded="true" signature="21458:21489" ph="..." />
+            <marker date="1559315938220" expanded="true" signature="22894:22937" ph="..." />
+            <marker date="1559315938220" expanded="true" signature="22974:22984" ph="..." />
+            <marker date="1559315938220" expanded="true" signature="23042:23086" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="89">
+          <caret line="49" column="0" lean-forward="false" selection-start-line="49" selection-start-column="0" selection-end-line="53" selection-end-column="21" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/src/main/resources/templates/post.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="53">
+          <caret line="88" column="36" lean-forward="true" selection-start-line="88" selection-start-column="36" selection-end-line="88" selection-end-column="36" />
+          <folding>
+            <marker date="1559318412027" expanded="true" signature="1515:1546" ph="..." />
+            <marker date="1559318412027" expanded="true" signature="12565:12577" ph="..." />
+            <marker date="1559318412027" expanded="true" signature="12633:12659" ph="..." />
+            <marker date="1559318412027" expanded="true" signature="13036:13069" ph="..." />
+            <marker date="1559318412027" expanded="true" signature="13321:13333" ph="..." />
+            <marker date="1559318412027" expanded="true" signature="13400:13426" ph="..." />
+            <marker date="1559318412027" expanded="true" signature="14464:14475" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/src/main/java/com/madao/web/controller/MyController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-146">
+          <caret line="12" column="13" lean-forward="false" selection-start-line="12" selection-start-column="13" selection-end-line="12" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/src/main/java/com/madao/web/controller/FileController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1635">
+          <caret line="36" column="36" lean-forward="false" selection-start-line="36" selection-start-column="30" selection-end-line="36" selection-end-column="36" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/src/main/java/com/madao/web/util/FileConverterUtil.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-252">
+          <caret line="18" column="13" lean-forward="false" selection-start-line="18" selection-start-column="13" selection-end-line="18" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/src/main/java/com/madao/web/controller/CollectController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1032">
+          <caret line="28" column="108" lean-forward="false" selection-start-line="28" selection-start-column="104" selection-end-line="28" selection-end-column="108" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/src/main/resources/application.yml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
@@ -1067,7 +1008,71 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/web/src/main/java/com/madao/web/controller/ArticleController.java">
+    <entry file="file://$PROJECT_DIR$/api/src/main/resources/application.properties">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/src/main/resources/templates/homePage.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="66">
+          <caret line="807" column="35" lean-forward="false" selection-start-line="807" selection-start-column="35" selection-end-line="807" selection-end-column="35" />
+          <folding>
+            <element signature="e#796#2213#0" expanded="false" />
+            <element signature="e#2265#3320#0" expanded="false" />
+            <element signature="e#3375#3670#0" expanded="false" />
+            <element signature="e#3725#4966#0" expanded="false" />
+            <marker date="1559317825051" expanded="true" signature="8839:8958" ph="..." />
+            <marker date="1559317825051" expanded="true" signature="9095:9120" ph="..." />
+            <marker date="1559317825051" expanded="true" signature="9287:9303" ph="..." />
+            <marker date="1559317825051" expanded="true" signature="9696:9711" ph="..." />
+            <marker date="1559317825051" expanded="true" signature="9767:9782" ph="..." />
+            <marker date="1559317825051" expanded="true" signature="10176:10188" ph="..." />
+            <marker date="1559317825051" expanded="true" signature="10975:10986" ph="..." />
+            <marker date="1559317825051" expanded="true" signature="14645:14702" ph="..." />
+            <marker date="1559317825051" expanded="true" signature="14775:14789" ph="..." />
+            <marker date="1559317825051" expanded="true" signature="14903:14921" ph="..." />
+            <marker date="1559317825051" expanded="true" signature="15123:15155" ph="..." />
+            <marker date="1559317825051" expanded="true" signature="15222:15237" ph="..." />
+            <marker date="1559317825051" expanded="true" signature="15710:15723" ph="..." />
+            <marker date="1559317825051" expanded="true" signature="15979:16009" ph="..." />
+            <marker date="1559317825051" expanded="true" signature="17183:17226" ph="..." />
+            <marker date="1559317825051" expanded="true" signature="20956:20974" ph="..." />
+            <marker date="1559317825051" expanded="true" signature="21509:21521" ph="..." />
+            <marker date="1559317825051" expanded="true" signature="27347:27408" ph="..." />
+            <marker date="1559317825051" expanded="true" signature="27516:27535" ph="..." />
+            <marker date="1559317825051" expanded="true" signature="27636:27661" ph="..." />
+            <marker date="1559317825051" expanded="true" signature="27828:27844" ph="..." />
+            <marker date="1559317825051" expanded="true" signature="28237:28252" ph="..." />
+            <marker date="1559317825051" expanded="true" signature="28308:28323" ph="..." />
+            <marker date="1559317825051" expanded="true" signature="28717:28729" ph="..." />
+            <marker date="1559317825051" expanded="true" signature="29516:29527" ph="..." />
+            <marker date="1559317825051" expanded="true" signature="34124:34199" ph="..." />
+            <marker date="1559317825051" expanded="true" signature="34286:34300" ph="..." />
+            <marker date="1559317825051" expanded="true" signature="34414:34432" ph="..." />
+            <marker date="1559317825051" expanded="true" signature="34634:34666" ph="..." />
+            <marker date="1559317825051" expanded="true" signature="34733:34748" ph="..." />
+            <marker date="1559317825051" expanded="true" signature="35221:35234" ph="..." />
+            <marker date="1559317825051" expanded="true" signature="35490:35520" ph="..." />
+            <marker date="1559317825051" expanded="true" signature="36694:36737" ph="..." />
+            <marker date="1559317825051" expanded="true" signature="41457:41475" ph="..." />
+            <marker date="1559317825051" expanded="true" signature="42010:42022" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/api/src/main/java/com/madao/api/form/PasswordChangeForm.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="5" column="13" lean-forward="false" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/api/src/main/java/com/madao/api/ApiApplication.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="90">
           <caret line="6" column="13" lean-forward="false" selection-start-line="6" selection-start-column="13" selection-end-line="6" selection-end-column="13" />
@@ -1075,95 +1080,15 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/web/src/main/java/com/madao/web/controller/MyController.java">
+    <entry file="file://$PROJECT_DIR$/api/src/main/java/com/madao/api/utils/MD5Encoder.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="36">
-          <caret line="2" column="13" lean-forward="false" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+        <state relative-caret-position="72">
+          <caret line="8" column="13" lean-forward="false" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/web/src/main/java/com/madao/web/WebApplication.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="162">
-          <caret line="14" column="13" lean-forward="false" selection-start-line="14" selection-start-column="13" selection-end-line="14" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/user/user.iml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/web/src/main/resources/application.yml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="179">
-          <caret line="18" column="7" lean-forward="false" selection-start-line="18" selection-start-column="2" selection-end-line="18" selection-end-column="7" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/question/src/main/resources/application.yml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="282">
-          <caret line="58" column="10" lean-forward="false" selection-start-line="58" selection-start-column="0" selection-end-line="59" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/io/github/openfeign/feign-core/10.1.0/feign-core-10.1.0.jar!/feign/FeignException.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="75">
-          <caret line="62" column="0" lean-forward="false" selection-start-line="62" selection-start-column="0" selection-end-line="62" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/user/src/main/resources/application.yml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="349">
-          <caret line="78" column="10" lean-forward="false" selection-start-line="78" selection-start-column="0" selection-end-line="78" selection-end-column="10" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/user/src/main/java/com/madao/user/service/UserService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="308">
-          <caret line="248" column="53" lean-forward="true" selection-start-line="248" selection-start-column="53" selection-end-line="248" selection-end-column="53" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/web/src/main/resources/templates/homePage.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1728">
-          <caret line="96" column="62" lean-forward="true" selection-start-line="96" selection-start-column="62" selection-end-line="96" selection-end-column="62" />
-          <folding>
-            <element signature="e#8759#8766#1" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#div#1;n#div#0;n#div#0;n#div#0;n#tr#0;n#table#0;n#div#1;n#div#1;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="e#10532#10539#1" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#div#0;n#tr#1;n#table#0;n#div#1;n#div#1;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#div#0;n#tr#1;n#table#0;n#div#1;n#div#1;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#div#0;n#tr#1;n#table#0;n#div#1;n#div#1;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <marker date="1558102192039" expanded="true" signature="3606:3617" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/com/netflix/hystrix/hystrix-core/1.5.18/hystrix-core-1.5.18.jar!/com/netflix/hystrix/AbstractCommand.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="56">
-          <caret line="550" column="0" lean-forward="false" selection-start-line="550" selection-start-column="0" selection-end-line="550" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/api/src/main/java/com/madao/api/form/AnswerCommentAddForm.java">
+    <entry file="file://$PROJECT_DIR$/api/src/main/java/com/madao/api/dto/ParentCategoryDTO.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="90">
           <caret line="8" column="13" lean-forward="false" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
@@ -1171,31 +1096,200 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/api/src/main/java/com/madao/api/utils/ResultUtil.java">
+    <entry file="file://$PROJECT_DIR$/api/src/main/java/com/madao/api/dto/CollectDTO.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="104">
-          <caret line="20" column="29" lean-forward="false" selection-start-line="20" selection-start-column="29" selection-end-line="20" selection-end-column="29" />
+        <state relative-caret-position="108">
+          <caret line="10" column="5" lean-forward="false" selection-start-line="10" selection-start-column="5" selection-end-line="10" selection-end-column="5" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/api/src/main/java/com/madao/api/service/UserService.java">
+    <entry file="file://$PROJECT_DIR$/api/src/main/java/com/madao/api/utils/ResultView.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="91">
-          <caret line="25" column="33" lean-forward="false" selection-start-line="25" selection-start-column="28" selection-end-line="25" selection-end-column="33" />
+        <state relative-caret-position="54">
+          <caret line="3" column="5" lean-forward="true" selection-start-line="3" selection-start-column="5" selection-end-line="3" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/question/src/main/java/com/madao/question/controller/QuestionController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="83">
+          <caret line="113" column="57" lean-forward="true" selection-start-line="113" selection-start-column="57" selection-end-line="113" selection-end-column="57" />
+          <folding>
+            <element signature="method#collectQuestion#0;class#QuestionController#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/src/main/java/com/madao/web/controller/ArticleController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="234">
+          <caret line="33" column="56" lean-forward="false" selection-start-line="33" selection-start-column="56" selection-end-line="33" selection-end-column="56" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/api/src/main/java/com/madao/api/service/ArticleService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="126">
+          <caret line="15" column="26" lean-forward="false" selection-start-line="15" selection-start-column="26" selection-end-line="15" selection-end-column="26" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/src/main/java/com/madao/web/controller/QuestionController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="126">
+          <caret line="43" column="0" lean-forward="false" selection-start-line="43" selection-start-column="0" selection-end-line="43" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/src/main/resources/templates/article.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-252">
+          <caret line="16" column="21" lean-forward="false" selection-start-line="16" selection-start-column="20" selection-end-line="16" selection-end-column="21" />
+          <folding>
+            <element signature="e#8986#10181#0" expanded="false" />
+            <marker date="1559322616058" expanded="true" signature="1730:1761" ph="..." />
+            <marker date="1559322616058" expanded="true" signature="8277:8289" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/user/src/main/resources/generatorConfig.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="372">
+          <caret line="32" column="35" lean-forward="false" selection-start-line="32" selection-start-column="26" selection-end-line="32" selection-end-column="35" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/user/src/main/java/com/madao/user/mapper/UserMapper.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <marker date="1557150412065" expanded="true" signature="3771:3879" ph="select from user" />
+            <marker date="1557150412065" expanded="true" signature="3963:4025" ph="delete from user... " />
+            <marker date="1557150412065" expanded="true" signature="4123:4139" ph="delete from user... " />
+            <marker date="1557150412065" expanded="true" signature="4314:4665" ph="insert into user... " />
+            <marker date="1557150412065" expanded="true" signature="6201:6226" ph="select count... user" />
+            <marker date="1557150412065" expanded="true" signature="7452:7870" ph="update user... " />
+            <marker date="1557150412065" expanded="true" signature="8076:8800" ph="update user... " />
+            <marker date="1557150412065" expanded="true" signature="8894:9259" ph="update user... " />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/user/src/main/java/com/madao/user/bean/Authority.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="36">
+          <caret line="2" column="13" lean-forward="false" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/user/src/main/java/com/madao/user/bean/Role.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="36">
+          <caret line="2" column="13" lean-forward="false" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/user/src/main/java/com/madao/user/controller/UserController.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="100">
-          <caret line="37" column="47" lean-forward="true" selection-start-line="37" selection-start-column="47" selection-end-line="37" selection-end-column="47" />
+        <state relative-caret-position="161">
+          <caret line="147" column="48" lean-forward="false" selection-start-line="147" selection-start-column="48" selection-end-line="147" selection-end-column="48" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/api/src/main/java/com/madao/api/utils/ResultView.java">
+    <entry file="file://$PROJECT_DIR$/user/src/main/resources/application.yml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="18">
+          <caret line="10" column="11" lean-forward="false" selection-start-line="10" selection-start-column="11" selection-end-line="10" selection-end-column="11" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/src/main/java/com/madao/web/controller/UserController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="239">
+          <caret line="166" column="41" lean-forward="false" selection-start-line="166" selection-start-column="41" selection-end-line="166" selection-end-column="41" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/api/src/main/java/com/madao/api/service/UserService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="149">
+          <caret line="41" column="19" lean-forward="false" selection-start-line="41" selection-start-column="19" selection-end-line="41" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/user/src/main/java/com/madao/user/service/UserService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="76">
+          <caret line="218" column="5" lean-forward="true" selection-start-line="218" selection-start-column="5" selection-end-line="218" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/user/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="233">
+          <caret line="87" column="49" lean-forward="false" selection-start-line="87" selection-start-column="44" selection-end-line="87" selection-end-column="49" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/user/src/main/java/com/madao/user/bean/RoleExample.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="72">
+          <caret line="5" column="13" lean-forward="false" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/article/src/main/java/com/madao/article/bean/ArticleCategoryExample.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="72">
+          <caret line="5" column="13" lean-forward="false" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/article/src/main/java/com/madao/article/service/ArticleService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-308">
+          <caret line="175" column="60" lean-forward="false" selection-start-line="175" selection-start-column="60" selection-end-line="175" selection-end-column="60" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/api/src/main/java/com/madao/api/entity/Report.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="72">
+          <caret line="7" column="13" lean-forward="false" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/api/src/main/java/com/madao/api/entity/SegmentContent.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="72">
+          <caret line="5" column="13" lean-forward="false" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/api/src/main/java/com/madao/api/entity/Answer.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="72">
           <caret line="4" column="13" lean-forward="false" selection-start-line="4" selection-start-column="13" selection-end-line="4" selection-end-column="13" />
@@ -1203,401 +1297,91 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/web/src/main/java/com/madao/web/controller/UserController.java">
+    <entry file="file://$PROJECT_DIR$/api/src/main/java/com/madao/api/entity/Question.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="92">
-          <caret line="114" column="30" lean-forward="true" selection-start-line="114" selection-start-column="30" selection-end-line="114" selection-end-column="30" />
-          <folding>
-            <element signature="e#3952#3953#0" expanded="true" />
-            <element signature="e#3985#3986#0" expanded="true" />
-            <element signature="e#4049#4050#0" expanded="true" />
-            <element signature="e#4082#4083#0" expanded="true" />
-            <element signature="e#4139#4140#0" expanded="true" />
-            <element signature="e#4169#4170#0" expanded="true" />
-            <element signature="e#5556#5557#0" expanded="true" />
-            <element signature="e#5609#5610#0" expanded="true" />
-            <element signature="e#6308#6309#0" expanded="true" />
-            <element signature="e#6341#6342#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/web/src/main/resources/templates/postInfo1.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        <state relative-caret-position="72">
+          <caret line="7" column="13" lean-forward="false" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/web/src/main/resources/templates/test1.html">
+    <entry file="file://$PROJECT_DIR$/api/src/main/java/com/madao/api/entity/PostSegment.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="129">
-          <caret line="33" column="53" lean-forward="true" selection-start-line="32" selection-start-column="16" selection-end-line="33" selection-end-column="53" />
-          <folding>
-            <element signature="e#672#1263#0" expanded="false" />
-            <element signature="n#div#1;n#body#0;n#html#0;n#!!top" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/api/src/main/java/com/madao/api/enums/AgreeEnum.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="125">
-          <caret line="8" column="4" lean-forward="false" selection-start-line="8" selection-start-column="4" selection-end-line="8" selection-end-column="4" />
+        <state relative-caret-position="72">
+          <caret line="7" column="13" lean-forward="false" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/api/src/main/java/com/madao/api/entity/Agree.java">
+    <entry file="file://$PROJECT_DIR$/api/src/main/java/com/madao/api/entity/PostComment.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="134">
-          <caret line="9" column="11" lean-forward="false" selection-start-line="9" selection-start-column="11" selection-end-line="9" selection-end-column="11" />
+        <state relative-caret-position="72">
+          <caret line="7" column="13" lean-forward="false" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/question/src/main/java/com/madao/question/service/AnswerService.java">
+    <entry file="file://$PROJECT_DIR$/api/src/main/java/com/madao/api/entity/PostCategory.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="705">
-          <caret line="240" column="57" lean-forward="false" selection-start-line="240" selection-start-column="57" selection-end-line="240" selection-end-column="57" />
+        <state relative-caret-position="72">
+          <caret line="5" column="13" lean-forward="false" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/question/src/main/java/com/madao/question/controller/AnswerController.java">
+    <entry file="file://$PROJECT_DIR$/api/src/main/java/com/madao/api/entity/Post.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="390">
-          <caret line="38" column="17" lean-forward="true" selection-start-line="38" selection-start-column="0" selection-end-line="39" selection-end-column="0" />
-          <folding>
-            <element signature="method#agreeAnswer#0;class#AnswerController#0" expanded="false" />
-            <element signature="method#cancelAgreeAnswer#0;class#AnswerController#0" expanded="false" />
-            <element signature="method#disagreeAnswer#0;class#AnswerController#0" expanded="false" />
-            <element signature="method#getUserAgreeType#0;class#AnswerController#0" expanded="false" />
-            <element signature="method#getAnswerComment#0;class#AnswerController#0" expanded="false" />
-            <element signature="method#getAnswerComment2#0;class#AnswerController#0" expanded="false" />
-            <element signature="method#collectionAnswer#0;class#AnswerController#0" expanded="false" />
-            <element signature="method#getCollectFlagInList#0;class#AnswerController#0" expanded="false" />
-            <element signature="method#addAnswerComment#0;class#AnswerController#0" expanded="false" />
-          </folding>
+        <state relative-caret-position="72">
+          <caret line="7" column="13" lean-forward="false" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/api/src/main/java/com/madao/api/dto/QuestionDTO.java">
+    <entry file="file://$PROJECT_DIR$/api/src/main/java/com/madao/api/entity/FileUploadResult.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="90">
-          <caret line="9" column="13" lean-forward="false" selection-start-line="9" selection-start-column="13" selection-end-line="9" selection-end-column="13" />
+          <caret line="5" column="13" lean-forward="false" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/question/src/main/java/com/madao/question/mapper/QuestionMapper.java">
+    <entry file="file://$PROJECT_DIR$/api/src/main/java/com/madao/api/entity/Collect.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="207">
-          <caret line="31" column="20" lean-forward="false" selection-start-line="31" selection-start-column="20" selection-end-line="31" selection-end-column="20" />
+        <state relative-caret-position="72">
+          <caret line="5" column="13" lean-forward="false" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/api/src/main/java/com/madao/api/dto/AnswerDTO.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="12" column="13" lean-forward="false" selection-start-line="12" selection-start-column="13" selection-end-line="12" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/api/src/main/java/com/madao/api/enums/OperateEnum.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="126">
-          <caret line="7" column="4" lean-forward="false" selection-start-line="7" selection-start-column="4" selection-end-line="7" selection-end-column="4" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/question/src/main/java/com/madao/question/service/QuestionService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="344">
-          <caret line="175" column="40" lean-forward="false" selection-start-line="175" selection-start-column="40" selection-end-line="175" selection-end-column="40" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/api/src/main/java/com/madao/api/service/QuestionService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="162">
-          <caret line="64" column="22" lean-forward="false" selection-start-line="64" selection-start-column="22" selection-end-line="64" selection-end-column="22" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/web/src/main/java/com/madao/web/controller/QuestionController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="177" column="79" lean-forward="false" selection-start-line="177" selection-start-column="79" selection-end-line="177" selection-end-column="79" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/question/src/main/java/com/madao/question/controller/QuestionController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="147">
-          <caret line="88" column="26" lean-forward="false" selection-start-line="88" selection-start-column="26" selection-end-line="88" selection-end-column="26" />
-          <folding>
-            <element signature="method#addQuestion#0;class#QuestionController#0" expanded="false" />
-            <element signature="method#testSession#0;class#QuestionController#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/post/src/main/resources/mybatis/mapper/PostMapper.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/post/src/main/java/com/madao/post/mapper/PostSegmentMapper.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="254">
-          <caret line="31" column="26" lean-forward="false" selection-start-line="31" selection-start-column="9" selection-end-line="31" selection-end-column="26" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/post/src/main/resources/mybatis/mapper/PostSegmentMapper.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="216">
-          <caret line="12" column="87" lean-forward="false" selection-start-line="12" selection-start-column="87" selection-end-line="12" selection-end-column="87" />
-          <folding>
-            <marker date="1558175986889" expanded="true" signature="836:919" ph="select segme... post_segment" />
-            <marker date="1558175986889" expanded="true" signature="3886:4008" ph="select from post_segment" />
-            <marker date="1558175986889" expanded="true" signature="4092:4168" ph="delete from post_segment... " />
-            <marker date="1558175986889" expanded="true" signature="4273:4297" ph="delete from post_segment... " />
-            <marker date="1558175986889" expanded="true" signature="4480:4796" ph="insert into post_segment... " />
-            <marker date="1558175986889" expanded="true" signature="6122:6155" ph="select count... post_segment" />
-            <marker date="1558175986889" expanded="true" signature="7221:7576" ph="update post_segment... " />
-            <marker date="1558175986889" expanded="true" signature="7790:8379" ph="update post_segment... " />
-            <marker date="1558175986889" expanded="true" signature="8481:8797" ph="update post_segment... " />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/web/src/test/java/com/madao/web/WebApplicationTests.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="683">
-          <caret line="51" column="21" lean-forward="false" selection-start-line="51" selection-start-column="21" selection-end-line="51" selection-end-column="21" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/api/src/main/java/com/madao/api/dto/PostDTO.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="132">
-          <caret line="33" column="36" lean-forward="false" selection-start-line="33" selection-start-column="36" selection-end-line="33" selection-end-column="36" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/post/src/test/java/com/madao/post/service/PostServiceTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="224">
-          <caret line="44" column="40" lean-forward="true" selection-start-line="44" selection-start-column="40" selection-end-line="44" selection-end-column="40" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/web/src/main/resources/templates/login.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="n#style#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#span#0;n#div#0;n#div#1;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/web/src/main/resources/templates/post.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="103">
-          <caret line="425" column="35" lean-forward="true" selection-start-line="425" selection-start-column="35" selection-end-line="425" selection-end-column="35" />
-          <folding>
-            <element signature="e#859#1797#0" expanded="false" />
-            <element signature="e#1963#4508#0" expanded="false" />
-            <element signature="e#7060#7489#0" expanded="false" />
-            <element signature="e#7541#7750#0" expanded="false" />
-            <element signature="e#7800#7942#0" expanded="false" />
-            <element signature="e#8010#8701#0" expanded="false" />
-            <element signature="e#8749#10566#0" expanded="false" />
-            <element signature="e#10661#11184#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/api/src/main/java/com/madao/api/dto/PostSegmentDTO.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="18">
-          <caret line="12" column="13" lean-forward="false" selection-start-line="12" selection-start-column="13" selection-end-line="12" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/api/src/main/java/com/madao/api/dto/PostCommentDTO.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="9" column="13" lean-forward="false" selection-start-line="9" selection-start-column="13" selection-end-line="9" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/post/src/main/java/com/madao/post/service/PostService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="288">
-          <caret line="59" column="49" lean-forward="false" selection-start-line="59" selection-start-column="49" selection-end-line="59" selection-end-column="49" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/post/src/main/java/com/madao/post/service/PostCommentService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="123">
-          <caret line="35" column="36" lean-forward="false" selection-start-line="35" selection-start-column="36" selection-end-line="35" selection-end-column="36" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/web/src/main/java/com/madao/web/controller/PostController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="54">
-          <caret line="194" column="17" lean-forward="true" selection-start-line="194" selection-start-column="17" selection-end-line="194" selection-end-column="17" />
-          <folding>
-            <element signature="e#2262#2263#0" expanded="true" />
-            <element signature="e#2315#2316#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/api/src/main/java/com/madao/api/service/PostServiceFallbackFactory.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="6" column="13" lean-forward="false" selection-start-line="6" selection-start-column="13" selection-end-line="6" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/post/src/main/java/com/madao/post/controller/PostController.java">
+    <entry file="file://$PROJECT_DIR$/api/src/main/java/com/madao/api/entity/ArticleCategory.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="36">
-          <caret line="101" column="56" lean-forward="true" selection-start-line="101" selection-start-column="56" selection-end-line="101" selection-end-column="56" />
+          <caret line="2" column="13" lean-forward="false" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/api/src/main/java/com/madao/api/service/PostService.java">
+    <entry file="file://$PROJECT_DIR$/api/src/main/java/com/madao/api/entity/AnswerContent.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="126">
-          <caret line="48" column="162" lean-forward="true" selection-start-line="47" selection-start-column="3" selection-end-line="48" selection-end-column="162" />
+        <state relative-caret-position="72">
+          <caret line="5" column="13" lean-forward="false" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/web/src/main/resources/templates/question.html">
+    <entry file="file://$PROJECT_DIR$/api/src/main/java/com/madao/api/entity/Article.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="192">
-          <caret line="704" column="40" lean-forward="false" selection-start-line="704" selection-start-column="40" selection-end-line="704" selection-end-column="40" />
-          <folding>
-            <element signature="e#947#1095#0" expanded="false" />
-            <element signature="e#1164#2239#0" expanded="false" />
-            <element signature="e#2340#3457#0" expanded="false" />
-            <element signature="e#3522#4323#0" expanded="false" />
-            <element signature="e#4397#6476#0" expanded="false" />
-            <element signature="e#6555#7524#0" expanded="false" />
-            <element signature="e#7587#10845#0" expanded="false" />
-            <element signature="e#10893#14326#0" expanded="false" />
-            <element signature="e#21005#31529#0" expanded="false" />
-            <element signature="e#31629#33216#0" expanded="false" />
-            <element signature="n#style#0;n#a#0;n#div#2;n#div#0;n#div#1;n#div#1;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#1;n#div#1;n#div#1;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <marker date="1558189739257" expanded="true" signature="15760:15790" ph="..." />
-            <marker date="1558189739257" expanded="true" signature="16278:16320" ph="..." />
-            <marker date="1558189739257" expanded="true" signature="16536:16566" ph="..." />
-            <marker date="1558189739257" expanded="true" signature="16737:16750" ph="..." />
-            <marker date="1558189739257" expanded="true" signature="17685:17716" ph="..." />
-            <marker date="1558189739257" expanded="true" signature="19121:19164" ph="..." />
-            <marker date="1558189739257" expanded="true" signature="19201:19211" ph="..." />
-            <marker date="1558189739257" expanded="true" signature="19269:19313" ph="..." />
-          </folding>
+        <state relative-caret-position="-1152">
+          <caret line="4" column="13" lean-forward="false" selection-start-line="4" selection-start-column="13" selection-end-line="4" selection-end-column="13" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/web/src/main/resources/templates/questionInfo.html">
+    <entry file="file://$PROJECT_DIR$/article/src/main/java/com/madao/article/controller/ArticleController.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="101">
-          <caret line="555" column="0" lean-forward="true" selection-start-line="453" selection-start-column="11" selection-end-line="555" selection-end-column="0" />
-          <folding>
-            <element signature="e#1361#2436#0" expanded="false" />
-            <element signature="e#2589#3710#0" expanded="false" />
-            <element signature="e#3901#4734#0" expanded="false" />
-            <element signature="e#4808#6296#0" expanded="false" />
-            <element signature="e#6357#13213#0" expanded="false" />
-            <element signature="e#13261#16602#0" expanded="false" />
-            <element signature="e#29191#30488#0" expanded="false" />
-            <element signature="e#30584#32391#0" expanded="false" />
-            <element signature="e#33896#34713#0" expanded="false" />
-            <marker date="1558173823457" expanded="true" signature="18037:18067" ph="..." />
-            <marker date="1558173823457" expanded="true" signature="18555:18597" ph="..." />
-            <marker date="1558173823457" expanded="true" signature="18813:18843" ph="..." />
-            <marker date="1558173823457" expanded="true" signature="19014:19027" ph="..." />
-            <marker date="1558173823457" expanded="true" signature="19962:19993" ph="..." />
-            <marker date="1558173823457" expanded="true" signature="21362:21405" ph="..." />
-            <marker date="1558173823457" expanded="true" signature="21442:21452" ph="..." />
-            <marker date="1558173823457" expanded="true" signature="21510:21554" ph="..." />
-            <marker date="1558173823457" expanded="true" signature="34963:34996" ph="..." />
-            <marker date="1558173823457" expanded="true" signature="35039:35855" ph="..." />
-            <marker date="1558173823457" expanded="true" signature="35296:35308" ph="..." />
-            <marker date="1558173823457" expanded="true" signature="35320:35801" ph="..." />
-            <marker date="1558173823457" expanded="true" signature="35403:35429" ph="..." />
-            <marker date="1558173823457" expanded="true" signature="36544:36555" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/web/src/main/resources/templates/postInfo.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1009">
-          <caret line="67" column="50" lean-forward="false" selection-start-line="67" selection-start-column="36" selection-end-line="67" selection-end-column="50" />
-          <folding>
-            <element signature="e#9573#10521#0" expanded="false" />
-            <element signature="e#10571#11782#0" expanded="false" />
-            <element signature="e#11849#12540#0" expanded="false" />
-            <element signature="e#12588#14405#0" expanded="false" />
-            <element signature="e#14500#15023#0" expanded="false" />
-            <element signature="e#15089#16624#0" expanded="false" />
-            <element signature="n#style#0;n#div#1;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="e#19995#20002#1" expanded="true" />
-            <element signature="n#style#0;n#span#0;n#div#1;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#div#1;n#div#1;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#img#0;n#div#0;n#div#1;n#div#1;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#1;n#div#1;n#div#1;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#div#1;n#div#1;n#div#1;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#img#0;n#div#0;n#div#1;n#div#1;n#div#1;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#1;n#div#1;n#div#1;n#div#1;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#div#2;n#div#1;n#div#1;n#div#1;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#1;n#div#2;n#div#1;n#div#1;n#div#1;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <marker date="1558199326734" expanded="true" signature="1405:1436" ph="..." />
-            <marker date="1558199326734" expanded="true" signature="3631:3673" ph="..." />
-            <marker date="1558199326734" expanded="true" signature="3897:3927" ph="..." />
-            <marker date="1558199326734" expanded="true" signature="4106:4119" ph="..." />
-            <marker date="1558199326734" expanded="true" signature="4834:4865" ph="..." />
-            <marker date="1558199326734" expanded="true" signature="12315:12327" ph="..." />
-            <marker date="1558199326734" expanded="true" signature="12383:12409" ph="..." />
-            <marker date="1558199326734" expanded="true" signature="12786:12819" ph="..." />
-            <marker date="1558199326734" expanded="true" signature="13071:13083" ph="..." />
-            <marker date="1558199326734" expanded="true" signature="13150:13176" ph="..." />
-            <marker date="1558199326734" expanded="true" signature="14214:14225" ph="..." />
-          </folding>
+        <state relative-caret-position="90">
+          <caret line="23" column="13" lean-forward="false" selection-start-line="23" selection-start-column="13" selection-end-line="23" selection-end-column="13" />
+          <folding />
         </state>
       </provider>
     </entry>

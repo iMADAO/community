@@ -42,6 +42,7 @@ public class QuestionController {
 
     public static final int DEFAULT_SIZE = 5;
 
+    private String authorityResult = "authorityResult";
 
     @ResponseBody
     @PostMapping("/question")
@@ -412,11 +413,11 @@ public class QuestionController {
     }
 
     @ResponseBody
-    @RequestMapping("/answer/admin/getList/{pageSize}/{pageNum}")
+    @RequestMapping("/answer/admin/get/getList/{pageSize}/{pageNum}")
     public ResultView getAnswerInAllState(@PathVariable("pageSize") Integer pageSize, @PathVariable("pageNum") Integer pageNum, HttpServletRequest request){
         try {
             UserDTO user = checkUserLogin(request);
-            checkAdminAuthority(user);
+            checkAdminAuthority(request);
             ResultView resultView = questionService.getQuestionDTOInAllState(pageNum, pageSize);
             return resultView;
         }catch (ResultException e){
@@ -433,7 +434,11 @@ public class QuestionController {
     public ResultView adminBanAnswer(@PathVariable("answerId") Long answerId, @PathVariable("operate") Byte operate, HttpServletRequest request){
         try {
             UserDTO user = checkUserLogin(request);
-            checkAdminAuthority(user);
+            boolean auhtorityResult = (boolean) request.getAttribute(authorityResult);
+            if(auhtorityResult==false){
+                return ResultUtil.returnFail("用户权限不足");
+            }
+            checkAdminAuthority(request);
             ResultView resultView = questionService.operateBanAnswer(answerId, operate);
             return resultView;
         }catch (ResultException e){
@@ -492,7 +497,10 @@ public class QuestionController {
         }
         return user;
     }
-    private void checkAdminAuthority(UserDTO user){
-        //todo 检查管理员权限
+    private void checkAdminAuthority(HttpServletRequest request){
+        boolean result = (boolean) request.getAttribute(authorityResult);
+        if(result==false){
+            throw new ResultException("权限不足,无法访问");
+        }
     }
 }

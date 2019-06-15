@@ -6,6 +6,7 @@ import com.madao.api.entity.User;
 import com.madao.api.enums.CollectTypeEnum;
 import com.madao.api.service.UserService;
 import com.madao.api.utils.KeyUtil;
+import com.madao.api.utils.MD5Encoder;
 import com.madao.article.mapper.ArticleCategoryMapper;
 import com.madao.article.mapper.ArticleMapper;
 import com.madao.article.mapper.CollectMapper;
@@ -75,8 +76,10 @@ public class ArticleApplicationTests {
 
 	@Test
 	public void test1(){
-		Article article = articleMapper.selectByPrimaryKey(1558314972549912149L);
-		System.out.println(article);
+//		Article article = articleMapper.selectByPrimaryKey(1558314972549912149L);
+//		System.out.println(article);
+		String password = MD5Encoder.getEncryptedWithSalt("zzw123", "2");
+		System.out.println(password);
 	}
 
 }

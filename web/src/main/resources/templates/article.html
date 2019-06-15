@@ -108,7 +108,6 @@
             }
 
             $("#uploadFileBtn").click(function () {
-                alert("aaa")
                 var value = $("#uploadFile").val();
                 if(value==""){
                     alert("未选择文件");
@@ -144,6 +143,14 @@
                 }
                 var filePath = $("#filePath").val();
                 var title = $("#articleTitle").val();
+                if($.trim(title)==""){
+                    alert("标题不能为空")
+                    return
+                }
+                if(filePath==""){
+                    alert("请先上传文件")
+                    return
+                }
                 var originName = $("#uploadFile").val();
                 $.ajax({
                     url: '/article',
@@ -171,7 +178,7 @@
                                 '                        </div>\n' +
                                 '                    </div>')
 
-
+                            $("#closeModal").click()
 
                         }
 
@@ -267,6 +274,29 @@
                 }
             })
 
+            $("#logoutNode").click(function(){
+                $.ajax({
+                    url: '/user/logout',
+                    type: 'get',
+                    success: function(data){
+                        if(data.code==0){
+                            alert("退出登录成功")
+                            $("#userNav").empty();
+                            $("#userNav").append('<li ><a href="/toRegister" target="_blank"><span class="glyphicon glyphicon-user"></span> 注册</a></li>\n' +
+                                '<li ><a href="/toLogin" target="_blank"><span class="glyphicon glyphicon-log-in"></span> 登录</a></li>');
+                        }else{
+                            alert("请稍后重试")
+                        }
+                        return false;
+                    },
+                    error: function(){
+                        alert("请稍后重试")
+                        return false;
+                    }
+                })
+                return false;
+            })
+
         })
     </script>
 
@@ -347,7 +377,7 @@
                             <input type="hidden" id="filePath"/>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal" id="closeModal">关闭</button>
                             <button type="button" class="btn btn-primary" id="submitAll">提交更改</button>
                         </div>
                     </div><!-- /.modal-content -->

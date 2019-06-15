@@ -4,6 +4,7 @@ import com.madao.api.Exception.ResultException;
 import com.madao.api.dto.UserDTO;
 import com.madao.api.entity.PostCategory;
 import com.madao.api.entity.User;
+import com.madao.api.enums.ResultEnum;
 import com.madao.api.form.*;
 import com.madao.api.service.PostService;
 import com.madao.api.utils.ResultUtil;
@@ -25,6 +26,8 @@ public class PostController {
     private PostService postService;
 
     public static final int DEFAULT_SIZE = 5;
+
+    private String authorityResult = "authorityResult";
 
     //根据类别分页获取可见状态的帖子，并返回页面
     @RequestMapping("/toPost/{categoryId}")
@@ -156,12 +159,22 @@ public class PostController {
     }
 
     @ResponseBody
-    @PostMapping("/post/comment/{segmentId}")
-    public ResultView addPostComment(@PathVariable("segmentId") Long segmentId,@RequestParam("commentContent") String commentContent, HttpServletRequest request){
+    @RequestMapping("/post/comment/{segmentId}")
+    public ResultView addPostComment(@PathVariable("segmentId") Long segmentId,@RequestParam("commentContent") String commentContent, @RequestParam(value = "pageSize", defaultValue="5") Integer pageSize, HttpServletRequest request){
         try{
             UserDTO user = checkUserLogin(request);
             Long userId = user.getUserId();
             ResultView resultView = postService.addPostComment(segmentId, userId, commentContent);
+            ResultView newResultView = null;
+            if(resultView.getCode().equals(ResultEnum.SUCCESS.getCode())){
+                try {
+                    newResultView = postService.getLastPageComment(segmentId, pageSize);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+            if(newResultView!=null)
+                return newResultView;
             return resultView;
         }catch (ResultException e){
             System.out.println(e.getMessage());
@@ -341,11 +354,11 @@ public class PostController {
 
     //分页获取所有状态所有类别的帖子
     @ResponseBody
-    @RequestMapping("/getPost/allState/{pageNum}/{pageSize}")
+    @RequestMapping("/admin/get/getPost/allState/{pageNum}/{pageSize}")
     public ResultView toPost(@PathVariable("pageNum") Integer pageNum, @PathVariable("pageSize") Integer pageSize, HttpServletRequest request){
         try {
             UserDTO user = checkUserLogin(request);
-            checkAdminAuthority(user);
+            checkAdminAuthority(request);
             ResultView resultView = postService.getPostListInAllState(pageNum, pageSize);
             return resultView;
         }catch (ResultException e){
@@ -363,7 +376,7 @@ public class PostController {
     public ResultView adminBanPost(@PathVariable("postId")Long postId, @PathVariable("operate") Byte operate, HttpServletRequest request){
         try {
             UserDTO user = checkUserLogin(request);
-            checkAdminAuthority(user);
+            checkAdminAuthority(request);
             postService.operateBanPost(postId, operate);
             return ResultUtil.returnSuccess();
         }catch (ResultException e){
@@ -403,7 +416,10 @@ public class PostController {
     }
 
     //检查管理员权限
-    private void checkAdminAuthority(UserDTO user){
-        // todo 检查管理员权限
+    private void checkAdminAuthority(HttpServletRequest request){
+        boolean result = (boolean) request.getAttribute(authorityResult);
+        if(result==false){
+            throw new ResultException("权限不足,无法访问");
+        }
     }
 }

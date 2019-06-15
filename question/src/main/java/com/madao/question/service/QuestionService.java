@@ -10,8 +10,10 @@ import com.madao.api.entity.*;
 import com.madao.api.enums.*;
 import com.madao.api.form.QuestionForm;
 import com.madao.api.service.ArticleService;
+import com.madao.api.service.PostService;
 import com.madao.api.service.UserService;
 import com.madao.api.utils.KeyUtil;
+import com.madao.api.utils.ResultUtil;
 import com.madao.question.bean.*;
 import com.madao.question.mapper.*;
 import org.springframework.beans.BeanUtils;
@@ -53,6 +55,14 @@ public class QuestionService {
 
     @Autowired
     private ReportMapper reportMapper;
+
+    @Autowired
+    private PostService postService;
+
+    @Autowired
+    private ArticleService articleService;
+
+
 
 
     @Value("${userPrefix}")
@@ -203,6 +213,9 @@ public class QuestionService {
 
     //获取用户信息
     public User getUserFromCache(Long userId){
+        System.out.println(userId);
+        if(userId==null)
+            return new User();
         User user = null;
         try {
             user = (User) redisTemplate.opsForValue().get(USER_PREFIX + userId);
@@ -436,5 +449,67 @@ public class QuestionService {
         BeanUtils.copyProperties(questionList, answerDTOList);
         answerDTOPageInfo.setList(answerDTOList);
         return answerDTOPageInfo;
+    }
+
+    public void operateReport(Long targetId, Byte type, Byte operate) {
+        System.out.println("targetId---" + targetId);
+        System.out.println("type---" + type);
+        System.out.println("operate---" + operate);
+        List<Byte> typeList = getTypeList();
+        if(!typeList.contains(type)){
+            throw new ResultException("类型不合法");
+        }
+        if(!operate.equals(ReportStateEnum.FINISH.getCode()) && !operate.equals(ReportStateEnum.DENY.getCode())){
+            throw new ResultException("操作不合法");
+        }
+        ReportExample reportExample = new ReportExample();
+        ReportExample.Criteria criteria = reportExample.createCriteria();
+        criteria.andTargetIdEqualTo(targetId);
+        criteria.andTypeEqualTo(type);
+        List<Report> reportList = reportMapper.selectByExample(reportExample);
+        if(reportList==null || reportList.size()==0) {
+            System.out.println("没有该举报");
+            return;
+        }
+        Report report = reportList.get(0);
+        if(report.getState().equals(operate)) {
+            System.out.println("已经操作过了");
+            return;
+        }
+
+        report.setState(operate);
+        System.out.println("report......" + report);
+        reportMapper.updateByPrimaryKeySelective(report);
+        if(operate.equals(ReportStateEnum.FINISH.getCode())){
+            if(type.equals(TypeEnum.POST.getCode())){
+                postService.operateBanPost(targetId, StateEnum.BAN.getCode());
+            }else if(type.equals(TypeEnum.ARTICLE.getCode())){
+                articleService.operateBanArticle(targetId, StateEnum.BAN.getCode());
+            }else if(type.equals(TypeEnum.QUESTION.getCode())){
+                operateQuestion(targetId,  StateEnum.BAN.getCode());
+            }else if(type.equals(TypeEnum.ANSWER.getCode())){
+                answerService.operateBanAnswer(targetId, StateEnum.BAN.getCode());
+            }
+        }
+    }
+
+    //todo 在获取回答的时候检查问题是否被禁用
+    //禁用问题
+    private void operateQuestion(Long targetId, Byte code) {
+//        Question question = questionMapper.selectByPrimaryKey(targetId);
+//        if(question==null)
+//            return;
+//        if(question.getState().equals(code))
+//            return;
+//        question.setState(code);
+//        questionMapper.updateByPrimaryKeySelective(question);
+    }
+
+    public static List<Byte> getTypeList(){
+        List<Byte> typeList = new ArrayList<>();
+        for(TypeEnum t: TypeEnum.values()){
+            typeList.add(t.getCode());
+        }
+        return typeList;
     }
 }

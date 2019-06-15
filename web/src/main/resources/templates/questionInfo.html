@@ -83,7 +83,7 @@
             })
 
             //退出登录
-            $("#logout").click(function () {
+            $("#logoutNode").click(function () {
                 $.ajax({
                     url: '/user/logout',
                     type: 'get',
@@ -119,6 +119,7 @@
                         questionTitle: title,
                         questionContent: content
                     },
+                    async: false,
                     datatype: 'json',
                     success: function(data){
                         console.log(data);
@@ -420,7 +421,7 @@
                             // commentNode.append("<p>哈哈</p>")
                             //更新评论数量
                             $(commentCount).val(data.data.total);
-                            thisNode.innerHTML="<a class='hideComment' href='#'>收起评论</a>"
+                            thisNode.innerHTML="<a class='hideComment' href='###'>收起评论</a>"
 
                             if(data.data.pages > 1){
                                 var navPageNum = data.data.pages > 5 ? 5 : data.data.pages
@@ -447,6 +448,7 @@
                         }
                     }
                 })
+                return false;
 
             })
 
@@ -844,7 +846,7 @@
                                 '                <br/>\n' +
                                 '                <div style="position:relative; left: 30px;">\n' +
                                     agreeNode +
-                                '                    <span class="toComment"><a class="getComment" href="#">'+ data.data.commentCount+'条评论</a></span>\n' +
+                                '                    <span class="toComment"><a class="getComment" href="###">'+ data.data.commentCount+'条评论</a></span>\n' +
                                     collectNode +
                                 '                    <span><input type="hidden" class="commentCount" value='+ data.data.commentCount+'></span></span>\n' +
                                 '                </div>\n' +
@@ -958,7 +960,7 @@
                                         </span>
                                         <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
                                             <li role="presentation"><a role="menuitem" tabindex="-1" href="/toHomePage" target="_blank">个人中心</a></li>
-                                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#" id="logout">退出登录</a></li>
+                                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#" id="logoutNode">退出登录</a></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -1047,7 +1049,7 @@
                 <div style="position:relative; left: 30px;">
                     <span th:text=" '赞同' + ${resultView.data.answerDTO.agreeCount}" class="btn btn-default agree">赞同1.1k</span>
                     <span th:text="'不赞同' + ${resultView.data.answerDTO.disagreeCount}" class="btn btn-default disagree">不赞同0.2k</span>
-                    <span class="toComment"><a class="getComment" th:text="${resultView.data.answerDTO.commentCount} + '条评论'"  href="#">120条评论</a></span>
+                    <span class="toComment"><a class="getComment" th:text="${resultView.data.answerDTO.commentCount} + '条评论'"  href="###">120条评论</a></span>
                     <span class="btn btn-default collect" collect="0">收藏</span>
                     <span><input type="hidden" class="commentCount" th:attr="value=${resultView.data.answerDTO.commentCount}"></span></span>
                 </div>

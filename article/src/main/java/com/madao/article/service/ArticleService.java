@@ -167,8 +167,16 @@ public class ArticleService {
 
     //尝试从缓存中获取用户信息，如果没有，从数据库获取，并缓存
     public User getUserInfoInCache(Long userId){
-        User user = (User) redisTemplate.opsForValue().get(USER_PREFIX + userId);
-        System.out.println("redis get user...." + user);
+        System.out.println(userId);
+        if(userId==null)
+            return new User();
+        User user = null;
+        try {
+            user = (User) redisTemplate.opsForValue().get(USER_PREFIX + userId);
+            System.out.println("redis get user...." + user);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         if(user==null){
             user = userService.getUserById(userId);
             System.out.println("database get user" + user);

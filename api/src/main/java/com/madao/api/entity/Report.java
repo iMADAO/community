@@ -1,12 +1,18 @@
 package com.madao.api.entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+
 import java.util.Date;
 
 public class Report {
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long reportId;
 
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long userId;
 
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long targetId;
 
     private Byte type;

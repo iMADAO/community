@@ -24,6 +24,8 @@ public class ArticleController {
     @Autowired
     private ArticleService articleService;
 
+    private String authorityResult = "authorityResult";
+
     @GetMapping("/toArticle")
     public String toArticle(@RequestParam(value = "pageNum",  defaultValue = "1") Integer pageNum, @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize, HttpServletRequest request){
         UserDTO user = (UserDTO) request.getSession().getAttribute("user");
@@ -82,6 +84,7 @@ public class ArticleController {
     @ResponseBody
     @PostMapping("/article")
     public ResultView addArticle(ArticleAddForm form, HttpServletRequest request){
+        System.out.println(form);
         try {
             UserDTO user = checkUserLogin(request);
             Long userId = user.getUserId();
@@ -89,7 +92,12 @@ public class ArticleController {
             form.setUserId(userId);
             //将文档转换成Html页面，保存访问地址
             System.out.println("filePath ...." + filePath);
-            String accessUrl = FileConverterUtil.convert2Html(filePath);
+            String accessUrl = "";
+            try {
+                accessUrl = FileConverterUtil.convert2Html(filePath);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
             form.setAccessUrl(accessUrl);
             ResultView resultView = articleService.addArticle(form);
             return resultView;
@@ -167,11 +175,11 @@ public class ArticleController {
     }
 
     @ResponseBody
-    @GetMapping("/article/admin/getAllState/{pageNum}/{pageSize}")
+    @GetMapping("/article/admin/get/getAllState/{pageNum}/{pageSize}")
     public ResultView getArticleListInAllState(HttpServletRequest request, @PathVariable("pageNum") Integer pageNum, @PathVariable("pageSize")Integer pageSize){
         try {
             UserDTO user = checkUserLogin(request);
-            checkAdminAuthority(user);
+            checkAdminAuthority(request);
             ResultView resultView = articleService.getArticleListInAllState(pageNum, pageSize);
             return resultView;
         }catch (ResultException e){
@@ -188,7 +196,7 @@ public class ArticleController {
     public ResultView articleBanOperate(@PathVariable("articleId") Long articleId, @PathVariable("operate") Byte operate, HttpServletRequest request){
         try{
             UserDTO user = checkUserLogin(request);
-            checkAdminAuthority(user);
+            checkAdminAuthority(request);
             ResultView resultView = articleService.operateBanArticle(articleId, operate);
             return resultView;
         }catch (ResultException e){
@@ -252,7 +260,6 @@ public class ArticleController {
             e.printStackTrace();
             return ResultUtil.returnFail();
         }
-
     }
 
     private UserDTO checkUserLogin(HttpServletRequest request){
@@ -262,7 +269,12 @@ public class ArticleController {
         }
         return user;
     }
-    private void checkAdminAuthority(UserDTO user){
-        //todo 检查管理员权限
+
+//    检查权限
+    private void checkAdminAuthority(HttpServletRequest request){
+        boolean result = (boolean) request.getAttribute(authorityResult);
+        if(result==false){
+            throw new ResultException("权限不足,无法访问");
+        }
     }
 }

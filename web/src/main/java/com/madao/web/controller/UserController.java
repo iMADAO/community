@@ -5,7 +5,7 @@ import com.madao.api.dto.UserDTO;
 import com.madao.api.entity.User;
 import com.madao.api.enums.ErrorEnum;
 import com.madao.api.enums.ResultEnum;
-import com.madao.api.form.PaswordChangeForm;
+import com.madao.api.form.PasswordChangeForm;
 import com.madao.api.form.UserLoginForm;
 import com.madao.api.form.UserRegisterForm;
 import com.madao.api.form.UserRegisterForm2;
@@ -30,6 +30,8 @@ import javax.servlet.http.HttpSession;
 public class UserController {
     @Autowired
     private UserService userService;
+
+    private String phoneCode = "phoneCode";
 
     @GetMapping("/checkUserName/{userName}")
     @ResponseBody
@@ -141,12 +143,19 @@ public class UserController {
 
     @ResponseBody
     @PostMapping("/validateCode")
-    public ResultView validateCode(String account){
+    public ResultView validateCode(String account, HttpServletRequest request){
         if(account==null || account==""){
             return ResultUtil.returnFail("参数错误");
         }
         try {
-            return userService.sendValidateCode(account);
+            ResultView<String> resultView =  userService.sendValidateCode(account);
+            if(resultView.getCode().equals(ResultEnum.SUCCESS.getCode())){
+                String code = resultView.getData();
+                request.getSession().setAttribute(phoneCode, code);
+                return ResultUtil.returnSuccess();
+            }else{
+                return resultView;
+            }
         }catch (Exception e){
             e.printStackTrace();
             return ResultUtil.returnFail();
@@ -205,10 +214,30 @@ public class UserController {
 
     @ResponseBody
     @RequestMapping("/user/change/password")
-    public ResultView changePassword(PaswordChangeForm form, HttpServletRequest request){
+    public ResultView changePassword(PasswordChangeForm form, HttpServletRequest request){
         try {
             UserDTO user = checkUserLogin(request);
             ResultView resultView = userService.changeUserPassword(user.getUserId(), form.getPassword(), form.getNewPassword());
+            return resultView;
+        }catch (ResultException e){
+            System.out.println(e.getMessage());
+            return ResultUtil.returnFail();
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.returnFail();
+        }
+    }
+
+    @ResponseBody
+    @RequestMapping("/user/change/password/byCode")
+    public ResultView changePasswordByCode(@RequestParam("phoneNum") String phoneNum, @RequestParam("newPassword") String newPassword, @RequestParam("code") String code, HttpServletRequest request){
+        String changePasswdCode = (String) request.getSession().getAttribute(phoneCode);
+        if(!code.equals(changePasswdCode)){
+            return ResultUtil.returnFail("验证码不正确");
+        }
+        try {
+            UserDTO user = checkUserLogin(request);
+            ResultView resultView = userService.changeUserPassword(user.getUserId(), newPassword);
             return resultView;
         }catch (ResultException e){
             System.out.println(e.getMessage());

@@ -70,6 +70,9 @@ public class PostCommentService {
 
     //尝试从缓存中获取用户信息，如果没有，从数据库获取，并缓存
     public User getUserInfoInCache(Long userId){
+        System.out.println(userId);
+        if(userId==null)
+            return new User();
         User user = (User) redisTemplate.opsForValue().get(USER_PREFIX + userId);
         System.out.println("redis get user...." + user);
         if(user==null){
@@ -80,4 +83,33 @@ public class PostCommentService {
         return user;
     }
 
+    public PageInfo<PostCommentDTO> getLastPageComment(Long segmentId, Integer pageSize) {
+        PostCommentExample example = new PostCommentExample();
+        PostCommentExample.Criteria criteria = example.createCriteria();
+        criteria.andSegmentIdEqualTo(segmentId);
+        int count = postCommentMapper.countByExample(example);
+        int totalPageNum = count / pageSize;
+
+        PageHelper.startPage(totalPageNum, pageSize);
+        List<PostComment> postCommentList = postCommentMapper.selectByExampleWithBLOBs(example);
+        PageInfo<PostComment>  postCommentPageInfo = new PageInfo<>(postCommentList);
+
+        List<PostCommentDTO> postCommentDTOList = new ArrayList<>(postCommentList.size());
+        populatePostCommentDTO(postCommentList, postCommentDTOList);
+        PageInfo<PostCommentDTO> postCommentDTOPageInfo = new PageInfo<>();
+        BeanUtils.copyProperties(postCommentPageInfo, postCommentDTOPageInfo);
+        postCommentDTOPageInfo.setList(postCommentDTOList);
+        return postCommentDTOPageInfo;
+    }
+
+    private void populatePostCommentDTO(List<PostComment> postCommentList, List<PostCommentDTO> postCommentDTOList){
+        for(PostComment postComment: postCommentList) {
+            PostCommentDTO postCommentDTO = new PostCommentDTO();
+            BeanUtils.copyProperties(postComment, postCommentDTO);
+            User user  = getUserInfoInCache(postComment.getUserId());
+            postCommentDTO.setUserName(user.getUserName());
+            postCommentDTO.setUserPic(user.getUserPic());
+            postCommentDTOList.add(postCommentDTO);
+        }
+    }
 }

@@ -84,4 +84,7 @@ public interface PostService {
 
     @RequestMapping("/post/report")
     ResultView reportPost(@RequestParam("userId") Long userId, @RequestParam("postId") Long postId, @RequestParam("reaseon") String reason);
+
+    @RequestMapping("/post/comment/lastPage")
+    ResultView getLastPageComment(@RequestParam("segmentId") Long segmentId, @RequestParam("pageSize") Integer pageSize);
 }

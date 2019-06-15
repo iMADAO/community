@@ -85,9 +85,9 @@
             }
 
 
-            var pageSize = 1;
-            var commentPageSize = 1;
-            var postPageSize = 10
+            var pageSize = 5;
+            var commentPageSize = 5;
+            var postPageSize = 5
             $("#logoutNode").click(function(){
                 $.ajax({
                     url: '/user/logout',
@@ -338,7 +338,7 @@
                         code=data.code
                         if(data.code==0){
                             alert("添加成功")
-                            link = "http://localhost:8088/post/info/" + data.data.postId + "/1/10/1"
+                            link = "http://localhost:8088/post/info/" + data.data.postId + "/1/5/5"
                             console.log(link)
                             window.open(link)
                         }else{

@@ -158,15 +158,14 @@ public class UserController {
     //发送验证码到手机
     @ResponseBody
     @PostMapping(value="/validateCode")
-    public ResultView sendValidateCode(@RequestBody String account){
+    public ResultView<String> sendValidateCode(@RequestBody String account){
         try{
-            userService.sendPhoneCode(account);
+            String code = userService.sendPhoneCode(account);
+            return ResultUtil.returnSuccess(code);
         }catch (ResultException e){
             System.out.println(e.getMessage());
             return ResultUtil.returnException(e);
         }
-
-        return ResultUtil.returnSuccess();
     }
 
     //修改密码
@@ -179,6 +178,23 @@ public class UserController {
         }catch (ResultException e){
             System.out.println(e.getMessage());
             return ResultUtil.returnFail(e.getMessage());
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.returnFail();
+        }
+    }
+
+    @RequestMapping("/user/password/change/byCode")
+    ResultView changeUserPassword(Long userId, String newPassword){
+        try{
+            userService.changeUserPassword(userId, newPassword);
+            return ResultUtil.returnSuccess();
+        }catch (ResultException e){
+            System.out.println(e.getMessage());
+            return ResultUtil.returnFail(e.getMessage());
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResultUtil.returnFail();
         }
     }
 }

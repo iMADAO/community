@@ -93,4 +93,7 @@ public interface QuestionService {
 
     @RequestMapping("/question/search/byTitle")
     ResultView searchByQuestion(@RequestParam("searchContent") String searchContent, @RequestParam("pageNum") Integer pageNum, @RequestParam("pageSize") Integer pageSize);
+
+    @RequestMapping("/report/operate")
+    ResultView reportOperate(@RequestParam("targetId") Long targetId, @RequestParam("type") Byte type, @RequestParam("operate") Byte operate);
 }

@@ -12,8 +12,8 @@
     <script type="text/javascript" th:src="@{~/static/bootstrap-3.3.7-dist/js/bootstrap.js}"></script>
     <script type="text/javascript">
         $(function() {
-            var pageSize = 1;
-            var commentPageSize = 1;
+            var pageSize = 5;
+            var commentPageSize = 5;
             //commentNav  pageCount
             var commentNavNodes = $(".commentNav");
             console.log(commentNavNodes.length)
@@ -274,9 +274,13 @@
                 var commentInputNode = $(this).parent().find(".inputComment");
                 var commentInput = commentInputNode.val();
                 var lastPageBtn = $(segmentNode).find("[order=last]")
+                var commentNode = $(this).parent().parent().find(".comment")
                 console.log(lastPageBtn==undefined)
                 // console.log(lastPageBtn[0].innerHTML)
                 console.log(segmentId + "----" + commentInput)
+                var commentNavNode = $(".commentNav");
+                var commentCount = segmentNode.find(".commentCount");
+                var pageCount = segmentNode.find(".pageCount");
 
                 // return;
                 if(commentInput=="") {
@@ -296,12 +300,98 @@
                         if(data.code==0){
                             commentInputNode.val("")
                             alert("添加成功")
-                            var lastPage = parseInt(lastPageBtn.attr("pageNum")) + 1
-                            $(lastPageBtn).attr("pageNum", lastPage)
-                            console.log(lastPage)
-                            lastPageBtn.click()
+                            if(lastPageBtn) {
+                                var lastPage = parseInt(lastPageBtn.attr("pageNum")) + 1
+                                $(lastPageBtn).attr("pageNum", lastPage)
+                                console.log(lastPage)
+                                lastPageBtn.click()
+                            }
 
-                            //todo 第一个评论添加的时候，添加完获取评论
+                            //如果有返回最后一页的评论
+                            if(data.data){
+                                console.log("data.data")
+                                console.log(data.data)
+                                $(commentCount).text(data.data.total)
+                                $(pageCount).text(data.data.pages)
+                                commentNavNode.empty();
+                                commentNode.empty()
+                                $.each(data.data.list, function(index, obj){
+                                    commentNode.append(' <div class="comment" style="width: 80%; height:100%; background-color: #F7F8FA; position: relative;left: 20px;">\n' +
+                                        '                        <table  width="100%" style="" >\n' +
+                                        '                            <tr>\n' +
+                                        '                                <td width="15%"><img src="'+obj.userPic+'" width="30px"/></td>\n' +
+                                        '                                <td><span>'+obj.userName+'</span>:<span>'+ obj.commentContent+'</span></td>\n' +
+                                        '                            </tr>\n' +
+                                        '                            <tr>\n' +
+                                        '                                <td></td>\n' +
+                                        '                                <td style="text-align: right">'+ obj.createTime+'</td>\n' +
+                                        '                            </tr>\n' +
+                                        '                        </table>\n' +
+                                        '                    </div>')
+
+                                })
+                                $(commentCount).text(data.data.total);
+                                // thisNode.innerHTML="<a class='hideComment' href='#'>收起评论</a>"
+                                console.log("pages:::::: " + data.data.pages)
+                                var pageNum = data.data.pages
+                                if(data.data.pages > 1){
+                                    var navNode = '<ul class="pagination" style="position: relative; left: 50px;">'
+                                    var leftCount
+                                    var rightCount
+                                    if(pageNum > 2){
+                                        leftCount = 2;
+                                    }else if(pageNum==2){
+                                        leftCount = 1;
+                                    }else{
+                                        leftCount = 0;
+                                    }
+
+                                    rightCount = 5 - leftCount - 1;
+                                    var maxNum = rightCount + pageNum;
+                                    console.log("max: " + maxNum);
+                                    console.log(maxNum > data.data.pages)
+                                    if(maxNum > data.data.pages){
+                                        rightCount = parseInt(data.data.pages) - pageNum
+                                    }
+                                    // rightCount = rightCount+pageNum > data.data.pages ? data.data.pages - pageNum: rightCount
+
+                                    console.log("left: " + leftCount)
+                                    console.log("right: " + rightCount)
+
+                                    var lastPageNum = parseInt(pageNum) - 1;
+                                    console.log("lastPageNum: " + lastPageNum)
+                                    if(pageNum > 1){
+                                        navNode += ' <li><a pageNum=1 type="navlink" href="/post/segment/comment/' + segmentId + '/1/' + commentPageSize + '">首页</a></li>';
+                                        navNode += ' <li><a pageNum='+lastPageNum+' type="navlink" href="/post/segment/comment/' + segmentId + '/'+ lastPageNum+'/' + commentPageSize + '">上一页</a></li>';
+                                    }else{
+                                        navNode += ' <li class="disabled"><a pageNum=1 type="navlink" href="/post/segment/comment/' + segmentId + '/1/' + commentPageSize + '">首页</a></li>';
+                                        navNode += ' <li class="disabled"><a pageNum=1 type="navlink" href="/post/segment/comment/' + segmentId + '/'+ lastPageNum+'/' + commentPageSize + '">上一页</a></li>';
+
+                                    }
+                                    for(var i=pageNum-leftCount; i<pageNum; i++){
+                                        navNode += ' <li><a pageNum='+i+' type="navlink" href="/post/segment/comment/' + segmentId + '/' + i + '/' + commentPageSize + '">' + i + '</a></li>';
+                                    }
+                                    navNode += ' <li class="active"><a pageNum='+pageNum+' type="navlink" href="/post/segment/comment/' + segmentId + '/' + pageNum + '/' + commentPageSize + '">' + pageNum + '</a></li>';
+                                    for(var i=parseInt(pageNum)+1; i<=parseInt(pageNum)+rightCount; i++){
+                                        navNode += ' <li><a pageNum='+i+' type="navlink" href="/post/segment/comment/' + segmentId + '/' + i + '/' + commentPageSize + '">' + i + '</a></li>';
+                                    }
+
+                                    var nextPage = parseInt(pageNum)+1
+                                    console.log("data.data.pages:---" + data.data.pages)
+                                    if(pageNum < data.data.pages){
+                                        navNode += ' <li><a pageNum='+nextPage+' type="navlink" href="/post/segment/comment/' + segmentId + '/' + nextPage + '/' + commentPageSize + '">下一页</a></li>';
+                                        navNode += ' <li><a order="last" pageNum='+data.data.pages+' type="navlink" href="/post/segment/comment/' + segmentId + '/' + data.data.pages + '/' + commentPageSize + '">末页</a></li>';
+                                    }else{
+                                        navNode += ' <li class="disabled"><a pageNum='+pageNum+' type="navlink" href="/post/segment/comment/' + segmentId + '/' + pageNum + '/' + commentPageSize + '">下一页</a></li>';
+                                        navNode += ' <li class="disabled"><a order="last" pageNum='+data.data.pages+' type="navlink" href="/post/segment/comment/' + segmentId + '/' + data.data.pages + '/' + commentPageSize + '">末页</a></li>';
+                                    }
+
+                                    navNode+='<li class="disabled"><a>共'+ data.data.pages +'页</a></li>'
+                                    navNode+='</ul>';
+                                    commentNavNode.append(navNode);
+                                }
+                            }
+
                         }else{
                             if(data.hint){
                                 alert(data.hint)
@@ -553,27 +643,29 @@
 
                     <div class="segmentContent" style="width: 80%; margin: 10px" th:each="content:${segment.contentList}">
                         <p th:if="${content.type==0}" th:text="${content.content}"> 大家好，我月球鸽子皇时隔一年又来咕咕咕测试了，GS75皇帝版到手用了也有两周多了，中间换了下内存和硅脂，当初3月底换机器曾想了一晚上，本来已经下单国行GX701，因为开始GS75只有80W的2080VBIOS，性能表现比GX701弱10%，老莱同志的吹水视频理论性测试更是能差15%，但是在我下单后，PY人士告诉我GS75的90W VBIOS已经UPUP，果断退订GX701上GS75皇帝版，省下五千多，可以买一条2T蓝盘+2T EX950还有多，拓展性万岁</p></td>
+                        <div style="height: 100px;"></div>
                         <img th:if="${content.type==1}" th:src="@{${content.content}}" style="width: 100%;"/>
                     </div>
 
-                    <div th:each="comment:${segment.postComment.list}" class="comment" style="width: 80%; height:100%; background-color: #F7F8FA; position: relative;left: 20px;">
-                        <table  width="100%" style="" >
-                            <tr>
-                                <td width="15%"><img th:src="@{${comment.userPic}}" width="30px"/></td>
-                                <td><span th:text="${comment.userName}">sky</span>:<span th:text="${comment.commentContent}">楼主 gs75和thinkpad的键盘 革命的机械键盘比 哪个手感会好点啊</span></td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td th:text="${comment.createTime}" style="text-align: right">2019-04-01</td>
-                            </tr>
-                        </table>
+                    <div class="comment">
+                        <div th:each="comment:${segment.postComment.list}" style="width: 80%; height:100%; background-color: #F7F8FA; position: relative;left: 20px;">
+                            <table  width="100%" style="" >
+                                <tr>
+                                    <td width="15%"><img th:src="@{${comment.userPic}}" width="30px"/></td>
+                                    <td><span th:text="${comment.userName}">sky</span>:<span th:text="${comment.commentContent}">楼主 gs75和thinkpad的键盘 革命的机械键盘比 哪个手感会好点啊</span></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td th:text="${comment.createTime}" style="text-align: right">2019-04-01</td>
+                                </tr>
+                            </table>
+                        </div>
                     </div>
                     <div class="commentNav">
                         <div class="commentCount" th:text="${segment.postComment.total}" style="visibility: hidden"></div>
                         <div class="pageCount" th:text="${segment.postComment.pages}" style="visibility: hidden"></div>
                     </div>
                     <div style="position: relative; left: 20%; width: 60%;"><input class="form-control inputComment" type="text" placeholder="我的评论" width="70%" style="display: inline"><button class="btn btn-default addComment" style="float: right;">提交</button></div>
-
 
                 </div>
                 <br/><br/>

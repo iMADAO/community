@@ -30,7 +30,7 @@ public interface UserService {
     public User testUser(String userName);
 
     @PostMapping(value="/validateCode")
-    public ResultView sendValidateCode(String account);
+    public ResultView<String> sendValidateCode(String account);
 
     @PostMapping("/user/register/email")
     public ResultView registerByEmail(UserRegisterForm2 form);
@@ -53,4 +53,6 @@ public interface UserService {
     @RequestMapping("/user/password/change")
     ResultView changeUserPassword(@RequestParam("userId") Long userId, @RequestParam("password") String password, @RequestParam("newPassword") String newPassword);
 
+    @RequestMapping("/user/password/change/byCode")
+    ResultView changeUserPassword(@RequestParam("userId") Long userId, @RequestParam("newPassword") String newPassword);
 }

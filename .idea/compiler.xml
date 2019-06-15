@@ -7,7 +7,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="api" />
-        <module name="demo" />
+        <module name="article" />
         <module name="eureka-server" />
         <module name="post" />
         <module name="question" />
@@ -17,6 +17,7 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="api" target="1.8" />
+      <module name="article" target="1.8" />
       <module name="common" target="1.8" />
       <module name="demo" target="1.8" />
       <module name="eureka-server" target="1.8" />

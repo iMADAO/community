@@ -18,6 +18,7 @@ public class ReportDTO<T> {
 
     private String userPic;
 
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long targetId;
 
     private Byte type;
